@@ -1,2 +1,2 @@
 ## Acknowledgments
-Funded by the [Ménière’s & Vestibular UK](https://www.meandve.org.uk/).
+Funded by [Ménière’s & Vestibular UK](https://www.meandve.org.uk/).
