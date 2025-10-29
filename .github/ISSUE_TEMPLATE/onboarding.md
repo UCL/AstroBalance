@@ -9,4 +9,4 @@ assignees: ''
 
 ## On boarding checklist for new Astrobalance developers.
 
-- [ ] Request access to the [Tobii game integration API](https://developer.tobii.com/pc-gaming/develop/)
+- [ ] Download the [Tobii game integration API](https://github.com/UCL-ARC/AstroBalanceDrivers). This repository is private so you will have to request access.
