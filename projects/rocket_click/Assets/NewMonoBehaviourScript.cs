@@ -4,6 +4,13 @@ using UnityEngine.InputSystem;
 
 public class RocketScript : MonoBehaviour
 {
+    #if UNITY_STANDALONE_WIN
+    [DllImport("tobii_gameintegration_x64.dll")]
+    #endif
+    private static extern float GetEyePositionX();
+    private static extern float GetEyePositionY();
+    private static extern float GetEyePositionZ();
+
     void Start()
     {
         Debug.Log("Hello World");
