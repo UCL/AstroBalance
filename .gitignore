@@ -4,5 +4,14 @@ Logs
 Assembly-CSharp.csproj
 .vscode
 UserSettings/Layouts
+Search.index
+Search.settings
 *.sln
 *.slnx
+
+# avoid the proprietary Tobii files.
+tobii_gameintegration_x64.*
+tobii_gameintegration_x86.*
+TobiiGameIntegrationApi.cs*
+Tobii.GameIntegration.Net.dll*
+
