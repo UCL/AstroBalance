@@ -11,6 +11,16 @@ public class RocketScript : MonoBehaviour
         Debug.Log("Hello World");
         #if UNITY_STANDALONE_WIN
         TobiiGameIntegrationApi.PrelinkAll();
+	TobiiGameIntegrationApi.SetApplicationName("AstroBalance Rocket Launch");
+	if (TobiiGameIntegrationApi.IsApiInitialized())
+	{
+		Debug.Log("Tobii API is initialised");
+	}
+	else
+	{
+		Debug.Log("Tobii API is not initialised");
+	}
+
         #endif
     }
 
