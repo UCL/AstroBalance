@@ -10,17 +10,23 @@ public class RocketScript : MonoBehaviour
     {
         Debug.Log("Hello World");
         #if UNITY_STANDALONE_WIN
-        TobiiGameIntegrationApi.PrelinkAll();
-	TobiiGameIntegrationApi.SetApplicationName("AstroBalance Rocket Launch");
-	if (TobiiGameIntegrationApi.IsApiInitialized())
-	{
-		Debug.Log("Tobii API is initialised");
-	}
-	else
-	{
-		Debug.Log("Tobii API is not initialised");
-	}
 
+	    TobiiGameIntegrationApi.SetApplicationName("AstroBalance Rocket Launch");
+
+	    if (TobiiGameIntegrationApi.IsApiInitialized())
+	    {
+	        Debug.Log("Tobii API is initialised");
+	    }
+	    else
+	    {
+	        Debug.Log("Tobii API is not initialised");
+	    }
+
+        // I've added the device URL (found using the tracker info example) to the following calls. They now seem 
+        // work. TODO - find a more robust way of getting URL
+        Debug.Log(TobiiGameIntegrationApi.GetTrackerInfo("tobii-prp://IS5FF-100214127894"));
+        Debug.Log(TobiiGameIntegrationApi.GetTrackerInfo("tobii-prp://IS5FF-100214127894").FriendlyName);
+        Debug.Log(TobiiGameIntegrationApi.GetTrackerInfo("tobii-prp://IS5FF-100214127894").IsAttached);
         #endif
     }
 
@@ -38,6 +44,7 @@ public class RocketScript : MonoBehaviour
             {
                 if (mouse.leftButton.wasPressedThisFrame)
                 {
+                    Debug.Log(TobiiGameIntegrationApi.GetGazePoints());
                     Debug.Log("Mouse pressed");
                 }
                 else if (mouse.leftButton.wasReleasedThisFrame)
