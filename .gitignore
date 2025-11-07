@@ -4,6 +4,7 @@ Logs
 Assembly-CSharp.csproj
 .vscode
 UserSettings/Layouts
+UserSettings/EditorUserSettings.asset
 Search.index
 Search.settings
 *.sln
