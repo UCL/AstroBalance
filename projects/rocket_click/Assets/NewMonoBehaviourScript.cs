@@ -11,16 +11,16 @@ public class RocketScript : MonoBehaviour
         Debug.Log("Hello World");
         #if UNITY_STANDALONE_WIN
 
-	    TobiiGameIntegrationApi.SetApplicationName("AstroBalance Rocket Launch");
+        TobiiGameIntegrationApi.SetApplicationName("AstroBalance Rocket Launch");
 
-	    if (TobiiGameIntegrationApi.IsApiInitialized())
-	    {
-	        Debug.Log("Tobii API is initialised");
-	    }
-	    else
-	    {
-	        Debug.Log("Tobii API is not initialised");
-	    }
+        if (TobiiGameIntegrationApi.IsApiInitialized())
+        {
+            Debug.Log("Tobii API is initialised");
+        }
+        else
+        {
+            Debug.Log("Tobii API is not initialised");
+        }
 
         // I've added the device URL (found using the tracker info example) to the following calls. They now seem 
         // work. TODO - find a more robust way of getting URL
@@ -44,8 +44,17 @@ public class RocketScript : MonoBehaviour
             {
                 if (mouse.leftButton.wasPressedThisFrame)
                 {
-                    Debug.Log(TobiiGameIntegrationApi.GetGazePoints());
-                    Debug.Log("Mouse pressed");
+                if TobiiGameIntegrationApi.TryGetLatestGazePoint(out GazePoint gazePoint);
+                {
+                    Debug.Log(gazePoint.Timestamp);
+                }
+                else
+                {
+                    Debug.Log("Failed to get gaze point");
+                }
+
+                Debug.Log(TobiiGameIntegrationApi.GetGazePoints());
+                Debug.Log("Mouse pressed");
                 }
                 else if (mouse.leftButton.wasReleasedThisFrame)
                 {
