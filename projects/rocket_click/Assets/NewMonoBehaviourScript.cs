@@ -5,12 +5,12 @@ using Tobii.GameIntegration.Net;
 
 public class RocketScript : MonoBehaviour
 {
-
+    bool usingTobii = false;
     void Start()
     {
         Debug.Log("Hello World");
 #if UNITY_STANDALONE_WIN
-
+        usingTobii = true;
         TobiiGameIntegrationApi.SetApplicationName("AstroBalance Rocket Launch");
 
         if (TobiiGameIntegrationApi.IsApiInitialized())
@@ -25,9 +25,10 @@ public class RocketScript : MonoBehaviour
         // I've added the device URL (found using the tracker info example) to the following calls. They now seem 
         // work. TODO - find a more robust way of getting URL
         string url = "tobii-prp://IS5FF-100214127894";
-        Debug.Log(TobiiGameIntegrationApi.GetTrackerInfo("tobii-prp://IS5FF-100214127894"));
-        Debug.Log(" Friendly name = " + TobiiGameIntegrationApi.GetTrackerInfo("tobii-prp://IS5FF-100214127894").FriendlyName);
-        Debug.Log(" Is it attached ? " + TobiiGameIntegrationApi.GetTrackerInfo("tobii-prp://IS5FF-100214127894").IsAttached);
+        
+        Debug.Log(" Friendly name = " + TobiiGameIntegrationApi.GetTrackerInfo(url).FriendlyName);
+        Debug.Log(" Is it attached ? " + TobiiGameIntegrationApi.GetTrackerInfo(url).IsAttached);
+        // the trackerTracker call seems to be what starts the tracking.
         Debug.Log(" Track Tracker = " + TobiiGameIntegrationApi.TrackTracker(url));
 #endif
     }
@@ -41,34 +42,31 @@ public class RocketScript : MonoBehaviour
     {
         var gamepad = Gamepad.current; //swap this with Tobii when we have it.
         var mouse = Mouse.current;
-        TobiiGameIntegrationApi.Update();
+        
         if (gamepad == null)
         {
-            if (mouse == null)
-            {
-                Debug.Log("Update no input");
-            }
-            else
+            if (mouse != null)
             {
                 if (mouse.leftButton.wasPressedThisFrame)
                 {
-                if (TobiiGameIntegrationApi.TryGetLatestGazePoint(out GazePoint gazePoint))
-                {
-                    Debug.Log("Got a gaze point at " + gazePoint.TimeStampMicroSeconds  + " with coordinates " + gazePoint.X + ", " + gazePoint.Y);
-                }
-                else
-                {
-                    Debug.Log("Failed to get gaze point");
-                }
-
-                Debug.Log(TobiiGameIntegrationApi.GetGazePoints());
-                Debug.Log("Mouse pressed");
+                    Debug.Log("Mouse pressed");
                 }
                 else if (mouse.leftButton.wasReleasedThisFrame)
                 {
                     Debug.Log("Mouse released");
                 }
             }
+            if (usingTobii)
+            {
+                TobiiGameIntegrationApi.Update();
+                if (TobiiGameIntegrationApi.TryGetLatestGazePoint(out GazePoint gazePoint))
+                {
+                    //transform.Translate(Vector3.up * 1);
+                    transform.Translate(new Vector3(gazePoint.X, 0, 0));
+                    Debug.Log("Got a gaze point at " + gazePoint.TimeStampMicroSeconds + " with coordinates " + gazePoint.X + ", " + gazePoint.Y);
+                }
+            }
+            
 
         }
     }
