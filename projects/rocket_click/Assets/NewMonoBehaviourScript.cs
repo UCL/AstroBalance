@@ -40,34 +40,35 @@ public class RocketScript : MonoBehaviour
 
     void Update()
     {
-        var gamepad = Gamepad.current; //swap this with Tobii when we have it.
         var mouse = Mouse.current;
-        
-        if (gamepad == null)
+        // So we can quit the game. This has not impact when running in the editor.
+        // https://docs.unity3d.com/ScriptReference/Application.Quit.html
+        if (Input.GetKey("escape"))
         {
-            if (mouse != null)
-            {
-                if (mouse.leftButton.wasPressedThisFrame)
-                {
-                    Debug.Log("Mouse pressed");
-                }
-                else if (mouse.leftButton.wasReleasedThisFrame)
-                {
-                    Debug.Log("Mouse released");
-                }
-            }
-            if (usingTobii)
-            {
-                TobiiGameIntegrationApi.Update();
-                if (TobiiGameIntegrationApi.TryGetLatestGazePoint(out GazePoint gazePoint))
-                {
-                    //transform.Translate(Vector3.up * 1);
-                    transform.Translate(new Vector3(gazePoint.X, 0, 0));
-                    Debug.Log("Got a gaze point at " + gazePoint.TimeStampMicroSeconds + " with coordinates " + gazePoint.X + ", " + gazePoint.Y);
-                }
-            }
-            
+            Debug.Log("Escape pressed - quitting");
+            Application.Quit();
+        }
 
+        if (mouse != null)
+        {
+            if (mouse.leftButton.wasPressedThisFrame)
+            {
+                Debug.Log("Mouse pressed");
+            }
+            else if (mouse.leftButton.wasReleasedThisFrame)
+            {
+                Debug.Log("Mouse released");
+            }
+        }
+        
+        if (usingTobii)
+        {
+            TobiiGameIntegrationApi.Update();
+            if (TobiiGameIntegrationApi.TryGetLatestGazePoint(out GazePoint gazePoint))
+            {
+                transform.Translate(new Vector3(gazePoint.X, 0, 0));
+                Debug.Log("Got a gaze point at " + gazePoint.TimeStampMicroSeconds + " with coordinates " + gazePoint.X + ", " + gazePoint.Y);
+            }
         }
     }
 }
