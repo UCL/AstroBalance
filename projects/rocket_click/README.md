@@ -7,3 +7,4 @@
 ## Acknowledgements
 
 Rocket sprites by [JM. Atencia](https://opengameart.org/users/jmatencia) [CC-BY 3.0](http://creativecommons.org/licenses/by/3.0/)
+The Dionaea Fonts (DOTMATRIX) are made by Svein Kåre Gunnarsoni. http://www.dionaea.com/information/fonts.html. The fonts are freeware
