@@ -35,7 +35,8 @@ public class RocketScript : MonoBehaviour
     
     void OnDisable()
     {
-        TobiiGameIntegrationApi.StopTracking();
+        if (usingTobii)
+            TobiiGameIntegrationApi.StopTracking();
     }
 
     void Update()
