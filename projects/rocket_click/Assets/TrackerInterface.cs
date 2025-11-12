@@ -11,16 +11,16 @@ public class TrackerInterface : MonoBehaviour
 {
     bool usingTobii = false;
 
-    private GazePoint gazePoint = new GazePoint();
+    static private GazePoint gazePoint = new GazePoint();
 
     // a public method to expose the gaze point coordinates as a list of floats.
-    public List<float> getGazePoint()
+    static public List<float> getGazePoint()
     {
         List<float> coords = new List<float>();
         coords.Add(gazePoint.X);
         coords.Add(gazePoint.Y);
         return coords;
-    } 
+    }
 
     // We'll need this if we manage to get TrackWindow working. 
     // [System.Runtime.InteropServices.DllImport("user32.dll")]
