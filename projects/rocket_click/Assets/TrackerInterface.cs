@@ -2,14 +2,25 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Tobii.GameIntegration.Net;
+using System.Collections.Generic;
 
-    
+// the plan is to have a single trackerinterface that each game element or minigame can interact with to 
+// get tracker information. We'll attach this to the debug text box, then each game object can query it.
 
-
-
-public class RocketScript : MonoBehaviour
+public class TrackerInterface : MonoBehaviour
 {
     bool usingTobii = false;
+
+    private GazePoint gazePoint = new GazePoint();
+
+    // a public method to expose the gaze point coordinates as a list of floats.
+    public List<float> getGazePoint()
+    {
+        List<float> coords = new List<float>();
+        coords.Add(gazePoint.X);
+        coords.Add(gazePoint.Y);
+        return coords;
+    } 
 
     // We'll need this if we manage to get TrackWindow working. 
     // [System.Runtime.InteropServices.DllImport("user32.dll")]
@@ -17,6 +28,10 @@ public class RocketScript : MonoBehaviour
 
     void Start()
     {
+        gazePoint.X = 0.0F;
+        gazePoint.Y = 0.0F;
+        gazePoint.TimeStampMicroSeconds = 0;
+
         Debug.Log("Hello World");
 #if UNITY_STANDALONE_WIN
         usingTobii = true;
@@ -93,11 +108,10 @@ public class RocketScript : MonoBehaviour
 
         if (usingTobii)
         {
-            // the following works for either pose or gaze point, curiously not at the same time though.
             TobiiGameIntegrationApi.Update();
-            if (TobiiGameIntegrationApi.TryGetLatestGazePoint(out GazePoint gazePoint))
+            if (TobiiGameIntegrationApi.TryGetLatestGazePoint(out gazePoint))
             {
-                transform.Translate(new Vector3(gazePoint.X, 0, 0));
+                // transform.Translate(new Vector3(gazePoint.X, 0, 0));
                 Debug.Log("Got a gaze point at " + gazePoint.TimeStampMicroSeconds + " with coordinates " + gazePoint.X + ", " + gazePoint.Y);
             }
 
