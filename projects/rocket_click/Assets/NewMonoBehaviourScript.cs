@@ -21,15 +21,22 @@ public class RocketScript : MonoBehaviour
         {
             Debug.Log("Tobii API is not initialised");
         }
-
-        // I've added the device URL (found using the tracker info example) to the following calls. They now seem 
-        // work. TODO - find a more robust way of getting URL
-        string url = "tobii-prp://IS5FF-100214127894";
         
-        Debug.Log(" Friendly name = " + TobiiGameIntegrationApi.GetTrackerInfo(url).FriendlyName);
-        Debug.Log(" Is it attached ? " + TobiiGameIntegrationApi.GetTrackerInfo(url).IsAttached);
+        TrackerInfo trackerInfo = TobiiGameIntegrationApi.GetTrackerInfo();
+         if (trackerInfo.Url != "")
+         {
+            Debug.Log("Found tracker: " + trackerInfo.FriendlyName + " at " + trackerInfo.Url);
+            Debug.Log(" Is it attached ? " + trackerInfo.IsAttached);
+         }
+         else
+         {
+             Debug.Log("No tracker found");
+         }
+    
+        string myurl = trackerInfo.Url; 
+        
         // the trackerTracker call seems to be what starts the tracking.
-        Debug.Log(" Track Tracker = " + TobiiGameIntegrationApi.TrackTracker(url));
+        Debug.Log(" Track Tracker = " + TobiiGameIntegrationApi.TrackTracker(myurl));
 #endif
     }
     
