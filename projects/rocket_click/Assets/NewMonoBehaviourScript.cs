@@ -34,6 +34,12 @@ public class RocketScript : MonoBehaviour
          }
     
         string myurl = trackerInfo.Url; 
+
+        TobiiRectangle rectangle = new TobiiRectangle();
+        rectangle.Left = 0;
+        rectangle.Top = 0;
+        rectangle.Right = Screen.currentResolution.width;
+        rectangle.Bottom = Screen.currentResolution.height;
         
         // the trackerTracker call seems to be what starts the tracking.
         Debug.Log(" Track Tracker = " + TobiiGameIntegrationApi.TrackTracker(myurl));
@@ -78,13 +84,13 @@ public class RocketScript : MonoBehaviour
               transform.Translate(new Vector3(gazePoint.X, 0, 0));
               Debug.Log("Got a gaze point at " + gazePoint.TimeStampMicroSeconds + " with coordinates " + gazePoint.X + ", " + gazePoint.Y);
             }
-            TobiiGameIntegrationApi.Update();
+        
             if (TobiiGameIntegrationApi.TryGetLatestHeadPose(out HeadPose headPose))
             {
                 //transform.Translate(new Vector3(gazePoint.X, 0, 0));
                 Debug.Log("Got a head pose at " + gazePoint.TimeStampMicroSeconds + " with pose " + headPose.Rotation.YawDegrees + ", " + headPose.Rotation.PitchDegrees + ", " + headPose.Rotation.RollDegrees);
             }
-            TobiiGameIntegrationApi.Update();
+            
         }
     }
 }
