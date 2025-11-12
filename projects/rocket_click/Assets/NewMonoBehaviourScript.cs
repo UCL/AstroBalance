@@ -3,9 +3,18 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Tobii.GameIntegration.Net;
 
+    
+
+
+
 public class RocketScript : MonoBehaviour
 {
     bool usingTobii = false;
+
+    // We'll need this if we manage to get TrackWindow working. 
+    // [System.Runtime.InteropServices.DllImport("user32.dll")]
+    // internal static extern System.IntPtr GetActiveWindow();
+
     void Start()
     {
         Debug.Log("Hello World");
@@ -23,6 +32,7 @@ public class RocketScript : MonoBehaviour
         }
         
         TrackerInfo trackerInfo = TobiiGameIntegrationApi.GetTrackerInfo();
+        string trackerUrl = trackerInfo.Url;
          if (trackerInfo.Url != "")
          {
             Debug.Log("Found tracker: " + trackerInfo.FriendlyName + " at " + trackerInfo.Url);
@@ -30,22 +40,28 @@ public class RocketScript : MonoBehaviour
          }
          else
          {
-             Debug.Log("No tracker found");
+             Debug.Log("No tracker found, will try default url");
+             // this is a default url, that I got from using the Tobii API sample app.
+             trackerUrl =  "tobii-prp://IS5FF-100214127894";
          }
-    
-        string myurl = trackerInfo.Url; 
 
+        // the trackerTracker call seems to be what starts the tracking.
+        Debug.Log(" Track Tracker = " + TobiiGameIntegrationApi.TrackTracker(trackerUrl));
+
+        // We can set the tracker to track a nominal rectangle. This should be OK for full screen apps.
         TobiiRectangle rectangle = new TobiiRectangle();
         rectangle.Left = 0;
         rectangle.Top = 0;
         rectangle.Right = Screen.currentResolution.width;
         rectangle.Bottom = Screen.currentResolution.height;
-        
-        // the trackerTracker call seems to be what starts the tracking.
-        Debug.Log(" Track Tracker = " + TobiiGameIntegrationApi.TrackTracker(myurl));
+        Debug.Log("Track Rectangle = " + TobiiGameIntegrationApi.TrackRectangle(rectangle));
+
+        // In theory we can set to a window, but calling this seems to break the tracking. 
+        // Debug.Log("Tracker Window = " + TobiiGameIntegrationApi.TrackWindow(GetActiveWindow()));
+
 #endif
     }
-    
+
     void OnDisable()
     {
         if (usingTobii)
@@ -74,23 +90,23 @@ public class RocketScript : MonoBehaviour
                 Debug.Log("Mouse released");
             }
         }
-        
+
         if (usingTobii)
         {
             // the following works for either pose or gaze point, curiously not at the same time though.
             TobiiGameIntegrationApi.Update();
             if (TobiiGameIntegrationApi.TryGetLatestGazePoint(out GazePoint gazePoint))
             {
-              transform.Translate(new Vector3(gazePoint.X, 0, 0));
-              Debug.Log("Got a gaze point at " + gazePoint.TimeStampMicroSeconds + " with coordinates " + gazePoint.X + ", " + gazePoint.Y);
+                transform.Translate(new Vector3(gazePoint.X, 0, 0));
+                Debug.Log("Got a gaze point at " + gazePoint.TimeStampMicroSeconds + " with coordinates " + gazePoint.X + ", " + gazePoint.Y);
             }
-        
+
             if (TobiiGameIntegrationApi.TryGetLatestHeadPose(out HeadPose headPose))
             {
                 //transform.Translate(new Vector3(gazePoint.X, 0, 0));
                 Debug.Log("Got a head pose at " + gazePoint.TimeStampMicroSeconds + " with pose " + headPose.Rotation.YawDegrees + ", " + headPose.Rotation.PitchDegrees + ", " + headPose.Rotation.RollDegrees);
             }
-            
+
         }
     }
 }
