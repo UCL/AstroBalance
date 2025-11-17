@@ -1,5 +1,6 @@
 
 using UnityEngine;
+using TMPro;
 using UnityEngine.InputSystem;
 using Tobii.GameIntegration.Net;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 
 public class TrackerInterface : MonoBehaviour
 {
+    public TextMeshProUGUI TrackingInformation;
     bool usingTobii = false;
 
     static private GazePoint gazePoint = new GazePoint();
@@ -109,17 +111,26 @@ public class TrackerInterface : MonoBehaviour
         if (usingTobii)
         {
             TobiiGameIntegrationApi.Update();
+            string gazeString = "No Gaze Data";
+            string poseString = "No Pose Data";
             if (TobiiGameIntegrationApi.TryGetLatestGazePoint(out gazePoint))
             {
                 // transform.Translate(new Vector3(gazePoint.X, 0, 0));
                 Debug.Log("Got a gaze point at " + gazePoint.TimeStampMicroSeconds + " with coordinates " + gazePoint.X + ", " + gazePoint.Y);
+
+
+                gazeString = "Gaze Point: " + gazePoint.X.ToString("F2") + ", " + gazePoint.Y.ToString("F2"); 
             }
 
             if (TobiiGameIntegrationApi.TryGetLatestHeadPose(out HeadPose headPose))
             {
                 //transform.Translate(new Vector3(gazePoint.X, 0, 0));
                 Debug.Log("Got a head pose at " + gazePoint.TimeStampMicroSeconds + " with pose " + headPose.Rotation.YawDegrees + ", " + headPose.Rotation.PitchDegrees + ", " + headPose.Rotation.RollDegrees);
+                poseString = "Head Pose: Yaw " + headPose.Rotation.YawDegrees.ToString("F2") + 
+                             ", Pitch " + headPose.Rotation.PitchDegrees.ToString("F2") + 
+                             ", Roll " + headPose.Rotation.RollDegrees.ToString("F2");  
             }
+            TrackingInformation.text = gazeString + "\n" + poseString;
 
         }
     }
