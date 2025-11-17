@@ -1,8 +1,8 @@
 ---
 name: New Mini Game
 about: Adding a new minigame to the AstroBalance project
-title: 'Add minigame [name]'
-labels: minigame
+title: Add minigame [name]
+labels: ''
 assignees: ''
 
 ---
@@ -32,5 +32,3 @@ assignees: ''
 - [ ] Feedback from play testing.
 
 - [ ] Sign off from clinical team.
-
-

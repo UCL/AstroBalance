@@ -1,8 +1,8 @@
 ---
 name: Onboarding Check list
 about: An onboarding checklist for new AstroBalance developers
-title: 'Onboarding for [name]'
-labels: onboarding
+title: Onboarding for [name]
+labels: ''
 assignees: ''
 
 ---
