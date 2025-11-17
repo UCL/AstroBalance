@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine.InputSystem;
 using Tobii.GameIntegration.Net;
 using System.Collections.Generic;
+using RingBuffer;
 
 // the plan is to have a single trackerinterface that each game element or minigame can interact with to 
 // get tracker information. We'll attach this to the debug text box, then each game object can query it.
@@ -15,6 +16,8 @@ public class TrackerInterface : MonoBehaviour
 
     static private GazePoint gazePoint = new GazePoint();
 
+    int bufferSize = 10;
+    private RingBuffer<GazePoint> gazePoints;
     // a public method to expose the gaze point coordinates as a list of floats.
     static public List<float> getGazePoint()
     {
@@ -30,6 +33,8 @@ public class TrackerInterface : MonoBehaviour
 
     void Start()
     {
+        // setting overflow to true I think means we only store the last buffersize points, older points get discarded.
+        gazePoints = new RingBuffer<GazePoint>(bufferSize, overflow: true);
         gazePoint.X = 0.0F;
         gazePoint.Y = 0.0F;
         gazePoint.TimeStampMicroSeconds = 0;
@@ -87,6 +92,7 @@ public class TrackerInterface : MonoBehaviour
 
     void Update()
     {
+       
         var mouse = Mouse.current;
         // So we can quit the game. This has not impact when running in the editor.
         // https://docs.unity3d.com/ScriptReference/Application.Quit.html
@@ -119,7 +125,8 @@ public class TrackerInterface : MonoBehaviour
                 Debug.Log("Got a gaze point at " + gazePoint.TimeStampMicroSeconds + " with coordinates " + gazePoint.X + ", " + gazePoint.Y);
 
 
-                gazeString = "Gaze Point: " + gazePoint.X.ToString("F2") + ", " + gazePoint.Y.ToString("F2"); 
+                gazeString = "Gaze Point: " + gazePoint.X.ToString("F2") + ", " + gazePoint.Y.ToString("F2");
+                gazePoints.Put(gazePoint);
             }
 
             if (TobiiGameIntegrationApi.TryGetLatestHeadPose(out HeadPose headPose))
