@@ -27,11 +27,11 @@ namespace GazeBuffer
         {
             int timeInMicroseconds = (int)(time * 1e6);
             CopyToTwoArrays(timeInMicroseconds, out float[] x_array, out float[] y_array);
- 	    float averageX = Queryable.Average(x_array.AsQueryable());
- 	    float averageY = Queryable.Average(y_array.AsQueryable());
-	
-	    float sumOfSquaresX = x_array.Select(val => (val - averageX) * (val - averageX)).Sum();
-	    float sumOfSquaresY = x_array.Select(val => (val - averageY) * (val - averageY)).Sum();
+            float averageX = Queryable.Average(x_array.AsQueryable());
+            float averageY = Queryable.Average(y_array.AsQueryable());
+
+            float sumOfSquaresX = x_array.Select(val => (val - averageX) * (val - averageX)).Sum();
+            float sumOfSquaresY = x_array.Select(val => (val - averageY) * (val - averageY)).Sum();
             // implement me.
             return false;
         }
