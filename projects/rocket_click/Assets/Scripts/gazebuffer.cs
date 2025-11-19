@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using RingBuffer;
 using Tobii.GameIntegration.Net;
 using UnityEngine;
@@ -26,18 +27,23 @@ namespace GazeBuffer
         {
             int timeInMicroseconds = (int)(time * 1e6);
             CopyToTwoArrays(timeInMicroseconds, out float[] x_array, out float[] y_array);
+ 	    float averageX = Queryable.Average(x_array.AsQueryable());
+ 	    float averageY = Queryable.Average(y_array.AsQueryable());
+	
+	    float sumOfSquaresX = x_array.Select(val => (val - averageX) * (val - averageX)).Sum();
+	    float sumOfSquaresY = x_array.Select(val => (val - averageY) * (val - averageY)).Sum();
             // implement me.
             return false;
         }
 
-        /// <summary>
-        /// Copies the contents of the RingBuffer to two arrays,
-        /// one for the x coordinates and one for the y, stopping
-        /// when the timestamps are older than <paramref name="timestamp"/>
-        /// TODO thread safety? What happens if another thread writes to the buffer
-        /// Whilst this is running? There's a syncRoot object, but I'm not clear how
-        /// it is used.
-        /// </summary>
+        /** <summary>
+        Copies the contents of the RingBuffer to two arrays,
+        one for the x coordinates and one for the y, stopping
+        when the timestamps are older than <paramref name="timestamp"/>
+        TODO thread safety? What happens if another thread writes to the buffer
+        Whilst this is running? There's a syncRoot object, but I'm not clear how
+        it is used.
+        </summary> */
         private void CopyToTwoArrays(int timestamp, out float[] x_array, out float[] y_array)
         {
             int _index = tail;
