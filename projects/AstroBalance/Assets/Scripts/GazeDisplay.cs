@@ -1,20 +1,20 @@
 using TMPro;
 using UnityEngine;
 
-public class GazeDIsplay : MonoBehaviour
+public class GazeDisplay : MonoBehaviour
 {
-    TextMeshProUGUI gazeText;
-    [SerializeField] Tracker tracker;
+    [SerializeField] private Tracker tracker;
+    TextMeshProUGUI tmp;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        gazeText = GetComponent<TextMeshProUGUI>();
+        tmp = GetComponent<TextMeshProUGUI>();
     }
 
     // Update is called once per frame
     void Update()
     {
         var gp = tracker.getGazePoint();
-        gazeText.text = "Gaze Point: " + gp.X.ToString() + ", " + gp.Y.ToString();
+        tmp.text = "Gaze Point: (" + gp.X.ToString() + ", " + gp.Y.ToString() + ")";
     }
 }
