@@ -103,8 +103,8 @@ Library
 Logs
 Assembly-CSharp.csproj
 .vscode
-UserSettings/Layouts
-UserSettings/EditorUserSettings.asset
+projects/AstroBalance/UserSettings/
+projects/AstroBalance/obj/
 Search.index
 Search.settings
 *.sln
