@@ -17,7 +17,7 @@ assignees: ''
 
 - [ ] Access to a Tobii eye tracker.
 
-- [ ] Install [Unity Hub](https://unity.com/unity-hub) and Unity Editor v 6000.2.10f1. The Tobii Eye tracker will only work on Windows Machines, though it should be possible to develop parts of the application on any platform supported by Unity.
+- [ ] Install [Unity Hub](https://unity.com/unity-hub) and Unity Editor v 6000.0.63f1. The Tobii Eye tracker will only work on Windows Machines, though it should be possible to develop parts of the application on any platform supported by Unity.
 
 - [ ] Build and run the code using the unity editor.
 
