@@ -1,3 +1,7 @@
+# AstroBalance
+<img width="128" height="128" alt="image" src="https://github.com/user-attachments/assets/632d0b65-3cc4-4888-be51-d3a4afcd0e34" />
+
+
 ## Setup
 
  - Install unity editor version `6000.0.63f1` (LTS)
