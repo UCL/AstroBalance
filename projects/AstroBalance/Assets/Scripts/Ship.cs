@@ -25,7 +25,8 @@ public class Ship : MonoBehaviour
     private void Move()
     {
         float yaw = tracker.getHeadRotation().YawDegrees;
-        float x = yaw * xByDegrees;
+        // x position is the oposite of the head rotation
+        float x = -yaw * xByDegrees;
         Vector3 pos = transform.position;
         transform.position = new Vector3(x, pos.y, pos.z);
     }
