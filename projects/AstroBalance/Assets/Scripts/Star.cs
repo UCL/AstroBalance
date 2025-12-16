@@ -4,20 +4,22 @@ using UnityEngine;
 public class Star : MonoBehaviour
 {
     public float speed;
-    public StarGenerator sg;
+    public StarGenerator starGenerator;
     [SerializeField] public GameObject sparkleEffect;
-    GameObject deathSparkle;
+
+    private ScoreManager scoreManager;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        scoreManager = GameObject.Find("Score_text").GetComponent<ScoreManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
         var pos = transform.position;
-        transform.position = new Vector3(pos.x, pos.y - sg.baseStarSpeed * Time.deltaTime, pos.z);
+        transform.position = new Vector3(pos.x, pos.y - starGenerator.baseStarSpeed * Time.deltaTime, pos.z);
 
         if (pos.y < -10)
         {
@@ -27,10 +29,12 @@ public class Star : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        deathSparkle = Instantiate<GameObject>(sparkleEffect);
+        GameObject deathSparkle = Instantiate<GameObject>(sparkleEffect);
         deathSparkle.transform.position = transform.position;
         Destroy(deathSparkle, 1.0f);
         
         Destroy(gameObject);
+
+        scoreManager.updateScore();
     }
 }

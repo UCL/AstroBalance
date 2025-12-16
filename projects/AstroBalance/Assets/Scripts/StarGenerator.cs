@@ -34,7 +34,7 @@ public class StarGenerator : MonoBehaviour
         var starObject = Instantiate(starPrefab, new Vector3(Mathf.Sin(d_eff * swerve) * waveWidth, d, 0), Quaternion.identity);
         d_eff += starCreationDistance;
         var star = starObject.GetComponent<Star>();
-        star.sg = this;
+        star.starGenerator = this;
         star.speed = baseStarSpeed;
     }
 
