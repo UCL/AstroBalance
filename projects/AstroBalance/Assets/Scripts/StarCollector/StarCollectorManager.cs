@@ -52,7 +52,10 @@ public class StarCollectorManager : MonoBehaviour
 
     private void endGame()
     {
-        gameActive = false;
-        winScreen.SetActive(true);
+        if (gameActive)
+        {
+            gameActive = false;
+            winScreen.SetActive(true);
+        }
     }
 }
