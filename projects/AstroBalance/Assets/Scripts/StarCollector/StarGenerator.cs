@@ -12,6 +12,9 @@ public class StarGenerator : MonoBehaviour
     [SerializeField] private float waveWidth = 3f;
     private float frontier = 0;
     private float d_eff;
+    private bool generateStars = true;
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -41,11 +44,21 @@ public class StarGenerator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (generateStars == false)
+        {
+            return;
+        }
+
         frontier += baseStarSpeed * Time.deltaTime;
         if(frontier >= starCreationDistance)
         {
             frontier -= starCreationDistance;
             CreateStar(pathDistance - frontier);
         }
+    }
+
+    public void stopStarGeneration()
+    {
+        generateStars = false;
     }
 }

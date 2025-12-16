@@ -7,12 +7,12 @@ public class Star : MonoBehaviour
     public StarGenerator starGenerator;
     [SerializeField] public GameObject sparkleEffect;
 
-    private ScoreManager scoreManager;
+    private StarCollectorManager gameManager;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        scoreManager = GameObject.Find("Score_text").GetComponent<ScoreManager>();
+        gameManager = GameObject.Find("StarCollectorManager").GetComponent<StarCollectorManager>();
     }
 
     // Update is called once per frame
@@ -35,6 +35,6 @@ public class Star : MonoBehaviour
         
         Destroy(gameObject);
 
-        scoreManager.updateScore();
+        gameManager.updateScore();
     }
 }
