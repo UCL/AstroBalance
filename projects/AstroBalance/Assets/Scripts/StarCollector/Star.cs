@@ -29,6 +29,11 @@ public class Star : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (!gameManager.isGameActive())
+        {
+            return;
+        }
+
         GameObject deathSparkle = Instantiate<GameObject>(sparkleEffect);
         deathSparkle.transform.position = transform.position;
         Destroy(deathSparkle, 1.0f);

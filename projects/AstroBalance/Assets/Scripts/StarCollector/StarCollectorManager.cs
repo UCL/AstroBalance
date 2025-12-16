@@ -10,8 +10,8 @@ public class StarCollectorManager : MonoBehaviour
     public int scoreToWin = 10;
     public int timeLimitSeconds = 10;
 
-    public StarGenerator starGenerator;
     private int score;
+    private bool gameActive = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -39,6 +39,11 @@ public class StarCollectorManager : MonoBehaviour
         }
     }
 
+    public bool isGameActive()
+    {
+        return gameActive;
+    }
+
     IEnumerator endAfterTimeLimit()
     {
         yield return new WaitForSeconds(timeLimitSeconds);
@@ -47,7 +52,7 @@ public class StarCollectorManager : MonoBehaviour
 
     private void endGame()
     {
-        starGenerator.stopStarGeneration();
+        gameActive = false;
         winScreen.SetActive(true);
     }
 }

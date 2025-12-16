@@ -7,17 +7,19 @@ public class StarGenerator : MonoBehaviour
     [SerializeField] private float starCreationDistance = 2.5f;
     private float timeSinceCreation;
     [SerializeField] GameObject starPrefab;
+    private StarCollectorManager gameManager;
+
     private float pathDistance = 15f;
     [SerializeField] private float swerve = 0.1f;
     [SerializeField] private float waveWidth = 3f;
     private float frontier = 0;
     private float d_eff;
-    private bool generateStars = true;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        gameManager = GameObject.Find("StarCollectorManager").GetComponent<StarCollectorManager>();
         float starCreationInterval = starCreationDistance / baseStarSpeed;
         InitStars();
     }
@@ -44,7 +46,7 @@ public class StarGenerator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (generateStars == false)
+        if (!gameManager.isGameActive())
         {
             return;
         }
@@ -57,8 +59,4 @@ public class StarGenerator : MonoBehaviour
         }
     }
 
-    public void stopStarGeneration()
-    {
-        generateStars = false;
-    }
 }
