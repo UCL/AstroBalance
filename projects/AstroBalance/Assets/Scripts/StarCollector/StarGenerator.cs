@@ -2,23 +2,25 @@ using UnityEngine;
 
 public class StarGenerator : MonoBehaviour
 {
-    public float baseStarSpeed = 2f;
+    public float baseStarSpeed = 3f;
+    public float maxStarSpeed = 10f;
+    public float minStarSpeed = 2f;
+    public float speedIncrement = 1f;
+
     public float starCreationDistance = 2.5f;
     public float swerve = 0.1f;
     public float waveWidth = 3f;
-    public float speedIncrement = 2f;
     public GameObject starPrefab;
 
-    private StarCollectorManager gameManager;
     private float pathDistance = 15f;
     private float frontier = 0;
     private float d_eff;
+    private bool isGenerating = true;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        gameManager = GameObject.Find("StarCollectorManager").GetComponent<StarCollectorManager>();
         InitStars();
     }
 
@@ -38,18 +40,47 @@ public class StarGenerator : MonoBehaviour
         d_eff += starCreationDistance;
         var star = starObject.GetComponent<Star>();
         star.starGenerator = this;
-        star.speed = baseStarSpeed;
     }
 
     public void increaseSpeed()
     {
-        baseStarSpeed += speedIncrement;
+        float nextSpeed = baseStarSpeed + speedIncrement;
+        if (nextSpeed > maxStarSpeed)
+        {
+            baseStarSpeed = maxStarSpeed;
+        }
+        else
+        {
+            baseStarSpeed = nextSpeed;
+        }
+
+        Debug.Log("speed:" + baseStarSpeed);
+    }
+
+    public void decreaseSpeed()
+    {
+        float nextSpeed = baseStarSpeed - speedIncrement;
+        if (nextSpeed < minStarSpeed)
+        {
+            baseStarSpeed = minStarSpeed;
+        }
+        else
+        {
+            baseStarSpeed = nextSpeed;
+        }
+
+        Debug.Log("speed:" + baseStarSpeed);
+    }
+
+    public void stopGeneration()
+    {
+        isGenerating = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!gameManager.isGameActive())
+        if (!isGenerating)
         {
             return;
         }

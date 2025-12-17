@@ -3,10 +3,9 @@ using UnityEngine;
 
 public class Star : MonoBehaviour
 {
-    public float speed;
+    public GameObject sparkleEffect;
     public StarGenerator starGenerator;
-    [SerializeField] public GameObject sparkleEffect;
-
+   
     private StarCollectorManager gameManager;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -50,7 +49,5 @@ public class Star : MonoBehaviour
             // If the star had touched the miss detector
             gameManager.updateMisses();
         }
-
-
     }
 }

@@ -9,13 +9,11 @@ public class StarCollectorManager : MonoBehaviour
 
     public TextMeshProUGUI scoreText;
     public GameObject winScreen;
-    public int scoreToWin = 10;
-    public int timeLimitSeconds = 60;
-    public int speedUpgradeWindowSeconds = 20;
-    public int speedUpgradePercent = 60;
-
-    // temporary - to move
     public StarGenerator starGenerator;
+    public int scoreToWin = 100;
+    public int timeLimitSeconds = 120;
+    public int speedUpgradeWindowSeconds = 10;
+    public int speedUpgradePercent = 60;
 
     private int score;
     private bool gameActive = true;
@@ -38,30 +36,34 @@ public class StarCollectorManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // At end of time window, assess performance and update the difficulty
+        // of the game
         if (Time.time - windowStart >= speedUpgradeWindowSeconds)
         {
-            // Assess performance + decide if to promote speed
-            Debug.Log("score in window: " + scoreInTimeWindow);
-            Debug.Log("missed in window: " + missedInTimeWindow);
-
-            double total = scoreInTimeWindow + missedInTimeWindow;
-            double percentCollected = ((double) scoreInTimeWindow / total)*100;
-            
-            Debug.Log("percent: " + percentCollected);
-
-            if (percentCollected > speedUpgradePercent)
-            {
-                // UPGRADE SPEED
-                starGenerator.increaseSpeed();
-            } else
-            {
-                // DOWNGRADE SPEED
-            }
-            windowStart = Time.time;
-            scoreInTimeWindow = 0;
-            missedInTimeWindow = 0;
+            updateDifficulty();
         }
         
+    }
+
+    private void updateDifficulty()
+    {
+        float total = scoreInTimeWindow + missedInTimeWindow;
+        float percentCollected = ((float)scoreInTimeWindow / total) * 100;
+
+        Debug.Log("percent collected: " + percentCollected);
+
+        if (percentCollected > speedUpgradePercent)
+        {
+            starGenerator.increaseSpeed();
+        }
+        else
+        {
+            starGenerator.decreaseSpeed();
+        }
+
+        windowStart = Time.time;
+        scoreInTimeWindow = 0;
+        missedInTimeWindow = 0;
     }
 
     public void updateScore()
@@ -98,6 +100,7 @@ public class StarCollectorManager : MonoBehaviour
         if (gameActive)
         {
             gameActive = false;
+            starGenerator.stopGeneration();
             winScreen.SetActive(true);
         }
     }

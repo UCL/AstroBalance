@@ -615,10 +615,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scoreText: {fileID: 285503672}
   winScreen: {fileID: 46919117}
+  starGenerator: {fileID: 1755869804}
   scoreToWin: 100
   timeLimitSeconds: 120
-  speedUpgradeWindowSeconds: 5
-  speedUpgradePercent: 30
+  speedUpgradeWindowSeconds: 10
+  speedUpgradePercent: 60
 --- !u!4 &847101234
 Transform:
   m_ObjectHideFlags: 0
@@ -738,11 +739,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7165a8b1c6e77848a390216111a1fab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseStarSpeed: 5
+  baseStarSpeed: 3
+  maxStarSpeed: 10
+  minStarSpeed: 2
+  speedIncrement: 1
   starCreationDistance: 2.5
-  starPrefab: {fileID: 7594402928058972626, guid: f672f33e77ac96d40a106fe9e6adae33, type: 3}
   swerve: 0.1
   waveWidth: 3
+  starPrefab: {fileID: 7594402928058972626, guid: f672f33e77ac96d40a106fe9e6adae33, type: 3}
 --- !u!4 &1755869805
 Transform:
   m_ObjectHideFlags: 0
