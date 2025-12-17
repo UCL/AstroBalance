@@ -69,11 +69,13 @@ public class StarCollectorManager : MonoBehaviour
 
         if (percentCollected > difficultyUpgradePercent)
         {
+            Debug.Log("Increasing difficulty");
             starGenerator.IncreaseSpeed();
             UpdateTimeLimit(difficultyWindowSeconds);
         }
         else
         {
+            Debug.Log("Decreasing difficulty");
             starGenerator.DecreaseSpeed();
             UpdateTimeLimit(-difficultyWindowSeconds);
         }
