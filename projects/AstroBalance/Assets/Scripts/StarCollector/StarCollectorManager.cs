@@ -44,33 +44,38 @@ public class StarCollectorManager : MonoBehaviour
         // of the game
         if (Time.time - windowStart >= difficultyWindowSeconds)
         {
-            updateDifficulty();
+            UpdateDifficulty();
         }
 
         // If time limit reached, end game
         if (Time.time - gameStart > timeLimit)
         {
-            endGame();
+            EndGame();
         }
         
     }
 
-    private void updateDifficulty()
+    /// <summary>
+    /// Update the difficulty of the game based on player performance.
+    /// 
+    /// Star speed and time limit are increased when the player is doing well,
+    /// and decreased when they aren't.
+    /// </summary>
+    private void UpdateDifficulty()
     {
+        // Percent of stars collected in the time window (i.e. the last n seconds)
         float total = scoreInTimeWindow + missedInTimeWindow;
         float percentCollected = ((float)scoreInTimeWindow / total) * 100;
 
-        Debug.Log("percent collected: " + percentCollected);
-
         if (percentCollected > difficultyUpgradePercent)
         {
-            starGenerator.increaseSpeed();
-            updateTimeLimit(difficultyWindowSeconds);
+            starGenerator.IncreaseSpeed();
+            UpdateTimeLimit(difficultyWindowSeconds);
         }
         else
         {
-            starGenerator.decreaseSpeed();
-            updateTimeLimit(-difficultyWindowSeconds);
+            starGenerator.DecreaseSpeed();
+            UpdateTimeLimit(-difficultyWindowSeconds);
         }
 
         windowStart = Time.time;
@@ -78,7 +83,7 @@ public class StarCollectorManager : MonoBehaviour
         missedInTimeWindow = 0;
     }
 
-    private void updateTimeLimit(int increment)
+    private void UpdateTimeLimit(int increment)
     {
         int newTimeLimit = timeLimit + increment;
         if (newTimeLimit > maxTimeLimit)
@@ -93,12 +98,12 @@ public class StarCollectorManager : MonoBehaviour
         {
             timeLimit = newTimeLimit;
         }
-
-        Debug.Log("time limit:" + timeLimit);
-        Debug.Log("time left:" + (timeLimit - (Time.time - gameStart)));
     }
 
-    public void updateScore()
+    /// <summary>
+    /// Increase score (collected stars) by one.
+    /// </summary>
+    public void UpdateScore()
     {
         score = score += 1;
         scoreText.text = score.ToString();
@@ -107,26 +112,29 @@ public class StarCollectorManager : MonoBehaviour
 
         if (score >= scoreToWin)
         {
-            endGame();
+            EndGame();
         }
     }
 
-    public void updateMisses()
+    /// <summary>
+    /// Increase misses (missed stars) by one.
+    /// </summary>
+    public void UpdateMisses()
     {
         missedInTimeWindow = missedInTimeWindow += 1;
     }
 
-    public bool isGameActive()
+    public bool IsGameActive()
     {
         return gameActive;
     }
 
-    private void endGame()
+    private void EndGame()
     {
         if (gameActive)
         {
             gameActive = false;
-            starGenerator.stopGeneration();
+            starGenerator.StopGeneration();
             winScreen.SetActive(true);
         }
     }

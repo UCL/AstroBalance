@@ -28,7 +28,7 @@ public class Star : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!gameManager.isGameActive())
+        if (!gameManager.IsGameActive())
         {
             return;
         }
@@ -43,11 +43,12 @@ public class Star : MonoBehaviour
 
             Destroy(gameObject);
 
-            gameManager.updateScore();
-        } else
+            gameManager.UpdateScore();
+        } 
+        else
         {
-            // If the star had touched the miss detector
-            gameManager.updateMisses();
+            // If the star had touched the MissedStarDetector
+            gameManager.UpdateMisses();
         }
     }
 }
