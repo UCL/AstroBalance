@@ -54,7 +54,7 @@ public class StarGenerator : MonoBehaviour
 
     private void UpdateSpeed(float increment)
     {
-        float nextSpeed = baseStarSpeed + speedIncrement;
+        float nextSpeed = baseStarSpeed + increment;
         if (nextSpeed > maxStarSpeed)
         {
             baseStarSpeed = maxStarSpeed;
@@ -67,8 +67,6 @@ public class StarGenerator : MonoBehaviour
         {
             baseStarSpeed = nextSpeed;
         }
-
-        Debug.Log("speed:" + baseStarSpeed);
     }
 
     public void StopGeneration()
