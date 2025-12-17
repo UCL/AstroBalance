@@ -73,9 +73,9 @@ public class Tracker : MonoBehaviour
     }
 
     /// <summary>
-    /// Gets the msot recently acquired head position information
+    /// Gets the most recently acquired head position information
     /// </summary>
-    /// <returns>Head posotion is {X, Y, Z}</returns>
+    /// <returns>Head position is {X, Y, Z}</returns>
     public Position getHeadPosittion()
     {
         return hp.Position;
