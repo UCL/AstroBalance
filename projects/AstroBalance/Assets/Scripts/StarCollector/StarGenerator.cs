@@ -2,16 +2,15 @@ using UnityEngine;
 
 public class StarGenerator : MonoBehaviour
 {
-    [SerializeField] public float baseStarSpeed = 2f;
-    private float starCreationInterval;
-    [SerializeField] private float starCreationDistance = 2.5f;
-    private float timeSinceCreation;
-    [SerializeField] GameObject starPrefab;
-    private StarCollectorManager gameManager;
+    public float baseStarSpeed = 2f;
+    public float starCreationDistance = 2.5f;
+    public float swerve = 0.1f;
+    public float waveWidth = 3f;
+    public float speedIncrement = 2f;
+    public GameObject starPrefab;
 
+    private StarCollectorManager gameManager;
     private float pathDistance = 15f;
-    [SerializeField] private float swerve = 0.1f;
-    [SerializeField] private float waveWidth = 3f;
     private float frontier = 0;
     private float d_eff;
 
@@ -20,7 +19,6 @@ public class StarGenerator : MonoBehaviour
     void Start()
     {
         gameManager = GameObject.Find("StarCollectorManager").GetComponent<StarCollectorManager>();
-        float starCreationInterval = starCreationDistance / baseStarSpeed;
         InitStars();
     }
 
@@ -41,6 +39,11 @@ public class StarGenerator : MonoBehaviour
         var star = starObject.GetComponent<Star>();
         star.starGenerator = this;
         star.speed = baseStarSpeed;
+    }
+
+    public void increaseSpeed()
+    {
+        baseStarSpeed += speedIncrement;
     }
 
     // Update is called once per frame

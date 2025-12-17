@@ -34,12 +34,23 @@ public class Star : MonoBehaviour
             return;
         }
 
-        GameObject deathSparkle = Instantiate<GameObject>(sparkleEffect);
-        deathSparkle.transform.position = transform.position;
-        Destroy(deathSparkle, 1.0f);
         
-        Destroy(gameObject);
+        if (other.CompareTag("Player"))
+        {
+            // If the star had touched the player (i.e. the ship)
+            GameObject deathSparkle = Instantiate<GameObject>(sparkleEffect);
+            deathSparkle.transform.position = transform.position;
+            Destroy(deathSparkle, 1.0f);
 
-        gameManager.updateScore();
+            Destroy(gameObject);
+
+            gameManager.updateScore();
+        } else
+        {
+            // If the star had touched the miss detector
+            gameManager.updateMisses();
+        }
+
+
     }
 }
