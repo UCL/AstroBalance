@@ -51,10 +51,7 @@ public class Tracker : MonoBehaviour
     {
         TobiiGameIntegrationApi.Update();
 
-        if (TobiiGameIntegrationApi.TryGetLatestGazePoint(out gp))
-        {
-            //Debug.Log($"Gaze point = {gp.X}, {gp.Y}");
-        }
+        TobiiGameIntegrationApi.TryGetLatestGazePoint(out gp);
 
         TobiiGameIntegrationApi.TryGetLatestHeadPose(out hp);
     }
