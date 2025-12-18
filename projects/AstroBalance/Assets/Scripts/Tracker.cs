@@ -1,7 +1,6 @@
 using UnityEngine;
 using Tobii.GameIntegration.Net;
 using System.Collections.Generic;
-using System;
 public class Tracker : MonoBehaviour
 {
     private GazePoint gp;
@@ -52,6 +51,20 @@ public class Tracker : MonoBehaviour
     public GazePoint getGazePoint()
     {
         return gp;
+    }
+
+    /// <summary>
+    /// Gets most recent gaze point information, in unity viewport
+    /// coordinates. (0,0) is the bottom left and (1, 1) is the top right.
+    /// </summary>
+    /// <returns>Gaze point as a Vector2 {X, Y}</returns>
+    public Vector2 getGazePointViewport()
+    {
+        Vector2 gazePointViewport = new Vector2(gp.X, gp.Y);
+        gazePointViewport.x = (gazePointViewport.x + 1) / 2;
+        gazePointViewport.y = (gazePointViewport.y + 1) / 2;
+
+        return gazePointViewport;
     }
 
     /// <summary>
