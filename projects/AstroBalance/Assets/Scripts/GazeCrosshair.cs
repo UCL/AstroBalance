@@ -16,7 +16,7 @@ public class GazeCrosshair : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector2 gazePointPixels = tracker.getGazePointDisplayPixels();
+        Vector2 gazePointPixels = tracker.getGazePointScreenPixels();
         Vector3 worldPoint = activeCamera.ScreenToWorldPoint(gazePointPixels);
         transform.position = new Vector3(worldPoint.x, worldPoint.y, transform.position.z);
     }

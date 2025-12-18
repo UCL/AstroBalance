@@ -61,8 +61,8 @@ public class Tracker : MonoBehaviour
     /// <returns>Gaze point as a Vector2Int {X, Y}</returns>
     public Vector2Int getGazePointDisplayPixels()
     {
-        Debug.Log("gaze point x" + gp.X);
-        Debug.Log("gaze point y" + gp.Y);
+        //Debug.Log("gaze point x" + gp.X);
+        //Debug.Log("gaze point y" + gp.Y);
 
         int maxX = 1920;
         int maxY = 1080;
@@ -78,8 +78,8 @@ public class Tracker : MonoBehaviour
         if (xCoord > maxX) {  xCoord = maxX; }
         if (yCoord > maxY) { yCoord = maxY; }
 
-        Debug.Log("x coordinate" + xCoord);
-        Debug.Log("y coordiante" + yCoord);
+        //Debug.Log("x coordinate" + xCoord);
+        //Debug.Log("y coordiante" + yCoord);
 
         return new Vector2Int(xCoord, yCoord);
     }
@@ -94,17 +94,17 @@ public class Tracker : MonoBehaviour
         // We need location of bottom left corner, relative to display bottom left
         Vector2Int bottomLeftUnity = new Vector2Int(topLeftUnity.x, 1080 - (topLeftUnity.y + Screen.height));
 
-        Debug.Log("top left corner" + topLeftUnity);
-        Debug.Log("bottom left corner" + bottomLeftUnity);
-        Debug.Log("screen height" + Screen.height);
-        Debug.Log("screen width" + Screen.width);
+        //Debug.Log("top left corner" + topLeftUnity);
+        //Debug.Log("bottom left corner" + bottomLeftUnity);
+        //Debug.Log("screen height" + Screen.height);
+        //Debug.Log("screen width" + Screen.width);
 
         Vector2Int gpScreenPixels = new Vector2Int(
             gpDisplayPixels.x - bottomLeftUnity.x,
             gpDisplayPixels.y - bottomLeftUnity.y
         );
 
-        Debug.Log("screen pixels" + gpScreenPixels);
+        //Debug.Log("screen pixels" + gpScreenPixels);
 
         int maxX = bottomLeftUnity.x + Screen.width;
         int maxY = 1080 - topLeftUnity.y;
