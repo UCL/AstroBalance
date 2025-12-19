@@ -22,19 +22,25 @@ public class LockedOn : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("trigger enter");
-        if (sprite.color == defaultColor)
+        if (other.CompareTag("Player"))
         {
-            sprite.color = lockedColor;
+            Debug.Log("trigger enter");
+            if (sprite.color == defaultColor)
+            {
+                sprite.color = lockedColor;
+            }
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        Debug.Log("trigger exit");
-        if (sprite.color == lockedColor)
+        if (other.CompareTag("Player"))
         {
-            sprite.color = defaultColor;
+            Debug.Log("trigger exit");
+            if (sprite.color == lockedColor)
+            {
+                sprite.color = defaultColor;
+            }
         }
     }
 }
