@@ -17,10 +17,10 @@ public class GazeDisplay : MonoBehaviour
     {
         var gp = tracker.getGazePoint();
         var gpDisplay = tracker.getGazePointDisplayPixels();
-        var gpScreen = tracker.getGazePointScreenPixels();
+        //var gpScreen = tracker.getGazePointScreenPixels();
 
         gazeText.text = "Gaze Point: (" + gp.X + ", " + gp.Y + ") \n";
         gazeText.text += "Display coords: (" + gpDisplay.x + ", " + gpDisplay.y + ") \n";
-        gazeText.text += "Screen coords: (" + gpScreen.x + ", " + gpScreen.y + ")";
+        //gazeText.text += "Screen coords: (" + gpScreen.x + ", " + gpScreen.y + ")";
     }
 }
