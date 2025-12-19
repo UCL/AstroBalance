@@ -1,5 +1,4 @@
 using UnityEngine;
-using Tobii.GameIntegration.Net;
 
 public class GazeCrosshair : MonoBehaviour
 {
@@ -16,10 +15,24 @@ public class GazeCrosshair : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Vector2 gazePointScreen = tracker.getGazePointScreenPixels();
-        //Vector3 worldPoint = activeCamera.ScreenToWorldPoint(gazePointScreen);
-        Vector2 gazePointViewport = tracker.getGazePointViewport();
-        Vector3 worldPoint = activeCamera.ViewportToWorldPoint(gazePointViewport);
+
+        Vector3 worldPoint;
+        if (Application.isEditor)
+        {
+            // Game window needs to be full screen for eye tracking (gaze point) to work correctly.
+            // For easier debugging, when shown in small editor view, have the Crosshair follow the
+            // mouse instead.
+            Vector3 mousePosition = Input.mousePosition;
+            worldPoint = activeCamera.ScreenToWorldPoint(mousePosition);
+        }
+        else
+        {
+            //Vector2 gazePointScreen = tracker.getGazePointScreenPixels();
+            //Vector3 worldPoint = activeCamera.ScreenToWorldPoint(gazePointScreen);
+            Vector2 gazePointViewport = tracker.getGazePointViewport();
+            worldPoint = activeCamera.ViewportToWorldPoint(gazePointViewport);
+        }
+        
         transform.position = new Vector3(worldPoint.x, worldPoint.y, transform.position.z);
     }
 }
