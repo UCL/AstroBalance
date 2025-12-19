@@ -24,7 +24,6 @@ public class LockedOn : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("trigger enter");
             if (sprite.color == defaultColor)
             {
                 sprite.color = lockedColor;
@@ -36,7 +35,6 @@ public class LockedOn : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("trigger exit");
             if (sprite.color == lockedColor)
             {
                 sprite.color = defaultColor;

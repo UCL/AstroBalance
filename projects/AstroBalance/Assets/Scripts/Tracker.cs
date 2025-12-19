@@ -85,8 +85,8 @@ public class Tracker : MonoBehaviour
     /// <returns>Gaze point as a Vector2Int {X, Y}</returns>
     public Vector2Int getGazePointDisplayPixels()
     {
-        int maxX = 1920;
-        int maxY = 1080;
+        int maxX = rect.Right;
+        int maxY = rect.Bottom;
 
         // (int) is equivalent to taking the Math.floor, 
         // as we neeed to round down to the nearest whole pixel
