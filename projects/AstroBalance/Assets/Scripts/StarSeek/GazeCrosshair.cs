@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class GazeCrosshair : MonoBehaviour
 {
-    public Camera activeCamera;
     private Tracker tracker;
     
 
@@ -23,14 +22,14 @@ public class GazeCrosshair : MonoBehaviour
             // For easier debugging, when shown in small editor view, have the Crosshair follow the
             // mouse instead.
             Vector3 mousePosition = Input.mousePosition;
-            worldPoint = activeCamera.ScreenToWorldPoint(mousePosition);
+            worldPoint = Camera.main.ScreenToWorldPoint(mousePosition);
         }
         else
         {
             //Vector2 gazePointScreen = tracker.getGazePointScreenPixels();
             //Vector3 worldPoint = activeCamera.ScreenToWorldPoint(gazePointScreen);
             Vector2 gazePointViewport = tracker.getGazePointViewport();
-            worldPoint = activeCamera.ViewportToWorldPoint(gazePointViewport);
+            worldPoint = Camera.main.ViewportToWorldPoint(gazePointViewport);
         }
         
         transform.position = new Vector3(worldPoint.x, worldPoint.y, transform.position.z);

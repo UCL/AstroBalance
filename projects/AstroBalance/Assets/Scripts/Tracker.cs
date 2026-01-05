@@ -67,13 +67,7 @@ public class Tracker : MonoBehaviour
         Vector2 gazePointViewport = new Vector2(gp.X, gp.Y);
         gazePointViewport.x = (gazePointViewport.x + 1) / 2;
         gazePointViewport.y = (gazePointViewport.y + 1) / 2;
-
-        // Clip gaze points outside the viewport area to the
-        // range 0-1
-        if (gazePointViewport.x < 0) { gazePointViewport.x = 0; }
-        if (gazePointViewport.y < 0) { gazePointViewport.y = 0; }
-        if (gazePointViewport.x > 1) { gazePointViewport.x = 1; }
-        if (gazePointViewport.y > 1) { gazePointViewport.y = 1; }
+        clipToViewport(gazePointViewport);
 
         return gazePointViewport;
     }
@@ -153,11 +147,58 @@ public class Tracker : MonoBehaviour
     }
 
     /// <summary>
-    /// Gets the msot recently acquired head position information
+    /// Gets the most recently acquired head position information.
+    /// Position is measured in mm, with (0, 0, 0) at the centre of the screen.
     /// </summary>
-    /// <returns>Head posotion is {X, Y, Z}</returns>
-    public Position getHeadPosittion()
+    /// <returns>Head position is {X, Y, Z}</returns>
+    public Position getHeadPosition()
     {
         return hp.Position;
+    }
+
+    /// <summary>
+    /// Gets most recent head point information, in unity viewport
+    /// coordinates. The 'head point' is the position on the screen based on head
+    /// pose alone i.e. assuming the user is looking straight ahead. 
+    /// This uses the most recent head (0,0) is the bottom left and (1, 1) is the top right.
+    /// Unity must be displayed full screen for coordinates to match.
+    /// </summary>
+    /// <returns>Gaze point as a Vector2 {X, Y}</returns>
+    public Vector2 getHeadPointViewport()
+    {
+        Position headPosition = hp.Position;
+        Rotation headRotation = hp.Rotation;
+
+        // Base x position on the yaw angle - assuming the player is positioned
+        // with their head near the centre of the screen (on the x axis, i.e left-right).
+        // If required, we could consider compensating for the measured headPosition.X also
+        // for higher accuracy.
+        float xPositionMillimetre = Mathf.Tan(hp.Rotation.YawDegrees * Mathf.Deg2Rad) * headPosition.Z;
+        float screenWidthInches = (rect.Right - rect.Left) / Screen.dpi;
+        float screenWidthMillimetre = screenWidthInches * 25.4f;
+
+        // Unity viewport x centre is at 0.5
+        float xPositionViewport = 0.5f + (xPositionMillimetre / screenWidthMillimetre);
+
+        // Base y position on the pitch angle - taking into account the current head height (y).
+        // We must compensate for head height, as e.g. looking
+        // down at a laptop screen vs up at an external monitor will
+        // give quite different points
+
+        Vector2 headPointViewport = new Vector2(xPositionViewport, 0.5f);
+        clipToViewport(headPointViewport);
+
+        return headPointViewport;
+    }
+
+    /// <summary>
+    /// Clip coordinates outside the unity viewport area to the range 0-1.
+    /// </summary>
+    private void clipToViewport(Vector2 vector)
+    {
+        if (vector.x < 0) { vector.x = 0; }
+        if (vector.y < 0) { vector.y = 0; }
+        if (vector.x > 1) { vector.x = 1; }
+        if (vector.y > 1) { vector.y = 1; }
     }
 }
