@@ -26,14 +26,20 @@ namespace GazeBuffer
         public bool gazeSteady(float time, float tolerance, GazePoint targetGazePoint)
         {
             int timeInMicroseconds = (int)(time * 1e6);
+            Debug.Log(" (HEAD/TAIL = " + head + "/" + tail + ")");
             CopyToTwoArrays(timeInMicroseconds, out float[] x_array, out float[] y_array);
             float averageX = Queryable.Average(x_array.AsQueryable());
             float averageY = Queryable.Average(y_array.AsQueryable());
 
             float sumOfSquaresX = x_array.Select(val => (val - averageX) * (val - averageX)).Sum();
-            float sumOfSquaresY = x_array.Select(val => (val - averageY) * (val - averageY)).Sum();
-            // implement me.
-            return false;
+            float sumOfSquaresY = y_array.Select(val => (val - averageY) * (val - averageY)).Sum();
+            bool steady = false;
+            if (sumOfSquaresX < tolerance && sumOfSquaresY < tolerance)
+                steady = true;
+
+            Debug.Log("Gaze is " + steady + " at " + averageX + " " + averageY
+                + "(" + sumOfSquaresX + ", " + sumOfSquaresY + ")" + " Based on " + x_array.Length + " samples");
+            return steady;
         }
 
         /** <summary>
@@ -50,12 +56,35 @@ namespace GazeBuffer
             int arrayIndex = 0;
             x_array = new float[size];
             y_array = new float[size];
-            while (_index >= 0 && buffer[_index].TimeStampMicroSeconds >= timestamp)
+            x_array[arrayIndex] = buffer[_index].X;
+            y_array[arrayIndex] = buffer[_index].Y;
+            arrayIndex++;
+            _index = (_index - 1) % size;
+            // if the buffer is not full ...
+            if (head != tail)
             {
-                x_array[arrayIndex] = buffer[_index].X;
-                y_array[arrayIndex] = buffer[_index].Y;
-                _index--;
-                arrayIndex++;
+                while (_index > head && buffer[_index].TimeStampMicroSeconds >= timestamp)
+                {
+                    x_array[arrayIndex] = buffer[_index].X;
+                    y_array[arrayIndex] = buffer[_index].Y;
+                    _index = (_index - 1) % size;
+                    arrayIndex++;
+                }
+            }
+            else
+            {
+                while (_index != head && buffer[_index].TimeStampMicroSeconds >= timestamp)
+                {
+                    x_array[arrayIndex] = buffer[_index].X;
+                    y_array[arrayIndex] = buffer[_index].Y;
+                    _index = (_index - 1) % size;
+                    // FIXME. I don't know why, but if _index == 0 we get an array index out of bounds exception
+                    if (_index == 0)
+                    {
+                        _index = size - 1;
+                    }
+                    arrayIndex++;
+                }
             }
             Array.Resize(ref x_array, arrayIndex);
             Array.Resize(ref y_array, arrayIndex);
