@@ -11,6 +11,7 @@ public class StarCollectorManager : MonoBehaviour
     public GameObject winScreen;
     private TextMeshProUGUI winText;
     public StarGenerator starGenerator;
+    private StarCollectorData starCollectorData;
     
     public int minTimeLimit = 60;
     public int maxTimeLimit = 180;
@@ -18,20 +19,24 @@ public class StarCollectorManager : MonoBehaviour
     public int difficultyUpgradePercent = 60;
 
     private int timeLimit;
-    private int score;
+    private int score;  // stars collected over whole game
+    private int missed;  // stars missed over whole game
     private bool gameActive = true;
 
     private float gameStart;
     private float windowStart;
-    private int scoreInTimeWindow = 0;
-    private int missedInTimeWindow = 0;
+    private int scoreInTimeWindow = 0;  // stars collected in time window
+    private int missedInTimeWindow = 0;  // stars missed in time window
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
+        starCollectorData = new StarCollectorData();
 
         score = 0;
+
+        // Load scores (if any) from file + choose time limit for this game
         timeLimit = minTimeLimit;
         scoreText.text = score.ToString();
 
@@ -58,9 +63,9 @@ public class StarCollectorManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Update the difficulty of the game based on player performance.
+    /// Dynamically update the difficulty of the game based on player performance.
     /// 
-    /// Star speed and time limit are increased when the player is doing well,
+    /// Star speed is increased when the player is doing well,
     /// and decreased when they aren't.
     /// </summary>
     private void UpdateDifficulty()
@@ -73,13 +78,11 @@ public class StarCollectorManager : MonoBehaviour
         {
             Debug.Log("Increasing difficulty");
             starGenerator.IncreaseSpeed();
-            UpdateTimeLimit(difficultyWindowSeconds);
         }
         else
         {
             Debug.Log("Decreasing difficulty");
             starGenerator.DecreaseSpeed();
-            UpdateTimeLimit(-difficultyWindowSeconds);
         }
 
         windowStart = Time.time;
@@ -109,7 +112,7 @@ public class StarCollectorManager : MonoBehaviour
     /// </summary>
     public void UpdateScore()
     {
-        score = score += 1;
+        score += 1;
         scoreText.text = score.ToString();
         scoreInTimeWindow += 1;
     }
@@ -119,7 +122,8 @@ public class StarCollectorManager : MonoBehaviour
     /// </summary>
     public void UpdateMisses()
     {
-        missedInTimeWindow = missedInTimeWindow += 1;
+        missed += 1;
+        missedInTimeWindow += 1;
     }
 
     public bool IsGameActive()
@@ -136,6 +140,11 @@ public class StarCollectorManager : MonoBehaviour
 
             winText.text = "Congratulations! \n \n You collected " + score + " stars";
             winScreen.SetActive(true);
+
+            // Save game details to file
+            float totalStars = score + missed;
+            float percentCollected = ((float)score / totalStars) * 100;
+            starCollectorData.Save(timeLimit, score, percentCollected);
         }
     }
 }
