@@ -67,7 +67,7 @@ public class Tracker : MonoBehaviour
         Vector2 gazePointViewport = new Vector2(gp.X, gp.Y);
         gazePointViewport.x = (gazePointViewport.x + 1) / 2;
         gazePointViewport.y = (gazePointViewport.y + 1) / 2;
-        clipToViewport(gazePointViewport);
+        gazePointViewport = clipToViewport(gazePointViewport);
 
         return gazePointViewport;
     }
@@ -168,25 +168,40 @@ public class Tracker : MonoBehaviour
     {
         Position headPosition = hp.Position;
         Rotation headRotation = hp.Rotation;
+        //float dpi = Screen.dpi;
+        //float dpi = 157;
+        //float screenWidthInches = (rect.Right - rect.Left) / dpi;
+        //float screenHeightInches = (rect.Bottom - rect.Top) / dpi;
+        //float screenWidthMillimetre = screenWidthInches * 25.4f;
+        //float screenHeightMillimetre = screenHeightInches * 25.4f;
+        float screenWidthMillimetre = 525;
+        float screenHeightMillimetre = 295;
+
+        Debug.Log(screenWidthMillimetre);
 
         // Base x position on the yaw angle - assuming the player is positioned
         // with their head near the centre of the screen (on the x axis, i.e left-right).
         // If required, we could consider compensating for the measured headPosition.X also
         // for higher accuracy.
         float xPositionMillimetre = Mathf.Tan(hp.Rotation.YawDegrees * Mathf.Deg2Rad) * headPosition.Z;
-        float screenWidthInches = (rect.Right - rect.Left) / Screen.dpi;
-        float screenWidthMillimetre = screenWidthInches * 25.4f;
-
-        // Unity viewport x centre is at 0.5
+        // Unity viewport centre is at (0.5, 0.5)
         float xPositionViewport = 0.5f + (xPositionMillimetre / screenWidthMillimetre);
 
         // Base y position on the pitch angle - taking into account the current head height (y).
-        // We must compensate for head height, as e.g. looking
-        // down at a laptop screen vs up at an external monitor will
-        // give quite different points
+        // We must compensate for head height, as e.g. looking down at a laptop screen vs up at
+        // an external monitor will give quite different points.
 
-        Vector2 headPointViewport = new Vector2(xPositionViewport, 0.5f);
-        clipToViewport(headPointViewport);
+        // y position always feels a bit high for the corresponding head position; offset by a fixed number of degrees 
+        // to compensate
+        float pitchOffset = -10;
+        float yPositionMillimetre = Mathf.Tan((hp.Rotation.PitchDegrees + pitchOffset) * Mathf.Deg2Rad) * headPosition.Z;
+        Debug.Log("y pos mm" + yPositionMillimetre);
+        Debug.Log("head position y" + headPosition.Y);
+        yPositionMillimetre += headPosition.Y;
+        float yPositionViewport = 0.5f + (yPositionMillimetre / screenHeightMillimetre);
+
+        Vector2 headPointViewport = new Vector2(xPositionViewport, yPositionViewport);
+        headPointViewport = clipToViewport(headPointViewport);
 
         return headPointViewport;
     }
@@ -194,11 +209,13 @@ public class Tracker : MonoBehaviour
     /// <summary>
     /// Clip coordinates outside the unity viewport area to the range 0-1.
     /// </summary>
-    private void clipToViewport(Vector2 vector)
+    private Vector2 clipToViewport(Vector2 vector)
     {
         if (vector.x < 0) { vector.x = 0; }
         if (vector.y < 0) { vector.y = 0; }
         if (vector.x > 1) { vector.x = 1; }
         if (vector.y > 1) { vector.y = 1; }
+
+        return vector;
     }
 }
