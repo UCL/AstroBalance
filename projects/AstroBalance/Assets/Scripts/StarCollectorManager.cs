@@ -9,8 +9,8 @@ public class StarCollectorManager : MonoBehaviour
 
     public TextMeshProUGUI scoreText;
     public GameObject winScreen;
+    private TextMeshProUGUI winText;
     public StarGenerator starGenerator;
-    public int scoreToWin = 100;
     
     public int minTimeLimit = 60;
     public int maxTimeLimit = 180;
@@ -29,6 +29,8 @@ public class StarCollectorManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
+
         score = 0;
         timeLimit = minTimeLimit;
         scoreText.text = score.ToString();
@@ -109,13 +111,7 @@ public class StarCollectorManager : MonoBehaviour
     {
         score = score += 1;
         scoreText.text = score.ToString();
-
         scoreInTimeWindow += 1;
-
-        if (score >= scoreToWin)
-        {
-            EndGame();
-        }
     }
 
     /// <summary>
@@ -137,6 +133,8 @@ public class StarCollectorManager : MonoBehaviour
         {
             gameActive = false;
             starGenerator.StopGeneration();
+
+            winText.text = "Congratulations! \n \n You collected " + score + " stars";
             winScreen.SetActive(true);
         }
     }

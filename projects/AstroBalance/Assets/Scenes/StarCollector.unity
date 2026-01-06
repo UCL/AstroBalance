@@ -168,7 +168,7 @@ GameObject:
   - component: {fileID: 116469956}
   - component: {fileID: 116469955}
   m_Layer: 5
-  m_Name: WinScreenText
+  m_Name: WinText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -190,7 +190,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -312.00006, y: 193}
+  m_AnchoredPosition: {x: -475, y: 87}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &116469955
@@ -213,7 +213,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Congratulations!
+  m_text: 'Congratulations!
+
+
+    You collected 0 stars'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -279,7 +282,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -624.38574, w: -149.96167}
+  m_margin: {x: 0, y: 0, z: -946.6736, w: -149.96167}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -305,7 +308,7 @@ GameObject:
   - component: {fileID: 152964147}
   - component: {fileID: 152964146}
   m_Layer: 5
-  m_Name: WinScreenBackground
+  m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -616,9 +619,8 @@ MonoBehaviour:
   scoreText: {fileID: 285503672}
   winScreen: {fileID: 46919117}
   starGenerator: {fileID: 1755869804}
-  scoreToWin: 1000
   minTimeLimit: 60
-  maxTimeLimit: 180
+  maxTimeLimit: 60
   difficultyWindowSeconds: 10
   difficultyUpgradePercent: 60
 --- !u!4 &847101234
