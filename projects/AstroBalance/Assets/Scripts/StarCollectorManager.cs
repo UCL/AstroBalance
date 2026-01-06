@@ -4,19 +4,28 @@ using UnityEngine;
 public class StarCollectorManager : MonoBehaviour
 {
 
+    [Tooltip("Text mesh pro object for score text")]
     public TextMeshProUGUI scoreText;
+    [Tooltip("Text mesh pro object for countdown timer text")]
     public TextMeshProUGUI timerText;
+    [Tooltip("Screen shown upon winning the game")]
     public GameObject winScreen;
-    private TextMeshProUGUI winText;
+    [Tooltip("Star generator script")]
     public StarGenerator starGenerator;
-    private StarCollectorData starCollectorData;
-    
+
+    [Tooltip("Minimum game time limit in seconds")]
     public int minTimeLimit = 60;
+    [Tooltip("Maximum game time limit in seconds")]
     public int maxTimeLimit = 180;
+    [Tooltip("Length of time window (in seconds) to evaluate player perfomance")]
     public int difficultyWindowSeconds = 10;
+    [Tooltip("% of stars that must be collected in the time window to upgrade star speed")]
     public int speedUpgradePercent = 60;
+    [Tooltip("% of stars that must be collected in the whole game to upgrade the time limit")]
     public int timeLimitUpgradePercent = 60;
 
+    private TextMeshProUGUI winText;
+    private StarCollectorData starCollectorData;
     private int timeLimit;
     private int score;  // stars collected over whole game
     private int missed;  // stars missed over whole game

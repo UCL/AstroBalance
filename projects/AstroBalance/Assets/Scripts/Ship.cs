@@ -1,11 +1,12 @@
 using UnityEngine;
-using Tobii.GameIntegration.Net;
 
 public class Ship : MonoBehaviour
 {
     Tracker tracker;
 
+    [Tooltip("Scaling factor for x velocity movement")]
     [SerializeField] private float vByDegrees = 1f;
+    [Tooltip("Scaling factor for x movement")]
     [SerializeField] private float xByDegrees = 0.1f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -25,7 +26,7 @@ public class Ship : MonoBehaviour
     private void Move()
     {
         float yaw = tracker.getHeadRotation().YawDegrees;
-        // x position is the oposite of the head rotation
+        // x position is the opposite of the head rotation
         float x = -yaw * xByDegrees;
         Vector3 pos = transform.position;
         transform.position = new Vector3(x, pos.y, pos.z);
