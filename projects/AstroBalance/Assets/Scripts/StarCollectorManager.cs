@@ -5,6 +5,7 @@ public class StarCollectorManager : MonoBehaviour
 {
 
     public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI timerText;
     public GameObject winScreen;
     private TextMeshProUGUI winText;
     public StarGenerator starGenerator;
@@ -34,19 +35,23 @@ public class StarCollectorManager : MonoBehaviour
 
         // Load last game data (if any) from file + choose time limit for this game
         StarCollectorData.SaveData lastGameData = starCollectorData.Load();
-        if (lastGameData != null && lastGameData.percentCollected > timeLimitUpgradePercent)
+        if (lastGameData == null)
+        {
+            SetTimeLimit(minTimeLimit);
+        } 
+        else if (lastGameData.percentCollected > timeLimitUpgradePercent)
         {
             // Increase time limit by 30 seconds vs last game
-            timeLimit = lastGameData.timeLimit;
-            UpdateTimeLimit(30);
+            SetTimeLimit(lastGameData.timeLimit + 30);
         }
         else
         {
-            timeLimit = minTimeLimit;
+            SetTimeLimit(lastGameData.timeLimit);
         }
 
         score = 0;
         scoreText.text = score.ToString();
+        UpdateTimerText(timeLimit);
 
         gameStart = Time.time;
         windowStart = Time.time;
@@ -55,6 +60,11 @@ public class StarCollectorManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!gameActive)
+        {
+            return;
+        }
+
         // At end of time window, assess performance and update the difficulty
         // of the game
         if (Time.time - windowStart >= difficultyWindowSeconds)
@@ -62,12 +72,15 @@ public class StarCollectorManager : MonoBehaviour
             UpdateDifficulty();
         }
 
+        float elaspedTime = Time.time - gameStart;
+        float timeRemaining = timeLimit - elaspedTime;
+        UpdateTimerText(timeRemaining);
+
         // If time limit reached, end game
-        if (Time.time - gameStart > timeLimit)
+        if (timeRemaining <= 0)
         {
             EndGame();
         }
-        
     }
 
     /// <summary>
@@ -98,21 +111,40 @@ public class StarCollectorManager : MonoBehaviour
         missedInTimeWindow = 0;
     }
 
-    private void UpdateTimeLimit(int increment)
+    private void SetTimeLimit(int limit)
     {
-        int newTimeLimit = timeLimit + increment;
-        if (newTimeLimit > maxTimeLimit)
+        if (limit > maxTimeLimit)
         {
             timeLimit = maxTimeLimit;
         }
-        else if (newTimeLimit < minTimeLimit)
+        else if (limit < minTimeLimit)
         {
             timeLimit = minTimeLimit;
         }
         else
         {
-            timeLimit = newTimeLimit;
+            timeLimit = limit;
         }
+    }
+
+    private void UpdateTimerText(float secondsLeft)
+    {
+        if (secondsLeft < 0)
+        {
+            secondsLeft = 0;
+        }
+
+        float minutes = Mathf.FloorToInt(secondsLeft / 60);
+        float seconds = Mathf.CeilToInt(secondsLeft % 60);
+
+        // If there's e.g. 59.5 seconds left, we want to display 1:00
+        if (seconds == 60)
+        {
+            seconds = 0;
+            minutes += 1;
+        }
+
+        timerText.text = $"{minutes:00}:{seconds:00}";
     }
 
     /// <summary>
