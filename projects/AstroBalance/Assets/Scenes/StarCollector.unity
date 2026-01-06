@@ -620,8 +620,8 @@ MonoBehaviour:
   timerText: {fileID: 1018656824}
   winScreen: {fileID: 46919117}
   starGenerator: {fileID: 1755869804}
-  minTimeLimit: 10
-  maxTimeLimit: 60
+  minTimeLimit: 60
+  maxTimeLimit: 180
   difficultyWindowSeconds: 10
   speedUpgradePercent: 60
   timeLimitUpgradePercent: 60
