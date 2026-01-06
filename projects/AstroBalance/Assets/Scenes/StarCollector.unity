@@ -619,10 +619,11 @@ MonoBehaviour:
   scoreText: {fileID: 285503672}
   winScreen: {fileID: 46919117}
   starGenerator: {fileID: 1755869804}
-  minTimeLimit: 60
-  maxTimeLimit: 60
+  minTimeLimit: 10
+  maxTimeLimit: 10
   difficultyWindowSeconds: 10
-  difficultyUpgradePercent: 60
+  speedUpgradePercent: 60
+  timeLimitUpgradePercent: 60
 --- !u!4 &847101234
 Transform:
   m_ObjectHideFlags: 0

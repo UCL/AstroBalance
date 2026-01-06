@@ -1,8 +1,5 @@
-using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
 
 public class StarCollectorManager : MonoBehaviour
 {
@@ -16,7 +13,8 @@ public class StarCollectorManager : MonoBehaviour
     public int minTimeLimit = 60;
     public int maxTimeLimit = 180;
     public int difficultyWindowSeconds = 10;
-    public int difficultyUpgradePercent = 60;
+    public int speedUpgradePercent = 60;
+    public int timeLimitUpgradePercent = 60;
 
     private int timeLimit;
     private int score;  // stars collected over whole game
@@ -34,10 +32,20 @@ public class StarCollectorManager : MonoBehaviour
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
         starCollectorData = new StarCollectorData();
 
-        score = 0;
+        // Load last game data (if any) from file + choose time limit for this game
+        StarCollectorData.SaveData lastGameData = starCollectorData.Load();
+        if (lastGameData != null && lastGameData.percentCollected > timeLimitUpgradePercent)
+        {
+            // Increase time limit by 30 seconds vs last game
+            timeLimit = lastGameData.timeLimit;
+            UpdateTimeLimit(30);
+        }
+        else
+        {
+            timeLimit = minTimeLimit;
+        }
 
-        // Load scores (if any) from file + choose time limit for this game
-        timeLimit = minTimeLimit;
+        score = 0;
         scoreText.text = score.ToString();
 
         gameStart = Time.time;
@@ -74,7 +82,7 @@ public class StarCollectorManager : MonoBehaviour
         float total = scoreInTimeWindow + missedInTimeWindow;
         float percentCollected = ((float)scoreInTimeWindow / total) * 100;
 
-        if (percentCollected > difficultyUpgradePercent)
+        if (percentCollected > speedUpgradePercent)
         {
             Debug.Log("Increasing difficulty");
             starGenerator.IncreaseSpeed();
