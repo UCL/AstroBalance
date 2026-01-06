@@ -13,6 +13,11 @@ public class rocket_control : MonoBehaviour
     [SerializeField, Tooltip("The capacity of the gaze buffer to use.")]
     private int gazeBufferCapacity = 100;
 
+    [SerializeField, Tooltip("The time in seconds that the gaze should be steady for.")]
+    private float gazeTime = 3.0f;
+
+    [SerializeField, Tooltip("The tolerance in pixels that gaze needs to stay within.")]
+    private float gazeTolerance = 3.0f;
 
     private gazeBuffer gazeBuffer;
 
@@ -40,8 +45,15 @@ public class rocket_control : MonoBehaviour
         }
         transform.Translate(new Vector3(gp.X, gp.Y, 0f));
         gazeBuffer.Add(gp);
-        Debug.Log(gazeBuffer.Size + " : " + gazeBuffer.Get().X);
 
+        if (gazeBuffer.gazeSteady(Time.timeSinceLevelLoad - gazeTime, gazeTolerance, gp))
+        {
+            Debug.Log("Gaze is steady");
+        }
+        else
+        {
+            Debug.Log("Gaze is not steady");
+        }
         // Debug.Log("Rocket control update" + TrackerInterface.getGazePoint()[0]);
     }
 }
