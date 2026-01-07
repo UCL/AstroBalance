@@ -7,14 +7,21 @@ public class Tracker : MonoBehaviour
     private GazePoint gp;
     private HeadPose hp;
     private TobiiRectangle rect;
+
+    private float coordinate_x_scale;
+    private float coordinate_y_scale;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        Camera cam = FindAnyObjectByType<Camera>();
+        coordinate_y_scale = cam.orthographicSize;
+        coordinate_x_scale = coordinate_y_scale * cam.aspect;
+
         gp = new GazePoint();
         rect.Left = 0;
-        rect.Right = 1920;
+        rect.Right = cam.pixelWidth;
         rect.Top = 0;
-        rect.Bottom = 1080;
+        rect.Bottom = cam.pixelHeight;
 
         Debug.Log($"Initialised = {TobiiGameIntegrationApi.IsApiInitialized()}");
         TobiiGameIntegrationApi.Update();
@@ -55,6 +62,35 @@ public class Tracker : MonoBehaviour
     }
 
     /// <summary>
+    /// Gets most recent gaze point as Unity Coordinates
+    /// </summary>
+    /// <returns></returns>
+    public Vector2 getGazeCoordinates()
+    {
+        return new Vector2(gp.X * coordinate_x_scale, gp.Y * coordinate_y_scale);
+    }
+
+    /// <summary>
+    /// Convert an existing gaze point to Unity coordinates
+    /// </summary>
+    /// <param name="gazepoint"></param>
+    /// <returns></returns>
+    public Vector2 ConvertGazePointToCoordinates(GazePoint gazepoint)
+    {
+        return new Vector2(gazepoint.X * coordinate_x_scale, gazepoint.Y * coordinate_y_scale);
+    }
+
+    /// <summary>
+    /// Convert point in Unity coordinate space to a normalized (-1,1) in x and y
+    /// </summary>
+    /// <param name="coords"></param>
+    /// <returns></returns>
+    public Vector2 NormalizeCoordinates(Vector2 coords)
+    {
+        return new Vector2(coords.x / coordinate_x_scale, coords.y / coordinate_y_scale);
+    }
+
+    /// <summary>
     /// Gets all most recent head pose information
     /// </summary>
     /// <returns>Head pose is {Rotation, Position, TimeStampMicroSeconds}</returns>
@@ -73,9 +109,9 @@ public class Tracker : MonoBehaviour
     }
 
     /// <summary>
-    /// Gets the msot recently acquired head position information
+    /// Gets the most recently acquired head position information
     /// </summary>
-    /// <returns>Head posotion is {X, Y, Z}</returns>
+    /// <returns>Head position is {X, Y, Z}</returns>
     public Position getHeadPosittion()
     {
         return hp.Position;
