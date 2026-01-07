@@ -8,20 +8,14 @@ public class Tracker : MonoBehaviour
     private HeadPose hp;
     private TobiiRectangle rect;
 
-    private float coordinate_x_scale;
-    private float coordinate_y_scale;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Camera cam = FindAnyObjectByType<Camera>();
-        coordinate_y_scale = cam.orthographicSize;
-        coordinate_x_scale = coordinate_y_scale * cam.aspect;
-
         gp = new GazePoint();
         rect.Left = 0;
-        rect.Right = cam.pixelWidth;
+        rect.Right = Camera.main.pixelWidth;
         rect.Top = 0;
-        rect.Bottom = cam.pixelHeight;
+        rect.Bottom = Camera.main.pixelHeight;
 
         Debug.Log($"Initialised = {TobiiGameIntegrationApi.IsApiInitialized()}");
         TobiiGameIntegrationApi.Update();
@@ -30,7 +24,7 @@ public class Tracker : MonoBehaviour
         //Debug.Log($"Any tracker info? {tis[0].DisplayRectInOSCoordinates.Top}, {tis[0].DisplayRectInOSCoordinates.Bottom}, {tis[0].DisplayRectInOSCoordinates.Left}, {tis[0].DisplayRectInOSCoordinates.Right}");
         Debug.Log($"Track? = {TobiiGameIntegrationApi.TrackRectangle(rect)}");
 
-        Debug.Log($"Is conncected? = {TobiiGameIntegrationApi.IsTrackerConnected()}");
+        Debug.Log($"Is connected? = {TobiiGameIntegrationApi.IsTrackerConnected()}");
         Debug.Log($"Is enabled? = {TobiiGameIntegrationApi.IsTrackerEnabled()}");
     }
 
@@ -53,7 +47,9 @@ public class Tracker : MonoBehaviour
     }
 
     /// <summary>
-    /// Gets most recent gaze point information
+    /// Gets most recent gaze point information. (0, 0) is the centre
+    /// of the display, with (-1, -1) the bottom left corner and (1, 1)
+    /// the top right.
     /// </summary>
     /// <returns>Gaze point is {TimeStampMicroSeconds, X, Y}</returns>
     public GazePoint getGazePoint()
@@ -62,32 +58,66 @@ public class Tracker : MonoBehaviour
     }
 
     /// <summary>
-    /// Gets most recent gaze point as Unity Coordinates
+    /// Gets most recent gaze point information, in unity viewport
+    /// coordinates. (0,0) is the bottom left and (1, 1) is the top right.
+    /// Unity must be displayed full screen for coordinates to match.
     /// </summary>
-    /// <returns></returns>
-    public Vector2 getGazeCoordinates()
+    /// <returns>Gaze point as a Vector2 {X, Y}</returns>
+    public Vector2 getGazeViewportCoordinates()
     {
-        return new Vector2(gp.X * coordinate_x_scale, gp.Y * coordinate_y_scale);
+        return ConvertGazePointToViewportCoordinates(gp);
     }
 
     /// <summary>
-    /// Convert an existing gaze point to Unity coordinates
+    /// Gets most recent gaze point information, in unity world
+    /// coordinates.
+    /// Unity must be displayed full screen for coordinates to match.
     /// </summary>
-    /// <param name="gazepoint"></param>
-    /// <returns></returns>
-    public Vector2 ConvertGazePointToCoordinates(GazePoint gazepoint)
+    /// <returns>Gaze point as a Vector2 {X, Y}</returns>
+    public Vector2 getGazeWorldCoordinates()
     {
-        return new Vector2(gazepoint.X * coordinate_x_scale, gazepoint.Y * coordinate_y_scale);
+        return Camera.main.ViewportToWorldPoint(getGazeViewportCoordinates());
     }
 
     /// <summary>
-    /// Convert point in Unity coordinate space to a normalized (-1,1) in x and y
+    /// Convert an existing gaze point to Unity viewport coordinates.
     /// </summary>
-    /// <param name="coords"></param>
-    /// <returns></returns>
+    /// <param name="gazepoint">gaze point to convert</param>
+    /// <returns>Converted gaze point as a Vector2 {X, Y}</returns>
+    public Vector2 ConvertGazePointToViewportCoordinates(GazePoint gazepoint)
+    {
+        Vector2 gazePointViewport = new Vector2(gazepoint.X, gazepoint.Y);
+        gazePointViewport.x = (gazePointViewport.x + 1) / 2;
+        gazePointViewport.y = (gazePointViewport.y + 1) / 2;
+        gazePointViewport = clipToRange(gazePointViewport, 0, 1);
+
+        return gazePointViewport;
+    }
+
+    /// <summary>
+    /// Convert an existing gaze point to Unity world coordinates
+    /// </summary>
+    /// <param name="gazepoint">gaze point to convert</param>
+    /// <returns>Converted gaze point as a Vector2 {X, Y}</returns>
+    public Vector2 ConvertGazePointToWorldCoordinates(GazePoint gazepoint)
+    {
+        Vector2 gazePointViewport = ConvertGazePointToViewportCoordinates(gazepoint);
+        return Camera.main.ViewportToWorldPoint(gazePointViewport);
+    }
+
+    /// <summary>
+    /// Convert point in Unity world coordinate space to a normalized (-1,1) in x and y
+    /// </summary>
+    /// <param name="coords">Unity world coordinate as Vector2 {X, Y}</param>
+    /// <returns>Normalised gaze point as Vector2 {X, Y}</returns>
     public Vector2 NormalizeCoordinates(Vector2 coords)
     {
-        return new Vector2(coords.x / coordinate_x_scale, coords.y / coordinate_y_scale);
+        Vector2 gazePoint = Camera.main.WorldToViewportPoint(coords);
+        gazePoint.x = (gazePoint.x * 2) - 1;
+        gazePoint.y = (gazePoint.y * 2) - 1;
+        gazePoint = clipToRange(gazePoint, -1, 1);
+
+        return gazePoint;
     }
 
     /// <summary>
@@ -112,8 +142,21 @@ public class Tracker : MonoBehaviour
     /// Gets the most recently acquired head position information
     /// </summary>
     /// <returns>Head position is {X, Y, Z}</returns>
-    public Position getHeadPosittion()
+    public Position getHeadPosition()
     {
         return hp.Position;
+    }
+
+    /// <summary>
+    /// Clip coordinates outside the given range to min-max
+    /// </summary>
+    private Vector2 clipToRange(Vector2 vector, float min, float max)
+    {
+        if (vector.x < min) { vector.x = min; }
+        if (vector.y < min) { vector.y = min; }
+        if (vector.x > max) { vector.x = max; }
+        if (vector.y > max) { vector.y = max; }
+
+        return vector;
     }
 }
