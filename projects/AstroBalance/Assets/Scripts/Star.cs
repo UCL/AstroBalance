@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Star : MonoBehaviour
 {
-    [Tooltip("Particle system to be shown on star destruction")]
+    [Tooltip("Particle system to be shown on star collection")]
     public GameObject sparkleEffect;
     [Tooltip("Star generator script")]
     public StarGenerator starGenerator;
