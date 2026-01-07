@@ -76,7 +76,7 @@ public class Tracker : MonoBehaviour
     /// <returns>Gaze point as a Vector2 {X, Y}</returns>
     public Vector2 getGazeWorldCoordinates()
     {
-        return Camera.main.ViewportToWorldPoint(getGazeViewportCoordinates());
+        return ConvertGazePointToWorldCoordinates(gp);
     }
 
     /// <summary>
