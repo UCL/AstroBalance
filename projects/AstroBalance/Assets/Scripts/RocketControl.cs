@@ -32,16 +32,25 @@ public class rocket_control : MonoBehaviour
     void Update()
     {
         GazePoint gp = new GazePoint();
+        HeadPose headPose = new HeadPose();
         if (useMouseForTracker)
         {
             var mousePos = Input.mousePosition;
             gp.X = mousePos.x;
             gp.Y = mousePos.y;
             gp.TimeStampMicroSeconds = (long)(Time.timeSinceLevelLoad * 1000000);
+	    headPose.Position.X = 0f;
+	    headPose.Position.Y = 0f;
+	    headPose.Position.Z = 0.5f;
+	    headPose.Rotation.YawDegrees = 0f;
+	    headPose.Rotation.PitchDegrees = 0f;
+	    headPose.Rotation.RollDegrees = 0f;
+	    headPose.TimeStampMicroSeconds = (long)(Time.timeSinceLevelLoad * 1000000);
         }
         else
         {
             gp = tracker.getGazePoint();
+	    headPose = tracker.getHeadPose();
         }
         transform.Translate(new Vector3(gp.X, gp.Y, 0f));
         if (!gazeBuffer.addIfNew(gp))
