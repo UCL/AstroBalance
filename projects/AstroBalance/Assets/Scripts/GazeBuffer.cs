@@ -59,7 +59,10 @@ namespace GazeBuffer
             x_array[arrayIndex] = buffer[_index].X;
             y_array[arrayIndex] = buffer[_index].Y;
             arrayIndex++;
-            _index = (_index - 1) % size;
+            if (_index > 0)
+                _index--;
+            else
+                _index = size - 1;
             // if the buffer is not full ...
             if (head != tail)
             {
@@ -67,7 +70,10 @@ namespace GazeBuffer
                 {
                     x_array[arrayIndex] = buffer[_index].X;
                     y_array[arrayIndex] = buffer[_index].Y;
-                    _index = (_index - 1) % size;
+                    if (_index > 0)
+                        _index--;
+                    else
+                        _index = size - 1;
                     arrayIndex++;
                 }
             }
@@ -77,12 +83,10 @@ namespace GazeBuffer
                 {
                     x_array[arrayIndex] = buffer[_index].X;
                     y_array[arrayIndex] = buffer[_index].Y;
-                    _index = (_index - 1) % size;
-                    // FIXME. I don't know why, but if _index == 0 we get an array index out of bounds exception
-                    if (_index == 0)
-                    {
+                    if (_index > 0)
+                        _index--;
+                    else
                         _index = size - 1;
-                    }
                     arrayIndex++;
                 }
             }
