@@ -38,9 +38,9 @@ public class Star : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             // If the star had touched the player (i.e. the ship)
-            GameObject deathSparkle = Instantiate<GameObject>(sparkleEffect);
-            deathSparkle.transform.position = transform.position;
-            Destroy(deathSparkle, 1.0f);
+            GameObject collectedSparkle = Instantiate<GameObject>(sparkleEffect);
+            collectedSparkle.transform.position = transform.position;
+            Destroy(collectedSparkle, 1.0f);
 
             Destroy(gameObject);
 
