@@ -181,7 +181,7 @@ public class Tracker : MonoBehaviour
         float screenWidthMillimetre = 525;
         float screenHeightMillimetre = 295;
 
-        Debug.Log(screenWidthMillimetre);
+        //Debug.Log(screenWidthMillimetre);
 
         // Base x position on the yaw angle - assuming the player is positioned
         // with their head near the centre of the screen (on the x axis, i.e left-right).
@@ -200,8 +200,8 @@ public class Tracker : MonoBehaviour
         //float pitchOffset = -10;
         float pitchOffset = 0;
         float yPositionMillimetre = Mathf.Tan((hp.Rotation.PitchDegrees + pitchOffset) * Mathf.Deg2Rad) * headPosition.Z;
-        Debug.Log("y pos mm" + yPositionMillimetre);
-        Debug.Log("head position y" + headPosition.Y);
+        //Debug.Log("y pos mm" + yPositionMillimetre);
+        //Debug.Log("head position y" + headPosition.Y);
         //yPositionMillimetre += headPosition.Y;
         float yPositionViewport = 0.5f + (yPositionMillimetre / screenHeightMillimetre);
 

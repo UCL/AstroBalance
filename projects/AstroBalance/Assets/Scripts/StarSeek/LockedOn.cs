@@ -2,9 +2,21 @@ using UnityEngine;
 
 public class LockedOn : MonoBehaviour
 {
+    private string gazeCrosshairName = "GazeCrosshair";
+    private string poseCrosshairName = "PoseCrosshair";
+
     private SpriteRenderer sprite;
     private Color defaultColor = Color.white;
-    private Color lockedColor = Color.red;
+    private Color singleLockColor = Color.red;
+    private Color doubleLockColor = Color.cyan;
+
+    private LockStatus lockStatus = LockStatus.None;
+    private enum LockStatus
+    {
+        None,
+        Single,
+        Double
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -22,23 +34,29 @@ public class LockedOn : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        Debug.Log(other.gameObject.name);
+        if (other.gameObject.name == gazeCrosshairName && lockStatus == LockStatus.None)
         {
-            if (sprite.color == defaultColor)
-            {
-                sprite.color = lockedColor;
-            }
+            sprite.color = singleLockColor;
+            lockStatus = LockStatus.Single;
+        }
+        else if (other.gameObject.name == poseCrosshairName && lockStatus == LockStatus.Single)
+        {
+            sprite.color = doubleLockColor;
+            lockStatus = LockStatus.Double;
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (other.gameObject.name == gazeCrosshairName && lockStatus != LockStatus.None)
         {
-            if (sprite.color == lockedColor)
-            {
-                sprite.color = defaultColor;
-            }
+            sprite.color = defaultColor;
+            lockStatus = LockStatus.None;
+        } else if (other.gameObject.name == poseCrosshairName && lockStatus == LockStatus.Double)
+        {
+            sprite.color = singleLockColor;
+            lockStatus = LockStatus.Single;
         }
     }
 }
