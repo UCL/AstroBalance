@@ -44,9 +44,12 @@ public class rocket_control : MonoBehaviour
             gp = tracker.getGazePoint();
         }
         transform.Translate(new Vector3(gp.X, gp.Y, 0f));
-        gazeBuffer.Add(gp);
+        if (!gazeBuffer.addIfNew(gp))
+        {
+            Debug.Log("No new gaze point.");
+        }
 
-        if (gazeBuffer.gazeSteady(Time.timeSinceLevelLoad - gazeTime, gazeTolerance, gp))
+        if (gazeBuffer.gazeSteady(gazeTime, gazeTolerance, gp))
         {
             Debug.Log("Gaze is steady");
         }
