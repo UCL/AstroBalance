@@ -63,33 +63,18 @@ namespace GazeBuffer
                 _index--;
             else
                 _index = size - 1;
-            // if the buffer is not full ...
-            if (head != tail)
+          
+            while (_index != head && buffer[_index].TimeStampMicroSeconds >= timestamp)
             {
-                while (_index > head && buffer[_index].TimeStampMicroSeconds >= timestamp)
-                {
-                    x_array[arrayIndex] = buffer[_index].X;
-                    y_array[arrayIndex] = buffer[_index].Y;
-                    if (_index > 0)
-                        _index--;
-                    else
-                        _index = size - 1;
-                    arrayIndex++;
-                }
+                x_array[arrayIndex] = buffer[_index].X;
+                y_array[arrayIndex] = buffer[_index].Y;
+                if (_index > 0)
+                    _index--;
+                else
+                    _index = size - 1;
+                arrayIndex++;
             }
-            else
-            {
-                while (_index != head && buffer[_index].TimeStampMicroSeconds >= timestamp)
-                {
-                    x_array[arrayIndex] = buffer[_index].X;
-                    y_array[arrayIndex] = buffer[_index].Y;
-                    if (_index > 0)
-                        _index--;
-                    else
-                        _index = size - 1;
-                    arrayIndex++;
-                }
-            }
+            
             Array.Resize(ref x_array, arrayIndex);
             Array.Resize(ref y_array, arrayIndex);
         }
