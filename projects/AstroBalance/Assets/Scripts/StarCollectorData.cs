@@ -4,6 +4,7 @@ using UnityEngine;
 public class StarCollectorData
 {
 
+    // currently defaults to "C:\Users\username\AppData\LocalLow\DefaultCompany\AstroBalance"
     private string dataPath = Path.Combine(Application.persistentDataPath, "StarCollectorScores.json");
 
     [System.Serializable]
