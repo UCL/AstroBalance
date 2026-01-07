@@ -4,25 +4,25 @@ using UnityEngine;
 public class StarCollectorManager : MonoBehaviour
 {
 
-    [Tooltip("Text mesh pro object for score text")]
-    public TextMeshProUGUI scoreText;
-    [Tooltip("Text mesh pro object for countdown timer text")]
-    public TextMeshProUGUI timerText;
-    [Tooltip("Screen shown upon winning the game")]
-    public GameObject winScreen;
-    [Tooltip("Star generator script")]
-    public StarGenerator starGenerator;
+    [SerializeField, Tooltip("Text mesh pro object for score text")]
+    private TextMeshProUGUI scoreText;
+    [SerializeField, Tooltip("Text mesh pro object for countdown timer text")]
+    private TextMeshProUGUI timerText;
+    [SerializeField, Tooltip("Screen shown upon winning the game")]
+    private GameObject winScreen;
+    [SerializeField, Tooltip("Star generator script")]
+    private StarGenerator starGenerator;
 
-    [Tooltip("Minimum game time limit in seconds")]
-    public int minTimeLimit = 60;
-    [Tooltip("Maximum game time limit in seconds")]
-    public int maxTimeLimit = 180;
-    [Tooltip("Length of time window (in seconds) to evaluate player perfomance")]
-    public int difficultyWindowSeconds = 10;
-    [Tooltip("% of stars that must be collected in the time window to upgrade star speed")]
-    public int speedUpgradePercent = 60;
-    [Tooltip("% of stars that must be collected in the whole game to upgrade the time limit")]
-    public int timeLimitUpgradePercent = 60;
+    [SerializeField, Tooltip("Minimum game time limit in seconds")]
+    private int minTimeLimit = 60;
+    [SerializeField, Tooltip("Maximum game time limit in seconds")]
+    private int maxTimeLimit = 180;
+    [SerializeField, Tooltip("Length of time window (in seconds) to evaluate player perfomance")]
+    private int difficultyWindowSeconds = 10;
+    [SerializeField, Tooltip("% of stars that must be collected in the time window to upgrade star speed")]
+    private int speedUpgradePercent = 60;
+    [SerializeField, Tooltip("% of stars that must be collected in the whole game to upgrade the time limit")]
+    private int timeLimitUpgradePercent = 60;
 
     private TextMeshProUGUI winText;
     private StarCollectorData starCollectorData;

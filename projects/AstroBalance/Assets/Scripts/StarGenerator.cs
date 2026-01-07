@@ -2,23 +2,23 @@ using UnityEngine;
 
 public class StarGenerator : MonoBehaviour
 {
-    [Tooltip("Default speed of generated stars")]
+    [SerializeField, Tooltip("Default speed of generated stars")]
     public float baseStarSpeed = 3f;
-    [Tooltip("Maximum speed of generated stars")]
-    public float maxStarSpeed = 10f;
-    [Tooltip("Minimum speed of generated stars")]
-    public float minStarSpeed = 2f;
-    [Tooltip("Speed increment used when dynamically increasing or decreasing star speed")]
-    public float speedIncrement = 1f;
+    [SerializeField, Tooltip("Maximum speed of generated stars")]
+    private float maxStarSpeed = 10f;
+    [SerializeField, Tooltip("Minimum speed of generated stars")]
+    private float minStarSpeed = 2f;
+    [SerializeField, Tooltip("Speed increment used when dynamically increasing or decreasing star speed")]
+    private float speedIncrement = 1f;
 
-    [Tooltip("Distance between generated stars on the y axis")]
-    public float starCreationDistance = 2.5f;
-    [Tooltip("Higher swerve generates a wave that oscillates from left to right more often")]
-    public float swerve = 0.1f;
-    [Tooltip("Width of the generated wave of stars on the x axis")]
-    public float waveWidth = 3f;
-    [Tooltip("Star game object to generate")]
-    public GameObject starPrefab;
+    [SerializeField, Tooltip("Distance between generated stars on the y axis")]
+    private float starCreationDistance = 2.5f;
+    [SerializeField, Tooltip("Higher swerve generates a wave that oscillates from left to right more often")]
+    private float swerve = 0.1f;
+    [SerializeField, Tooltip("Width of the generated wave of stars on the x axis")]
+    private float waveWidth = 3f;
+    [SerializeField, Tooltip("Star game object to generate")]
+    private GameObject starPrefab;
 
     private float pathDistance = 15f;
     private float frontier = 0;

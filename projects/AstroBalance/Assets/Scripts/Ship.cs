@@ -4,10 +4,10 @@ public class Ship : MonoBehaviour
 {
     Tracker tracker;
 
-    [Tooltip("Scaling factor for x velocity movement")]
-    [SerializeField] private float vByDegrees = 1f;
-    [Tooltip("Scaling factor for x movement")]
-    [SerializeField] private float xByDegrees = 0.1f;
+    [SerializeField, Tooltip("Scaling factor for x velocity movement")]
+    private float vByDegrees = 1f;
+    [SerializeField, Tooltip("Scaling factor for x movement")]
+    private float xByDegrees = 0.1f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
