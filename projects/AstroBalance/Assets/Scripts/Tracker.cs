@@ -168,12 +168,16 @@ public class Tracker : MonoBehaviour
     {
         Position headPosition = hp.Position;
         Rotation headRotation = hp.Rotation;
+
         //float dpi = Screen.dpi;
-        //float dpi = 157;
         //float screenWidthInches = (rect.Right - rect.Left) / dpi;
         //float screenHeightInches = (rect.Bottom - rect.Top) / dpi;
         //float screenWidthMillimetre = screenWidthInches * 25.4f;
         //float screenHeightMillimetre = screenHeightInches * 25.4f;
+
+        // Tried getting screen width from pixel width (1920) / Screen.dpi
+        // but Screen.dpi doesn't seem to be physically accurate and width
+        // was far off correct - hard code for now
         float screenWidthMillimetre = 525;
         float screenHeightMillimetre = 295;
 
@@ -193,11 +197,12 @@ public class Tracker : MonoBehaviour
 
         // y position always feels a bit high for the corresponding head position; offset by a fixed number of degrees 
         // to compensate
-        float pitchOffset = -10;
+        //float pitchOffset = -10;
+        float pitchOffset = 0;
         float yPositionMillimetre = Mathf.Tan((hp.Rotation.PitchDegrees + pitchOffset) * Mathf.Deg2Rad) * headPosition.Z;
         Debug.Log("y pos mm" + yPositionMillimetre);
         Debug.Log("head position y" + headPosition.Y);
-        yPositionMillimetre += headPosition.Y;
+        //yPositionMillimetre += headPosition.Y;
         float yPositionViewport = 0.5f + (yPositionMillimetre / screenHeightMillimetre);
 
         Vector2 headPointViewport = new Vector2(xPositionViewport, yPositionViewport);

@@ -165,6 +165,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 494fd0d9e461a9c4380a68f074b8f693, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0
-  sg: {fileID: 0}
   sparkleEffect: {fileID: 7476070591815049992, guid: 467c2cb60677ef34287d5075bea13970, type: 3}
+  starGenerator: {fileID: 0}
