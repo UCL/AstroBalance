@@ -51,7 +51,6 @@ namespace TrackerBuffers
             if (size == 0)
                 return steady;
             int timeInMicroseconds = (int)(time * 1e6);
-            Debug.Log(" (HEAD/TAIL = " + head + "/" + tail + ")");
             CopyToTwoArrays(timeInMicroseconds, out float[] x_array, out float[] y_array);
             float averageX = Queryable.Average(x_array.AsQueryable());
             float averageY = Queryable.Average(y_array.AsQueryable());
@@ -97,7 +96,6 @@ namespace TrackerBuffers
 
             while (_index != head && buffer[_index].TimeStampMicroSeconds >= timestamp)
             {
-                Debug.Log(DateTime.Now.ToFileTime() + "Adding point " + "(" + buffer[_index].X + ", " + buffer[_index].Y + ") at " + buffer[_index].TimeStampMicroSeconds + " > " + timestamp);
                 x_array[arrayIndex] = buffer[_index].X;
                 y_array[arrayIndex] = buffer[_index].Y;
                 _index = _index > 0 ? _index - 1 : size - 1;
@@ -106,7 +104,6 @@ namespace TrackerBuffers
             // Add head if it falls in time range
             if (size > 1 && _index == head && buffer[_index].TimeStampMicroSeconds >= timestamp)
             {
-                Debug.Log(DateTime.Now.ToFileTime() + "Adding head point " + "(" + buffer[_index].X + ", " + buffer[_index].Y + ") at " + buffer[_index].TimeStampMicroSeconds + " > " + timestamp);
                 x_array[arrayIndex] = buffer[_index].X;
                 y_array[arrayIndex] = buffer[_index].Y;
                 arrayIndex++;
