@@ -26,8 +26,6 @@ public class GazeCrosshair : MonoBehaviour
         }
         else
         {
-            //Vector2 gazePointScreen = tracker.getGazePointScreenPixels();
-            //Vector3 worldPoint = activeCamera.ScreenToWorldPoint(gazePointScreen);
             Vector2 gazePointViewport = tracker.getGazePointViewport();
             worldPoint = Camera.main.ViewportToWorldPoint(gazePointViewport);
         }
