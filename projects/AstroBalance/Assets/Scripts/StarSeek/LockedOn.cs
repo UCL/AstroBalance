@@ -56,13 +56,7 @@ public class LockedOn : MonoBehaviour
         if (lockStatus == LockStatus.Double && (Time.time - doubleLockStart >= doubleLockTime))
         {
             // collect star
-            Destroy(doubleLockSparkle);
-            GameObject collectedSparkle = Instantiate<GameObject>(collectEffect);
-            collectedSparkle.transform.position = transform.position;
-            Destroy(collectedSparkle, 1.0f);
-            Destroy(gameObject);
-
-            gameManager.UpdateScore();
+            Collect();
         }
         
     }
@@ -76,15 +70,11 @@ public class LockedOn : MonoBehaviour
 
         if (other.gameObject.name == gazeCrosshairName && lockStatus == LockStatus.None)
         {
-            lockStatus = LockStatus.Single;
-            bloom.intensity.value = singleLockBloom;
+            SetLockStatus(LockStatus.Single);
         }
         else if (other.gameObject.name == poseCrosshairName && lockStatus == LockStatus.Single)
         {
-            lockStatus = LockStatus.Double;
-            doubleLockStart = Time.time;
-            bloom.intensity.value = doubleLockBloom;
-            doubleLockSparkle = Instantiate<GameObject>(lockedEffect, transform.position, Quaternion.identity);
+            SetLockStatus(LockStatus.Double);
         }
     }
 
@@ -97,13 +87,42 @@ public class LockedOn : MonoBehaviour
 
         if (other.gameObject.name == gazeCrosshairName && lockStatus != LockStatus.None)
         {
-            lockStatus = LockStatus.None;
-            bloom.intensity.value = 0f;
-        } else if (other.gameObject.name == poseCrosshairName && lockStatus == LockStatus.Double)
+            SetLockStatus(LockStatus.None);
+        } 
+        else if (other.gameObject.name == poseCrosshairName && lockStatus == LockStatus.Double)
         {
-            lockStatus = LockStatus.Single;
+            SetLockStatus(LockStatus.Single);
+        }
+    }
+
+    private void SetLockStatus(LockStatus status)
+    {
+        if (status == LockStatus.None)
+        {
+            bloom.intensity.value = 0f;
+            Destroy(doubleLockSparkle);
+        } else if (status == LockStatus.Single)
+        {
             bloom.intensity.value = singleLockBloom;
             Destroy(doubleLockSparkle);
+        } else
+        {
+            doubleLockStart = Time.time;
+            bloom.intensity.value = doubleLockBloom;
+            doubleLockSparkle = Instantiate<GameObject>(lockedEffect, transform.position, Quaternion.identity);
         }
+
+        lockStatus = status;
+    }
+
+    private void Collect()
+    {
+        Destroy(doubleLockSparkle);
+        GameObject collectedSparkle = Instantiate<GameObject>(collectEffect);
+        collectedSparkle.transform.position = transform.position;
+        Destroy(collectedSparkle, 1.0f);
+        Destroy(gameObject);
+
+        gameManager.UpdateScore();
     }
 }
