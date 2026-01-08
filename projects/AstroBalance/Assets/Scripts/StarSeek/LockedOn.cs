@@ -22,8 +22,6 @@ public class LockedOn : MonoBehaviour
     private Bloom bloom;
     private Color defaultColor = Color.white;
     private GameObject doubleLockSparkle;
-    private Color singleLockColor = Color.red;
-    private Color doubleLockColor = Color.cyan;
 
     private LockStatus lockStatus = LockStatus.None;
     private float doubleLockStart;
@@ -62,16 +60,13 @@ public class LockedOn : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log(other.gameObject.name);
         if (other.gameObject.name == gazeCrosshairName && lockStatus == LockStatus.None)
         {
-            //sprite.color = singleLockColor;
             lockStatus = LockStatus.Single;
             bloom.intensity.value = singleLockBloom;
         }
         else if (other.gameObject.name == poseCrosshairName && lockStatus == LockStatus.Single)
         {
-            //sprite.color = doubleLockColor;
             lockStatus = LockStatus.Double;
             doubleLockStart = Time.time;
             bloom.intensity.value = doubleLockBloom;
@@ -83,12 +78,10 @@ public class LockedOn : MonoBehaviour
     {
         if (other.gameObject.name == gazeCrosshairName && lockStatus != LockStatus.None)
         {
-            //sprite.color = defaultColor;
             lockStatus = LockStatus.None;
             bloom.intensity.value = 0f;
         } else if (other.gameObject.name == poseCrosshairName && lockStatus == LockStatus.Double)
         {
-            //sprite.color = singleLockColor;
             lockStatus = LockStatus.Single;
             bloom.intensity.value = singleLockBloom;
             Destroy(doubleLockSparkle);
