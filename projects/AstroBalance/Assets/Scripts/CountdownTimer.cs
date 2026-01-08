@@ -12,10 +12,14 @@ public class CountdownTimer : MonoBehaviour
 
     private bool timerRunning = false;
 
+    private void Awake()
+    {
+        timerText = GetComponentInChildren<TextMeshProUGUI>();
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        timerText = GetComponentInChildren<TextMeshProUGUI>();
     }
 
     // Update is called once per frame
@@ -39,11 +43,11 @@ public class CountdownTimer : MonoBehaviour
         }
     }
 
-    public void StartCountdown(int timeLimit)
+    public void StartCountdown(int seconds)
     {
-        this.timeLimit = timeLimit;
-        timeRemaining = timeLimit;
-        UpdateTimerText(timeLimit);
+        timeLimit = seconds;
+        timeRemaining = seconds;
+        UpdateTimerText(seconds);
         timerStart = Time.time;
         timerRunning = true;
     }
