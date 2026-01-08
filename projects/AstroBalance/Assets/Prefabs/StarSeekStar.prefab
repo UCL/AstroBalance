@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 4699259379526157535}
   - component: {fileID: 7417114114613403302}
   - component: {fileID: 2712171558045686654}
-  - component: {fileID: -7191862547462921852}
   - component: {fileID: -1560161688124838119}
   m_Layer: 0
   m_Name: StarSeekStar
@@ -154,18 +153,6 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: -0.012178183, y: -0.080028236}
   m_Radius: 0.54878384
---- !u!114 &-7191862547462921852
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7594402928058972626}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 570948e73f6e6fb4080232e4241bdaf9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &-1560161688124838119
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -178,5 +165,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ef3551058ab7f5418bb6bd73efd2e62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gazeCrosshair: {fileID: 0}
-  poseCrosshair: {fileID: 0}
+  doubleLockTime: 2
+  collectEffect: {fileID: 7476070591815049992, guid: 467c2cb60677ef34287d5075bea13970, type: 3}
+  lockedEffect: {fileID: 7527662519254007312, guid: ff9c245d1433378428b46b7d2095ab5d, type: 3}
+  singleLockBloom: 10
+  doubleLockBloom: 20
