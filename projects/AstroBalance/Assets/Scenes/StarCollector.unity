@@ -951,7 +951,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1898818218}
   m_Layer: 5
-  m_Name: Timer
+  m_Name: CountdownTimer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
