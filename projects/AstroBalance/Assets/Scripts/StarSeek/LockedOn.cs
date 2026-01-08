@@ -19,9 +19,7 @@ public class LockedOn : MonoBehaviour
     private string gazeCrosshairName = "GazeCrosshair";
     private string poseCrosshairName = "PoseCrosshair";
 
-    private SpriteRenderer sprite;
     private Bloom bloom;
-    private Color defaultColor = Color.white;
     private GameObject doubleLockSparkle;
 
     private LockStatus lockStatus = LockStatus.None;
@@ -37,8 +35,6 @@ public class LockedOn : MonoBehaviour
     void Start()
     {
         gameManager = FindFirstObjectByType<StarSeekManager>();
-        sprite = GetComponent<SpriteRenderer>();
-        sprite.color = defaultColor;
 
         Volume globalVolume = FindFirstObjectByType<Volume>();
         globalVolume.profile.TryGet(out bloom);
