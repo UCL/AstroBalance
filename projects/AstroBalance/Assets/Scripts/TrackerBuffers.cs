@@ -39,7 +39,7 @@ namespace TrackerBuffers
             return last_entry;
         }
 
-              // <summary>
+        // <summary>
         // returns true if the gaze points in the buffer are all within a small radius.
         // param time (float in seconds to sample over)
         // param tolerance (float the allowable range)
@@ -143,8 +143,21 @@ namespace TrackerBuffers
 
         public float getSpeed(float speedTime)
         {
-            // implement me
-            return 0f;
+            float averageSpeed = 0f;
+            if (size == 0)
+                return averageSpeed;
+            int timeInMicroseconds = (int)(speedTime * 1e6);
+            CopyToTwoArrays(timeInMicroseconds, out float[] xPosArray, out float[] timeStampMicroSecondsArray);
+
+            float totalDistance = 0f;
+            for (int i = 0; i < xPosArray.Length - 1; i++)
+            {
+                totalDistance += Math.Abs(xPosArray[i + 1] - xPosArray[i]);
+            }
+
+            double totalTime = (timeStampMicroSecondsArray[0] - timeStampMicroSecondsArray[xPosArray.Length - 1]) / 1e6;
+            averageSpeed = (float)(totalDistance / totalTime);
+            return averageSpeed;
         }
 
         private int getLatestEntryIndex()
