@@ -16,14 +16,14 @@ namespace TrackerBuffers
     {
         public GazeBuffer(int capacity)
             : base(capacity, true) { }
-	
-       	// <summary> 
+
+        // <summary>
         // Adds a new gaze point to the buffer if it has a different timestamp to the last added gaze point.
         // returns true if the point was added, false otherwise.
-      	public bool addIfNew(GazePoint item)
+        public bool addIfNew(GazePoint item)
         {
 
-            if (size == 0 || item.TimeStampMicroSeconds != getLatestEntry().TimeStampMicroSeconds)
+            if (size == 0 || item.TimeStampMicroSeconds != buffer[getLatestEntryIndex()].TimeStampMicroSeconds)
             {
                 base.Add(item);
                 return true;
@@ -31,13 +31,13 @@ namespace TrackerBuffers
             return false;
         }
 
-	private GazePoint getLatestEntry()
-	{
+        private int getLatestEntryIndex()
+        {
             int last_entry = tail - 1;
             if (last_entry < 0)
                 last_entry = size - 1;
-	    return buffer[last_entry];
-	}
+            return last_entry;
+        }
 
               // <summary>
         // returns true if the gaze points in the buffer are all within a small radius.
@@ -58,7 +58,7 @@ namespace TrackerBuffers
 
             float sumOfSquaresX = x_array.Select(val => (val - averageX) * (val - averageX)).Sum();
             float sumOfSquaresY = y_array.Select(val => (val - averageY) * (val - averageY)).Sum();
-            
+
             if (sumOfSquaresX < tolerance && sumOfSquaresY < tolerance)
                 steady = true;
 
@@ -83,35 +83,27 @@ namespace TrackerBuffers
                 y_array = new float[0];
                 return;
             }
-            int _index = (tail - 1);
-            if (_index < 0)
-                _index = size - 1;
+            int _index = getLatestEntryIndex();
 
             int arrayIndex = 0;
             x_array = new float[size];
             y_array = new float[size];
             x_array[arrayIndex] = buffer[_index].X;
             y_array[arrayIndex] = buffer[_index].Y;
-            long timestamp = buffer[_index].TimeStampMicroSeconds- gazeTime;
+            long timestamp = buffer[_index].TimeStampMicroSeconds - gazeTime;
 
+            _index = _index > 0 ? _index - 1 : size - 1;
             arrayIndex++;
-            if (_index > 0)
-                _index--;
-            else
-                _index = size - 1;
-          
+
             while (_index != head && buffer[_index].TimeStampMicroSeconds >= timestamp)
             {
                 Debug.Log(DateTime.Now.ToFileTime() + "Adding point " + "(" + buffer[_index].X + ", " + buffer[_index].Y + ") at " + buffer[_index].TimeStampMicroSeconds + " > " + timestamp);
                 x_array[arrayIndex] = buffer[_index].X;
                 y_array[arrayIndex] = buffer[_index].Y;
-                if (_index > 0)
-                    _index--;
-                else
-                    _index = size - 1;
+                _index = _index > 0 ? _index - 1 : size - 1;
                 arrayIndex++;
             }
-            // Add head if it falls in time range   
+            // Add head if it falls in time range
             if (size > 1 && _index == head && buffer[_index].TimeStampMicroSeconds >= timestamp)
             {
                 Debug.Log(DateTime.Now.ToFileTime() + "Adding head point " + "(" + buffer[_index].X + ", " + buffer[_index].Y + ") at " + buffer[_index].TimeStampMicroSeconds + " > " + timestamp);
@@ -128,20 +120,20 @@ namespace TrackerBuffers
 
     /// Will hold the HeadPose buffer and provide methods to check movement speed.
     /// </summary>
-    /// TODO I should be able to use inheritance to reduce duplication here, but 
+    /// TODO I should be able to use inheritance to reduce duplication here, but
     /// had difficultly with templating.
     public class HeadPoseBuffer : RingBuffer<HeadPose>
     {
         public HeadPoseBuffer(int capacity)
             : base(capacity, true) { }
-	
-       	// <summary> 
+
+        // <summary>
         // Adds a new gaze point to the buffer if it has a different timestamp to the last added gaze point.
         // returns true if the point was added, false otherwise.
-      	public bool addIfNew(HeadPose item)
+        public bool addIfNew(HeadPose item)
         {
 
-            if (size == 0 || item.TimeStampMicroSeconds != getLatestEntry().TimeStampMicroSeconds)
+            if (size == 0 || item.TimeStampMicroSeconds != buffer[getLatestEntryIndex()].TimeStampMicroSeconds)
             {
                 base.Add(item);
                 return true;
@@ -149,19 +141,63 @@ namespace TrackerBuffers
             return false;
         }
 
-	public float getSpeed(float speedTime)
-	{
-	    // implement me
-	    return 0f;
-	}	    
+        public float getSpeed(float speedTime)
+        {
+            // implement me
+            return 0f;
+        }
 
-	private HeadPose getLatestEntry()
-	{
+        private int getLatestEntryIndex()
+        {
             int last_entry = tail - 1;
             if (last_entry < 0)
                 last_entry = size - 1;
-	    return buffer[last_entry];
-	}
+            return last_entry;
+        }
+
+        // <summary>
+        // creates two arrays, one of x positions and one of timestamps, from which we can
+        // calculate average speeds
+        private void CopyToTwoArrays(long speedTime, out float[] x_array, out float[] timestamp_array)
+        {
+            if (size == 0)
+            {
+                x_array = new float[0];
+                timestamp_array = new float[0];
+                return;
+            }
+            int _index = getLatestEntryIndex();
+
+            int arrayIndex = 0;
+            x_array = new float[size];
+            timestamp_array = new float[size];
+
+            x_array[arrayIndex] = buffer[_index].Position.X;
+            timestamp_array[arrayIndex] = buffer[_index].TimeStampMicroSeconds;
+            long timestamp = buffer[_index].TimeStampMicroSeconds - speedTime;
+
+            _index = _index > 0 ? _index - 1 : size - 1;
+            arrayIndex++;
+
+            while (_index != head && buffer[_index].TimeStampMicroSeconds >= timestamp)
+            {
+                x_array[arrayIndex] = buffer[_index].Position.X;
+                timestamp_array[arrayIndex] = buffer[_index].TimeStampMicroSeconds;
+                _index = _index > 0 ? _index - 1 : size - 1;
+                arrayIndex++;
+            }
+            // Add head if it falls in time range
+            if (size > 1 && _index == head && buffer[_index].TimeStampMicroSeconds >= timestamp)
+            {
+                x_array[arrayIndex] = buffer[_index].Position.X;
+                timestamp_array[arrayIndex] = buffer[_index].TimeStampMicroSeconds;
+                arrayIndex++;
+            }
+
+            Array.Resize(ref x_array, arrayIndex);
+            Array.Resize(ref timestamp_array, arrayIndex);
+        }
+
     }
-   
+
 }
