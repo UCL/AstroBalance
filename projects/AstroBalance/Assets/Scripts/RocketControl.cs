@@ -1,6 +1,6 @@
 using UnityEngine;
 using Tobii.GameIntegration.Net;
-using GazeBuffer;
+using TrackerBuffers;
 
 
 public class rocket_control : MonoBehaviour
@@ -19,13 +19,18 @@ public class rocket_control : MonoBehaviour
     [SerializeField, Tooltip("The tolerance in pixels that gaze needs to stay within.")]
     private float gazeTolerance = 3.0f;
 
-    private gazeBuffer gazeBuffer;
+    [SerializeField, Tooltip("The time in seconds to measure head speed over.")]
+    private float speedTime = 1.0f;
+
+    private GazeBuffer gazeBuffer;
+    private HeadPoseBuffer headPoseBuffer;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         tracker = FindFirstObjectByType<Tracker>();
-        gazeBuffer = new gazeBuffer(gazeBufferCapacity, true);
+        gazeBuffer = new GazeBuffer(gazeBufferCapacity);
+        headPoseBuffer = new HeadPoseBuffer(gazeBufferCapacity);
     }
 
     // Update is called once per frame
@@ -52,10 +57,14 @@ public class rocket_control : MonoBehaviour
             gp = tracker.getGazePoint();
 	    headPose = tracker.getHeadPose();
         }
-        transform.Translate(new Vector3(gp.X, gp.Y, 0f));
+        //transform.Translate(new Vector3(gp.X, gp.Y, 0f));
         if (!gazeBuffer.addIfNew(gp))
         {
             Debug.Log("No new gaze point.");
+        }
+        if (!headPoseBuffer.addIfNew(headPose))
+        {
+            Debug.Log("No new head pose.");
         }
 
         if (gazeBuffer.gazeSteady(gazeTime, gazeTolerance, gp))
@@ -66,6 +75,7 @@ public class rocket_control : MonoBehaviour
         {
             Debug.Log("Gaze is not steady");
         }
+	Debug.Log(headPoseBuffer.getSpeed(speedTime));
         // Debug.Log("Rocket control update" + TrackerInterface.getGazePoint()[0]);
     }
 }
