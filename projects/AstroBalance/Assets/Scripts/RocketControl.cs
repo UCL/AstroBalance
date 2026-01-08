@@ -13,6 +13,9 @@ public class rocket_control : MonoBehaviour
     [SerializeField, Tooltip("The capacity of the gaze buffer to use.")]
     private int gazeBufferCapacity = 100;
 
+    [SerializeField, Tooltip("The capacity of the head pose buffer to use.")]
+    private int headPoseBufferCapacity = 10;
+
     [SerializeField, Tooltip("The time in seconds that the gaze should be steady for.")]
     private float gazeTime = 3.0f;
 
@@ -30,7 +33,7 @@ public class rocket_control : MonoBehaviour
     {
         tracker = FindFirstObjectByType<Tracker>();
         gazeBuffer = new GazeBuffer(gazeBufferCapacity);
-        headPoseBuffer = new HeadPoseBuffer(gazeBufferCapacity);
+        headPoseBuffer = new HeadPoseBuffer(headPoseBufferCapacity);
     }
 
     // Update is called once per frame
@@ -44,18 +47,18 @@ public class rocket_control : MonoBehaviour
             gp.X = mousePos.x;
             gp.Y = mousePos.y;
             gp.TimeStampMicroSeconds = (long)(Time.timeSinceLevelLoad * 1000000);
-	    headPose.Position.X = 0f;
-	    headPose.Position.Y = 0f;
-	    headPose.Position.Z = 0.5f;
-	    headPose.Rotation.YawDegrees = 0f;
-	    headPose.Rotation.PitchDegrees = 0f;
-	    headPose.Rotation.RollDegrees = 0f;
-	    headPose.TimeStampMicroSeconds = (long)(Time.timeSinceLevelLoad * 1000000);
+            headPose.Position.X = mousePos.x;
+            headPose.Position.Y = 0f;
+            headPose.Position.Z = 0.5f;
+            headPose.Rotation.YawDegrees = 0f;
+            headPose.Rotation.PitchDegrees = 0f;
+            headPose.Rotation.RollDegrees = 0f;
+            headPose.TimeStampMicroSeconds = (long)(Time.timeSinceLevelLoad * 1000000);
         }
         else
         {
             gp = tracker.getGazePoint();
-	    headPose = tracker.getHeadPose();
+            headPose = tracker.getHeadPose();
         }
         //transform.Translate(new Vector3(gp.X, gp.Y, 0f));
         if (!gazeBuffer.addIfNew(gp))
@@ -75,7 +78,7 @@ public class rocket_control : MonoBehaviour
         {
             Debug.Log("Gaze is not steady");
         }
-	Debug.Log(headPoseBuffer.getSpeed(speedTime));
+        Debug.Log("Speed = " + headPoseBuffer.getSpeed(speedTime));
         // Debug.Log("Rocket control update" + TrackerInterface.getGazePoint()[0]);
     }
 }
