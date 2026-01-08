@@ -15,6 +15,7 @@ public class LockedOn : MonoBehaviour
     [SerializeField, Tooltip("Bloom intensity for double lock")]
     private float doubleLockBloom = 20f;
 
+    private StarSeekManager gameManager;
     private string gazeCrosshairName = "GazeCrosshair";
     private string poseCrosshairName = "PoseCrosshair";
 
@@ -35,6 +36,7 @@ public class LockedOn : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        gameManager = FindFirstObjectByType<StarSeekManager>();
         sprite = GetComponent<SpriteRenderer>();
         sprite.color = defaultColor;
 
@@ -46,6 +48,11 @@ public class LockedOn : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!gameManager.IsGameActive())
+        {
+            return;
+        }
+
         if (lockStatus == LockStatus.Double && (Time.time - doubleLockStart >= doubleLockTime))
         {
             // collect star
@@ -54,12 +61,19 @@ public class LockedOn : MonoBehaviour
             collectedSparkle.transform.position = transform.position;
             Destroy(collectedSparkle, 1.0f);
             Destroy(gameObject);
+
+            gameManager.UpdateScore();
         }
         
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (!gameManager.IsGameActive())
+        {
+            return;
+        }
+
         if (other.gameObject.name == gazeCrosshairName && lockStatus == LockStatus.None)
         {
             lockStatus = LockStatus.Single;
@@ -76,6 +90,11 @@ public class LockedOn : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
+        if (!gameManager.IsGameActive())
+        {
+            return;
+        }
+
         if (other.gameObject.name == gazeCrosshairName && lockStatus != LockStatus.None)
         {
             lockStatus = LockStatus.None;

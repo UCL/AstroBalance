@@ -35,6 +35,20 @@ public class StarSeekManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Increase score (collected stars) by one.
+    /// </summary>
+    public void UpdateScore()
+    {
+        score += 1;
+        scoreText.text = score.ToString();
+    }
+
+    public bool IsGameActive()
+    {
+        return gameActive;
+    }
+
     private void EndGame()
     {
         if (gameActive)

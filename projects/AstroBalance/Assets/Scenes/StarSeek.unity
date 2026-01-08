@@ -151,7 +151,7 @@ MonoBehaviour:
   scoreText: {fileID: 730211112}
   timer: {fileID: 740804264}
   winScreen: {fileID: 159571674}
-  timeLimit: 10
+  timeLimit: 20
 --- !u!4 &5281182
 Transform:
   m_ObjectHideFlags: 0
