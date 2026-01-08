@@ -4,7 +4,7 @@ using RingBuffer;
 using Tobii.GameIntegration.Net;
 using UnityEngine;
 
-namespace GazeBuffer
+namespace TrackerBuffers
 {
     /// <summary>
     /// Will hold the gazepoint buffer and provide methods to check gaze stability and direction.
@@ -12,29 +12,34 @@ namespace GazeBuffer
     ///
     ///
     /// TODO Understand how to make this thread safe.
-    public class gazeBuffer : RingBuffer<GazePoint>
+    public class GazeBuffer : RingBuffer<GazePoint>
     {
-        public gazeBuffer(int capacity, bool overflow = false)
-            : base(capacity, overflow) { }
-
-        // <summary> 
+        public GazeBuffer(int capacity)
+            : base(capacity, true) { }
+	
+       	// <summary> 
         // Adds a new gaze point to the buffer if it has a different timestamp to the last added gaze point.
         // returns true if the point was added, false otherwise.
-        public new bool addIfNew(GazePoint gazePoint)
+      	public bool addIfNew(GazePoint item)
         {
-            int last_entry = tail - 1;
-            if (last_entry < 0)
-                last_entry = size - 1;
 
-            if (size == 0 || gazePoint.TimeStampMicroSeconds != buffer[last_entry].TimeStampMicroSeconds)
+            if (size == 0 || item.TimeStampMicroSeconds != getLatestEntry().TimeStampMicroSeconds)
             {
-                base.Add(gazePoint);
+                base.Add(item);
                 return true;
             }
             return false;
         }
 
-        // <summary>
+	private GazePoint getLatestEntry()
+	{
+            int last_entry = tail - 1;
+            if (last_entry < 0)
+                last_entry = size - 1;
+	    return buffer[last_entry];
+	}
+
+              // <summary>
         // returns true if the gaze points in the buffer are all within a small radius.
         // param time (float in seconds to sample over)
         // param tolerance (float the allowable range)
@@ -119,4 +124,44 @@ namespace GazeBuffer
             Array.Resize(ref y_array, arrayIndex);
         }
     }
+
+
+    /// Will hold the HeadPose buffer and provide methods to check movement speed.
+    /// </summary>
+    /// TODO I should be able to use inheritance to reduce duplication here, but 
+    /// had difficultly with templating.
+    public class HeadPoseBuffer : RingBuffer<HeadPose>
+    {
+        public HeadPoseBuffer(int capacity)
+            : base(capacity, true) { }
+	
+       	// <summary> 
+        // Adds a new gaze point to the buffer if it has a different timestamp to the last added gaze point.
+        // returns true if the point was added, false otherwise.
+      	public bool addIfNew(HeadPose item)
+        {
+
+            if (size == 0 || item.TimeStampMicroSeconds != getLatestEntry().TimeStampMicroSeconds)
+            {
+                base.Add(item);
+                return true;
+            }
+            return false;
+        }
+
+	public float getSpeed(float speedTime)
+	{
+	    // implement me
+	    return 0f;
+	}	    
+
+	private HeadPose getLatestEntry()
+	{
+            int last_entry = tail - 1;
+            if (last_entry < 0)
+                last_entry = size - 1;
+	    return buffer[last_entry];
+	}
+    }
+   
 }
