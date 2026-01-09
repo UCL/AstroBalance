@@ -20,6 +20,12 @@ public class SceneSelector : MonoBehaviour
         SceneManager.LoadScene("Scenes/RocketLaunch");
     }
 
+    public void LoadStarSeek()
+    {
+        Debug.Log("Pressed button.");
+        SceneManager.LoadScene("Scenes/StarSeek");
+    }
+
     // Update is called once per frame
     void Update()
     {

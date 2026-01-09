@@ -6,8 +6,8 @@ public class StarCollectorManager : MonoBehaviour
 
     [SerializeField, Tooltip("Text mesh pro object for score text")]
     private TextMeshProUGUI scoreText;
-    [SerializeField, Tooltip("Text mesh pro object for countdown timer text")]
-    private TextMeshProUGUI timerText;
+    [SerializeField, Tooltip("Countdown timer prefab")]
+    private CountdownTimer timer;
     [SerializeField, Tooltip("Screen shown upon winning the game")]
     private GameObject winScreen;
     [SerializeField, Tooltip("Star generator script")]
@@ -31,7 +31,6 @@ public class StarCollectorManager : MonoBehaviour
     private int missed;  // stars missed over whole game
     private bool gameActive = true;
 
-    private float gameStart;
     private float windowStart;
     private int scoreInTimeWindow = 0;  // stars collected in time window
     private int missedInTimeWindow = 0;  // stars missed in time window
@@ -60,9 +59,8 @@ public class StarCollectorManager : MonoBehaviour
 
         score = 0;
         scoreText.text = score.ToString();
-        UpdateTimerText(timeLimit);
-
-        gameStart = Time.time;
+        timer.StartCountdown(timeLimit);
+       
         windowStart = Time.time;
     }
 
@@ -81,12 +79,8 @@ public class StarCollectorManager : MonoBehaviour
             UpdateDifficulty();
         }
 
-        float elaspedTime = Time.time - gameStart;
-        float timeRemaining = timeLimit - elaspedTime;
-        UpdateTimerText(timeRemaining);
-
         // If time limit reached, end game
-        if (timeRemaining <= 0)
+        if (timer.GetTimeRemaining() <= 0)
         {
             EndGame();
         }
@@ -134,26 +128,6 @@ public class StarCollectorManager : MonoBehaviour
         {
             timeLimit = limit;
         }
-    }
-
-    private void UpdateTimerText(float secondsLeft)
-    {
-        if (secondsLeft < 0)
-        {
-            secondsLeft = 0;
-        }
-
-        float minutes = Mathf.FloorToInt(secondsLeft / 60);
-        float seconds = Mathf.CeilToInt(secondsLeft % 60);
-
-        // If there's e.g. 59.5 seconds left, we want to display 1:00
-        if (seconds == 60)
-        {
-            seconds = 0;
-            minutes += 1;
-        }
-
-        timerText.text = $"{minutes:00}:{seconds:00}";
     }
 
     /// <summary>
