@@ -24,6 +24,5 @@ public class PoseDisplay : MonoBehaviour
 
         poseText.text = "Head position: (" + position.X + ", " + position.Y + ", " + position.Z + ") \n";
         poseText.text += "Head rotation: (" + rotation.RollDegrees + ", " + rotation.PitchDegrees + ", " + rotation.YawDegrees + ") \n";
-        poseText.text += "Screen dpi: " + Screen.dpi;
     }
 }
