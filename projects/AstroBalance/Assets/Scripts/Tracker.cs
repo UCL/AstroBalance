@@ -3,6 +3,12 @@ using Tobii.GameIntegration.Net;
 using UnityEngine;
 public class Tracker : MonoBehaviour
 {
+
+    [SerializeField, Tooltip("Width of screen in millimetre")]
+    private int screenWidthMm = 525;
+    [SerializeField, Tooltip("Height of screen in millimetre")]
+    private int screenHeightMm = 297;
+
     private GazePoint gp;
     private HeadPose hp;
     private TobiiRectangle rect;
@@ -160,41 +166,23 @@ public class Tracker : MonoBehaviour
         Position headPosition = hp.Position;
         Rotation headRotation = hp.Rotation;
 
-        //float dpi = Screen.dpi;
-        //float screenWidthInches = (rect.Right - rect.Left) / dpi;
-        //float screenHeightInches = (rect.Bottom - rect.Top) / dpi;
-        //float screenWidthMillimetre = screenWidthInches * 25.4f;
-        //float screenHeightMillimetre = screenHeightInches * 25.4f;
+        // The calculated xPosition / yPosition below assumes the player has their head
+        // positioned near the centre of the screen in x/y. If required, we could consider
+        // compensating for the measured headPosition.x/y for higher accuracy.
 
-        // Tried getting screen width from pixel width (1920) / Screen.dpi
-        // but Screen.dpi doesn't seem to be physically accurate and width
-        // was far off correct - hard code for now
-        float screenWidthMillimetre = 525;
-        float screenHeightMillimetre = 295;
-
-        //Debug.Log(screenWidthMillimetre);
-
-        // Base x position on the yaw angle - assuming the player is positioned
-        // with their head near the centre of the screen (on the x axis, i.e left-right).
-        // If required, we could consider compensating for the measured headPosition.X also
-        // for higher accuracy.
+        // Base x position on the yaw angle
         float xPositionMillimetre = Mathf.Tan(hp.Rotation.YawDegrees * Mathf.Deg2Rad) * headPosition.Z;
         // Unity viewport centre is at (0.5, 0.5)
-        float xPositionViewport = 0.5f + (xPositionMillimetre / screenWidthMillimetre);
+        float xPositionViewport = 0.5f + (xPositionMillimetre / screenWidthMm);
 
-        // Base y position on the pitch angle - taking into account the current head height (y).
-        // We must compensate for head height, as e.g. looking down at a laptop screen vs up at
-        // an external monitor will give quite different points.
+        // Base y position on the pitch angle
 
         // y position always feels a bit high for the corresponding head position; offset by a fixed number of degrees 
         // to compensate
         //float pitchOffset = -10;
         float pitchOffset = 0;
         float yPositionMillimetre = Mathf.Tan((hp.Rotation.PitchDegrees + pitchOffset) * Mathf.Deg2Rad) * headPosition.Z;
-        //Debug.Log("y pos mm" + yPositionMillimetre);
-        //Debug.Log("head position y" + headPosition.Y);
-        //yPositionMillimetre += headPosition.Y;
-        float yPositionViewport = 0.5f + (yPositionMillimetre / screenHeightMillimetre);
+        float yPositionViewport = 0.5f + (yPositionMillimetre / screenHeightMm);
 
         Vector2 headPointViewport = new Vector2(xPositionViewport, yPositionViewport);
         headPointViewport = clipToRange(headPointViewport, 0, 1);
