@@ -154,8 +154,8 @@ public class Tracker : MonoBehaviour
     /// This uses the most recent head (0,0) is the bottom left and (1, 1) is the top right.
     /// Unity must be displayed full screen for coordinates to match.
     /// </summary>
-    /// <returns>Gaze point as a Vector2 {X, Y}</returns>
-    public Vector2 getHeadPointViewport()
+    /// <returns>Head point as a Vector2 {X, Y}</returns>
+    public Vector2 getHeadViewportCoordinates()
     {
         Position headPosition = hp.Position;
         Rotation headRotation = hp.Rotation;
@@ -200,6 +200,19 @@ public class Tracker : MonoBehaviour
         headPointViewport = clipToRange(headPointViewport, 0, 1);
 
         return headPointViewport;
+    }
+
+    /// <summary>
+    /// Gets most recent head point information, in unity world
+    /// coordinates. The 'head point' is the position on the screen based on head
+    /// pose alone i.e. assuming the user is looking straight ahead. 
+    /// Unity must be displayed full screen for coordinates to match.
+    /// </summary>
+    /// <returns>Head point as a Vector2 {X, Y}</returns>
+    public Vector2 getHeadWorldCoordinates()
+    {
+        Vector2 headPointViewport = getHeadViewportCoordinates();
+        return Camera.main.ViewportToWorldPoint(headPointViewport);
     }
 
     /// <summary>

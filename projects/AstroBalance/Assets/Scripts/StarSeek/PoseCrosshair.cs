@@ -13,10 +13,8 @@ public class PoseCrosshair : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector2 headPointViewport = tracker.getHeadPointViewport();
-        Vector3 worldPoint = Camera.main.ViewportToWorldPoint(headPointViewport);
-
-        transform.position = new Vector3(worldPoint.x, worldPoint.y, transform.position.z);
+        Vector2 headPointWorld = tracker.getHeadWorldCoordinates();
+        transform.position = new Vector3(headPointWorld.x, headPointWorld.y, transform.position.z);
     }
 
 }
