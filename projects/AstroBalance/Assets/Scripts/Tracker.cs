@@ -1,20 +1,20 @@
 using System.Collections.Generic;
 using Tobii.GameIntegration.Net;
-using UnityEditor;
 using UnityEngine;
 public class Tracker : MonoBehaviour
 {
     private GazePoint gp;
     private HeadPose hp;
     private TobiiRectangle rect;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         gp = new GazePoint();
         rect.Left = 0;
-        rect.Right = 1920;
+        rect.Right = Camera.main.pixelWidth;
         rect.Top = 0;
-        rect.Bottom = 1080;
+        rect.Bottom = Camera.main.pixelHeight;
 
         Debug.Log($"Initialised = {TobiiGameIntegrationApi.IsApiInitialized()}");
         TobiiGameIntegrationApi.Update();
@@ -62,14 +62,61 @@ public class Tracker : MonoBehaviour
     /// Unity must be displayed full screen for coordinates to match.
     /// </summary>
     /// <returns>Gaze point as a Vector2 {X, Y}</returns>
-    public Vector2 getGazePointViewport()
+    public Vector2 getGazeViewportCoordinates()
     {
-        Vector2 gazePointViewport = new Vector2(gp.X, gp.Y);
+        return ConvertGazePointToViewportCoordinates(gp);
+    }
+
+    /// <summary>
+    /// Gets most recent gaze point information, in unity world
+    /// coordinates.
+    /// Unity must be displayed full screen for coordinates to match.
+    /// </summary>
+    /// <returns>Gaze point as a Vector2 {X, Y}</returns>
+    public Vector2 getGazeWorldCoordinates()
+    {
+        return ConvertGazePointToWorldCoordinates(gp);
+    }
+
+    /// <summary>
+    /// Convert an existing gaze point to Unity viewport coordinates.
+    /// </summary>
+    /// <param name="gazepoint">gaze point to convert</param>
+    /// <returns>Converted gaze point as a Vector2 {X, Y}</returns>
+    public Vector2 ConvertGazePointToViewportCoordinates(GazePoint gazepoint)
+    {
+        Vector2 gazePointViewport = new Vector2(gazepoint.X, gazepoint.Y);
         gazePointViewport.x = (gazePointViewport.x + 1) / 2;
         gazePointViewport.y = (gazePointViewport.y + 1) / 2;
-        gazePointViewport = clipToViewport(gazePointViewport);
+        gazePointViewport = clipToRange(gazePointViewport, 0, 1);
 
         return gazePointViewport;
+    }
+
+    /// <summary>
+    /// Convert an existing gaze point to Unity world coordinates
+    /// </summary>
+    /// <param name="gazepoint">gaze point to convert</param>
+    /// <returns>Converted gaze point as a Vector2 {X, Y}</returns>
+    public Vector2 ConvertGazePointToWorldCoordinates(GazePoint gazepoint)
+    {
+        Vector2 gazePointViewport = ConvertGazePointToViewportCoordinates(gazepoint);
+        return Camera.main.ViewportToWorldPoint(gazePointViewport);
+    }
+
+    /// <summary>
+    /// Convert point in Unity world coordinate space to a normalized (-1,1) in x and y
+    /// </summary>
+    /// <param name="coords">Unity world coordinate as Vector2 {X, Y}</param>
+    /// <returns>Normalised gaze point as Vector2 {X, Y}</returns>
+    public Vector2 NormalizeCoordinates(Vector2 coords)
+    {
+        Vector2 gazePoint = Camera.main.WorldToViewportPoint(coords);
+        gazePoint.x = (gazePoint.x * 2) - 1;
+        gazePoint.y = (gazePoint.y * 2) - 1;
+        gazePoint = clipToRange(gazePoint, -1, 1);
+
+        return gazePoint;
     }
 
     /// <summary>
@@ -150,20 +197,20 @@ public class Tracker : MonoBehaviour
         float yPositionViewport = 0.5f + (yPositionMillimetre / screenHeightMillimetre);
 
         Vector2 headPointViewport = new Vector2(xPositionViewport, yPositionViewport);
-        headPointViewport = clipToViewport(headPointViewport);
+        headPointViewport = clipToRange(headPointViewport, 0, 1);
 
         return headPointViewport;
     }
 
     /// <summary>
-    /// Clip coordinates outside the unity viewport area to the range 0-1.
+    /// Clip coordinates outside the given range to min-max
     /// </summary>
-    private Vector2 clipToViewport(Vector2 vector)
+    private Vector2 clipToRange(Vector2 vector, float min, float max)
     {
-        if (vector.x < 0) { vector.x = 0; }
-        if (vector.y < 0) { vector.y = 0; }
-        if (vector.x > 1) { vector.x = 1; }
-        if (vector.y > 1) { vector.y = 1; }
+        if (vector.x < min) { vector.x = min; }
+        if (vector.y < min) { vector.y = min; }
+        if (vector.x > max) { vector.x = max; }
+        if (vector.y > max) { vector.y = max; }
 
         return vector;
     }
