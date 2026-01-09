@@ -5,7 +5,9 @@ using UnityEngine;
 
 public class StarSeekGenerator : MonoBehaviour
 {
-    public GameObject starPrefab;
+    [SerializeField, Tooltip("Star prefab to generate")]
+    private GameObject starPrefab;
+
     private List<Vector2> spawnLocations = new List<Vector2>{
             new Vector2(-8, 0), // left
             new Vector2(8, 0),  // right

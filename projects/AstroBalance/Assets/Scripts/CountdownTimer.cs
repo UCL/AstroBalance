@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 
@@ -43,6 +42,10 @@ public class CountdownTimer : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Start a countdown from the given number of seconds
+    /// </summary>
+    /// <param name="seconds">Max time in seconds</param>
     public void StartCountdown(int seconds)
     {
         timeLimit = seconds;
@@ -52,17 +55,26 @@ public class CountdownTimer : MonoBehaviour
         timerRunning = true;
     }
 
+    /// <summary>
+    /// Stop the countdown, and set the timer to zero.
+    /// </summary>
     public void StopCountdown()
     {
         UpdateTimerText(0);
         timerRunning = false;
     }
 
+    /// <summary>
+    /// Get remaining time in seconds
+    /// </summary>
     public float GetTimeRemaining()
     {
         return timeRemaining;
     }
 
+    /// <summary>
+    /// Get the time when the timer was started
+    /// </summary>
     public float GetTimerStart()
     {
         return timerStart;

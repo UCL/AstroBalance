@@ -12,7 +12,6 @@ public class PoseDisplay : MonoBehaviour
     {
         tracker = FindFirstObjectByType<Tracker>();
         poseText = GetComponent<TextMeshProUGUI>();
-
     }
 
     // Update is called once per frame
