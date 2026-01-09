@@ -4,14 +4,11 @@ using UnityEngine;
 public class Tracker : MonoBehaviour
 {
 
-    [SerializeField, Tooltip("Width of screen in millimetre")]
-    private int screenWidthMm = 525;
-    [SerializeField, Tooltip("Height of screen in millimetre")]
-    private int screenHeightMm = 297;
-
     private GazePoint gp;
     private HeadPose hp;
     private TobiiRectangle rect;
+    private int screenWidthMm;
+    private int screenHeightMm;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -25,12 +22,23 @@ public class Tracker : MonoBehaviour
         Debug.Log($"Initialised = {TobiiGameIntegrationApi.IsApiInitialized()}");
         TobiiGameIntegrationApi.Update();
         TobiiGameIntegrationApi.UpdateTrackerInfos();
-        List<TrackerInfo> tis = TobiiGameIntegrationApi.GetTrackerInfos();
-        //Debug.Log($"Any tracker info? {tis[0].DisplayRectInOSCoordinates.Top}, {tis[0].DisplayRectInOSCoordinates.Bottom}, {tis[0].DisplayRectInOSCoordinates.Left}, {tis[0].DisplayRectInOSCoordinates.Right}");
-        Debug.Log($"Track? = {TobiiGameIntegrationApi.TrackRectangle(rect)}");
 
+        Debug.Log($"Track? = {TobiiGameIntegrationApi.TrackRectangle(rect)}");
         Debug.Log($"Is connected? = {TobiiGameIntegrationApi.IsTrackerConnected()}");
         Debug.Log($"Is enabled? = {TobiiGameIntegrationApi.IsTrackerEnabled()}");
+
+        // UpdateTrackerInfos() starts a scan that takes a while to finish. Until it is complete,
+        // GetTrackerInfos will return null
+        List<TrackerInfo> trackerInfos = null;
+        while (trackerInfos == null)
+        {
+            trackerInfos = TobiiGameIntegrationApi.GetTrackerInfos();
+        }
+
+        WidthHeight displaySizeMm = trackerInfos[0].DisplaySizeMm;
+        screenWidthMm = displaySizeMm.Width;
+        screenHeightMm = displaySizeMm.Height;
+        Debug.Log($"Detected screen size (mm) = {screenWidthMm}, {screenHeightMm}");
     }
 
     private void OnDestroy()
@@ -157,7 +165,8 @@ public class Tracker : MonoBehaviour
     /// Gets most recent head point information, in unity viewport
     /// coordinates. The 'head point' is the position on the screen based on head
     /// pose alone i.e. assuming the user is looking straight ahead. 
-    /// This uses the most recent head (0,0) is the bottom left and (1, 1) is the top right.
+    /// 
+    /// (0,0) is the bottom left and (1, 1) is the top right.
     /// Unity must be displayed full screen for coordinates to match.
     /// </summary>
     /// <returns>Head point as a Vector2 {X, Y}</returns>
@@ -176,12 +185,7 @@ public class Tracker : MonoBehaviour
         float xPositionViewport = 0.5f + (xPositionMillimetre / screenWidthMm);
 
         // Base y position on the pitch angle
-
-        // y position always feels a bit high for the corresponding head position; offset by a fixed number of degrees 
-        // to compensate
-        //float pitchOffset = -10;
-        float pitchOffset = 0;
-        float yPositionMillimetre = Mathf.Tan((hp.Rotation.PitchDegrees + pitchOffset) * Mathf.Deg2Rad) * headPosition.Z;
+        float yPositionMillimetre = Mathf.Tan(hp.Rotation.PitchDegrees * Mathf.Deg2Rad) * headPosition.Z;
         float yPositionViewport = 0.5f + (yPositionMillimetre / screenHeightMm);
 
         Vector2 headPointViewport = new Vector2(xPositionViewport, yPositionViewport);
