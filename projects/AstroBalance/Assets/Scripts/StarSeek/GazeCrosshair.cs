@@ -26,8 +26,7 @@ public class GazeCrosshair : MonoBehaviour
         }
         else
         {
-            Vector2 gazePointViewport = tracker.getGazePointViewport();
-            worldPoint = Camera.main.ViewportToWorldPoint(gazePointViewport);
+            worldPoint = tracker.getGazeWorldCoordinates();
         }
         
         transform.position = new Vector3(worldPoint.x, worldPoint.y, transform.position.z);

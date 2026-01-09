@@ -16,11 +16,10 @@ public class GazeDisplay : MonoBehaviour
     void Update()
     {
         var gp = tracker.getGazePoint();
-        var gpDisplay = tracker.getGazePointDisplayPixels();
-        //var gpScreen = tracker.getGazePointScreenPixels();
+        var gpDisplay = tracker.getGazeWorldCoordinates();
+
 
         gazeText.text = "Gaze Point: (" + gp.X + ", " + gp.Y + ") \n";
-        gazeText.text += "Display coords: (" + gpDisplay.x + ", " + gpDisplay.y + ") \n";
-        //gazeText.text += "Screen coords: (" + gpScreen.x + ", " + gpScreen.y + ")";
+        gazeText.text += "Unity coords: (" + gpDisplay.x + ", " + gpDisplay.y + ") \n";
     }
 }
