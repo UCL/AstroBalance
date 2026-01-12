@@ -8,22 +8,29 @@ public class SceneSelector : MonoBehaviour
         
     }
 
+    public void LoadMenuScreen()
+    {
+        SceneManager.LoadScene("Scenes/MenuScreen");
+    }
+
     public void LoadStarCollector()
     {
-        Debug.Log("Pressed button.");
         SceneManager.LoadScene("Scenes/StarCollector");
     }
 
     public void LoadRocketLaunch()
     {
-        Debug.Log("Pressed button.");
         SceneManager.LoadScene("Scenes/RocketLaunch");
     }
 
     public void LoadStarSeek()
     {
-        Debug.Log("Pressed button.");
         SceneManager.LoadScene("Scenes/StarSeek");
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 
     // Update is called once per frame
