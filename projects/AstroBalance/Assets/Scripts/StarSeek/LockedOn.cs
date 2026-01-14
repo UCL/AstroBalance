@@ -16,8 +16,6 @@ public class LockedOn : MonoBehaviour
     private float doubleLockBloom = 20f;
 
     private StarSeekManager gameManager;
-    private string gazeCrosshairName = "GazeCrosshair";
-    private string poseCrosshairName = "PoseCrosshair";
 
     private Bloom bloom;
     private GameObject doubleLockSparkle;
@@ -64,11 +62,11 @@ public class LockedOn : MonoBehaviour
             return;
         }
 
-        if (other.gameObject.name == gazeCrosshairName && lockStatus == LockStatus.None)
+        if (lockStatus == LockStatus.None)
         {
             SetLockStatus(LockStatus.Single);
-        }
-        else if (other.gameObject.name == poseCrosshairName && lockStatus == LockStatus.Single)
+        } 
+        else if (lockStatus == LockStatus.Single)
         {
             SetLockStatus(LockStatus.Double);
         }
@@ -81,13 +79,13 @@ public class LockedOn : MonoBehaviour
             return;
         }
 
-        if (other.gameObject.name == gazeCrosshairName && lockStatus != LockStatus.None)
-        {
-            SetLockStatus(LockStatus.None);
-        } 
-        else if (other.gameObject.name == poseCrosshairName && lockStatus == LockStatus.Double)
+        if (lockStatus == LockStatus.Double) 
         {
             SetLockStatus(LockStatus.Single);
+        }
+        else if (lockStatus == LockStatus.Single)
+        {
+            SetLockStatus(LockStatus.None);
         }
     }
 
