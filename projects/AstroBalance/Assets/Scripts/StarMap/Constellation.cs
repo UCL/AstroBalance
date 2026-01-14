@@ -10,15 +10,22 @@ public class Constellation : MonoBehaviour
     [SerializeField, Tooltip("Minimum number of stars in a sequence")]
     private int minSequenceLength = 2;
 
-    private List<StarMapStar> stars; 
+    private List<StarMapStar> stars;
+    private StarMapManager gameManager;
     private List<int> currentSequence;
+
+    private void Awake()
+    {
+        stars = new List<StarMapStar>(gameObject.GetComponentsInChildren<StarMapStar>());
+        gameManager = FindFirstObjectByType<StarMapManager>();
+    }
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        stars = new List<StarMapStar>(gameObject.GetComponentsInChildren<StarMapStar>());
-        currentSequence = ChooseRandomSequence(minSequenceLength);
-        StartCoroutine(HighlightSequence());
+        currentSequence = GenerateStarSequence(minSequenceLength);
+        HighlightStarSequence(currentSequence);
     }
 
     // Update is called once per frame
@@ -27,9 +34,15 @@ public class Constellation : MonoBehaviour
         
     }
 
-    private List<int> ChooseRandomSequence(int length)
+    public int GetNumberOfStars()
     {
-        if (length > stars.Count()) {
+        return stars.Count();
+    }
+
+    public List<int> GenerateStarSequence(int length)
+    {
+        if (length > stars.Count())
+        {
             length = stars.Count();
         }
 
@@ -46,16 +59,23 @@ public class Constellation : MonoBehaviour
         }
 
         return randomSequence;
+
     }
 
-    IEnumerator HighlightSequence()
+    public void HighlightStarSequence(List<int> starIndexes)
     {
-        foreach (int index in currentSequence)
+        StartCoroutine(HighlightSequence(starIndexes));
+    }
+
+    IEnumerator HighlightSequence(List<int> starIndexes)
+    {
+        foreach (int index in starIndexes)
         {
             StarMapStar star = stars[index];
             star.HighlightStar(highlightTime);
             yield return new WaitForSeconds(highlightTime);
         }
 
+        gameManager.enterGuessPhase();
     }
 }
