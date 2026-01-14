@@ -284,6 +284,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 617751680}
+  - component: {fileID: 617751681}
   m_Layer: 0
   m_Name: Constellation
   m_TagString: Untagged
@@ -308,6 +309,19 @@ Transform:
   - {fileID: 1499828264}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &617751681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 617751679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 852c58f54d665fc4ea729fe9d5489be6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightTime: 1
 --- !u!1 &705216657
 GameObject:
   m_ObjectHideFlags: 0
