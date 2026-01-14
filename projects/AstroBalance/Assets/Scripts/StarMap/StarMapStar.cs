@@ -10,12 +10,12 @@ public class StarMapStar : MonoBehaviour
     private Color defaultColor = Color.white;
 
     private SpriteRenderer spriteRenderer;
-    private StarMapManager gameManager;
-    private StarStatus starStatus;
+    private SelectionStatus selectionStatus;
 
     private float selectionStartTime;
+    private bool selectionEnabled = false;
 
-    private enum StarStatus
+    private enum SelectionStatus
     {
         None,
         SelectionPending,
@@ -25,7 +25,6 @@ public class StarMapStar : MonoBehaviour
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        gameManager = FindFirstObjectByType<StarMapManager>();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -36,10 +35,21 @@ public class StarMapStar : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (starStatus == StarStatus.SelectionPending && (Time.time - selectionStartTime > selectionTime))
+        if (selectionStatus == SelectionStatus.SelectionPending && (Time.time - selectionStartTime > selectionTime))
         {
-            SetStarStatus(StarStatus.Selected);
+            SetSelectionStatus(SelectionStatus.Selected);
         }
+    }
+
+    public void ResetStar()
+    {
+        selectionEnabled = false;
+        SetSelectionStatus(SelectionStatus.None);
+    }
+
+    public void EnableSelection()
+    {
+        selectionEnabled = true;
     }
 
     /// <summary>
@@ -60,40 +70,36 @@ public class StarMapStar : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // When we are showing a sequence, we don't want stars to respond to 
-        // the player's gaze
-        if (gameManager.GetGamePhase() == StarMapManager.GamePhase.ShowSequence)
+        if (!selectionEnabled)
         {
             return;
         }
 
-        if (starStatus != StarStatus.Selected)
+        if (selectionStatus != SelectionStatus.Selected)
         {
-            SetStarStatus(StarStatus.SelectionPending);
+            SetSelectionStatus(SelectionStatus.SelectionPending);
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        // When we are showing a sequence, we don't want stars to respond to 
-        // the player's gaze
-        if (gameManager.GetGamePhase() == StarMapManager.GamePhase.ShowSequence)
+        if (!selectionEnabled)
         {
             return;
         }
 
-        if (starStatus != StarStatus.Selected)
+        if (selectionStatus != SelectionStatus.Selected)
         {
-            SetStarStatus(StarStatus.None);
+            SetSelectionStatus(SelectionStatus.None);
         }
     }
 
-    private void SetStarStatus(StarStatus status) {
-        if (status == StarStatus.None)
+    private void SetSelectionStatus(SelectionStatus status) {
+        if (status == SelectionStatus.None)
         {
             spriteRenderer.color = defaultColor;
         }
-        else if (status == StarStatus.SelectionPending)
+        else if (status == SelectionStatus.SelectionPending)
         {
             spriteRenderer.color = highlightColor;
             selectionStartTime = Time.time;
@@ -102,6 +108,6 @@ public class StarMapStar : MonoBehaviour
             spriteRenderer.color = Color.blue;
         }
 
-        starStatus = status;
+        selectionStatus = status;
     }
 }

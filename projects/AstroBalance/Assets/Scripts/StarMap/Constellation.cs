@@ -39,6 +39,29 @@ public class Constellation : MonoBehaviour
         return stars.Count();
     }
 
+    private void ResetStars()
+    {
+        foreach (StarMapStar star in stars)
+        {
+            star.ResetStar();
+        }
+    }
+
+    private void EnableStarSelection()
+    {
+        foreach (StarMapStar star in stars)
+        {
+            star.EnableSelection();
+        }
+    }
+
+    public void ShowNewSequence()
+    {
+        ResetStars();
+        currentSequence = GenerateStarSequence(minSequenceLength);
+        StartCoroutine(HighlightStarSequence(currentSequence));
+    }
+
     public List<int> GenerateStarSequence(int length)
     {
         if (length > stars.Count())
@@ -62,12 +85,7 @@ public class Constellation : MonoBehaviour
 
     }
 
-    public void HighlightStarSequence(List<int> starIndexes)
-    {
-        StartCoroutine(HighlightSequence(starIndexes));
-    }
-
-    IEnumerator HighlightSequence(List<int> starIndexes)
+    IEnumerator HighlightStarSequence(List<int> starIndexes)
     {
         foreach (int index in starIndexes)
         {
@@ -76,6 +94,6 @@ public class Constellation : MonoBehaviour
             yield return new WaitForSeconds(highlightTime);
         }
 
-        gameManager.enterGuessPhase();
+        EnableStarSelection();
     }
 }
