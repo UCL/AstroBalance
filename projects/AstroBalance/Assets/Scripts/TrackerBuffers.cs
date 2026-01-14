@@ -47,21 +47,39 @@ namespace TrackerBuffers
         // param y_target (in nan we use the mean)
         public bool gazeSteady(float time, float tolerance, GazePoint targetGazePoint)
         {
-            bool steady = false;
             if (size == 0)
-                return steady;
+                return false;
             int timeInMicroseconds = (int)(time * 1e6);
             CopyToTwoArrays(timeInMicroseconds, out float[] x_array, out float[] y_array);
-            float averageX = Queryable.Average(x_array.AsQueryable());
-            float averageY = Queryable.Average(y_array.AsQueryable());
+            return gazeSteadyImpl(x_array, y_array, targetGazePoint.X, targetGazePoint.Y, tolerance);
+        }
 
-            float sumOfSquaresX = x_array.Select(val => (val - averageX) * (val - averageX)).Sum();
-            float sumOfSquaresY = y_array.Select(val => (val - averageY) * (val - averageY)).Sum();
+        // <summary>
+        // returns true if the gaze points in the buffer are all within a small radius.
+        // param time (float in seconds to sample over)
+        // param tolerance (float the allowable range)
+        public bool gazeSteady(float time, float tolerance)
+        {
+            if (size == 0)
+                return false;
+            int timeInMicroseconds = (int)(time * 1e6);
+            CopyToTwoArrays(timeInMicroseconds, out float[] x_array, out float[] y_array);
+            float targetGazePointX = Queryable.Average(x_array.AsQueryable());
+            float targetGazePointY = Queryable.Average(y_array.AsQueryable());
+
+            return gazeSteadyImpl(x_array, y_array, targetGazePointX, targetGazePointY, tolerance);
+        }
+
+        private bool gazeSteadyImpl(float[] x_array, float[] y_array, float targetGazePointX, float targetGazePointY, float tolerance)
+        {
+            bool steady = false;
+            float sumOfSquaresX = x_array.Select(val => (val - targetGazePointX) * (val - targetGazePointX)).Sum();
+            float sumOfSquaresY = y_array.Select(val => (val - targetGazePointY) * (val - targetGazePointY)).Sum();
 
             if (sumOfSquaresX < tolerance && sumOfSquaresY < tolerance)
                 steady = true;
 
-            Debug.Log("Gaze is " + steady + " at " + averageX + " " + averageY
+            Debug.Log("Gaze is " + steady + " at " + targetGazePointX + " " + targetGazePointY
                 + "(" + sumOfSquaresX + ", " + sumOfSquaresY + ")" + " Based on " + x_array.Length + " samples");
             return steady;
         }

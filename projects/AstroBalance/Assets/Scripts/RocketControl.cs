@@ -10,6 +10,9 @@ public class rocket_control : MonoBehaviour
     [SerializeField, Tooltip("Set to true to substitute the mouse for the eye tracker (for debugging purposes)")]
     private bool useMouseForTracker = false;
 
+    [SerializeField, Tooltip("The game object the user is supposed to look at.")]
+    private GameObject targetObject;
+
     [SerializeField, Tooltip("The capacity of the gaze buffer to use.")]
     private int gazeBufferCapacity = 100;
 
@@ -69,15 +72,21 @@ public class rocket_control : MonoBehaviour
         {
             Debug.Log("No new head pose.");
         }
-
-        if (gazeBuffer.gazeSteady(gazeTime, gazeTolerance, gp))
+        bool gazeIsSteady = false;
+        if (targetObject != null)
         {
-            Debug.Log("Gaze is steady");
+            GazePoint targetPoint = new GazePoint();
+            targetPoint.X = targetObject.transform.position.x;
+            targetPoint.Y = targetObject.transform.position.y;
+            Debug.Log("Look hear" + targetObject.transform.position);
+            gazeIsSteady = gazeBuffer.gazeSteady(gazeTime, gazeTolerance, targetPoint);
         }
         else
         {
-            Debug.Log("Gaze is not steady");
+            gazeIsSteady = gazeBuffer.gazeSteady(gazeTime, gazeTolerance);
         }
+
+        Debug.Log(gazeIsSteady ? "Gaze is steady" : "Gaze is not steady");
         Debug.Log("Speed = " + headPoseBuffer.getSpeed(speedTime));
         // Debug.Log("Rocket control update" + TrackerInterface.getGazePoint()[0]);
     }
