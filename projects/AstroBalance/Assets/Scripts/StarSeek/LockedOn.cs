@@ -5,7 +5,7 @@ using UnityEngine.Rendering.Universal;
 public class LockedOn : MonoBehaviour
 {
     [SerializeField, Tooltip("Number of seconds required to collect star")]
-    private int doubleLockTime = 2;
+    private float doubleLockTime = 2;
     [SerializeField, Tooltip("Particle system to be shown on star collection")]
     private GameObject collectEffect;
     [SerializeField, Tooltip("Particle system to be shown on star double lock")]

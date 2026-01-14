@@ -165,7 +165,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ef3551058ab7f5418bb6bd73efd2e62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  doubleLockTime: 2
+  doubleLockTime: 0.5
   collectEffect: {fileID: 7476070591815049992, guid: 467c2cb60677ef34287d5075bea13970, type: 3}
   lockedEffect: {fileID: 7527662519254007312, guid: ff9c245d1433378428b46b7d2095ab5d, type: 3}
   singleLockBloom: 10
