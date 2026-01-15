@@ -75,12 +75,14 @@ namespace TrackerBuffers
             bool steady = false;
             float sumOfSquaresX = x_array.Select(val => (val - targetGazePointX) * (val - targetGazePointX)).Sum();
             float sumOfSquaresY = y_array.Select(val => (val - targetGazePointY) * (val - targetGazePointY)).Sum();
+            float stddevX = (float)Math.Sqrt(sumOfSquaresX / x_array.Length);
+            float stddevY = (float)Math.Sqrt(sumOfSquaresY / y_array.Length);
 
-            if (sumOfSquaresX < tolerance && sumOfSquaresY < tolerance)
+            if (stddevX < tolerance && stddevY < tolerance)
                 steady = true;
 
             Debug.Log("Gaze is " + steady + " at " + targetGazePointX + " " + targetGazePointY
-                + "(" + sumOfSquaresX + ", " + sumOfSquaresY + ")" + " Based on " + x_array.Length + " samples");
+                + "(" + stddevX + ", " + stddevY + ")" + " Based on " + x_array.Length + " samples");
             return steady;
         }
 
