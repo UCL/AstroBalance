@@ -1,0 +1,122 @@
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+
+public class LockedOn : MonoBehaviour
+{
+    [SerializeField, Tooltip("Number of seconds required to collect star")]
+    private float doubleLockTime = 2;
+    [SerializeField, Tooltip("Particle system to be shown on star collection")]
+    private GameObject collectEffect;
+    [SerializeField, Tooltip("Particle system to be shown on star double lock")]
+    private GameObject lockedEffect;
+    [SerializeField, Tooltip("Bloom intensity for single lock")]
+    private float singleLockBloom = 10f;
+    [SerializeField, Tooltip("Bloom intensity for double lock")]
+    private float doubleLockBloom = 20f;
+
+    private StarSeekManager gameManager;
+
+    private Bloom bloom;
+    private GameObject doubleLockSparkle;
+
+    private LockStatus lockStatus = LockStatus.None;
+    private float doubleLockStart;
+    private enum LockStatus
+    {
+        None,
+        Single,
+        Double
+    }
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        gameManager = FindFirstObjectByType<StarSeekManager>();
+
+        Volume globalVolume = FindFirstObjectByType<Volume>();
+        globalVolume.profile.TryGet(out bloom);
+        bloom.intensity.value = 0f;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (!gameManager.IsGameActive())
+        {
+            return;
+        }
+
+        if (lockStatus == LockStatus.Double && (Time.time - doubleLockStart >= doubleLockTime))
+        {
+            // collect star
+            Collect();
+        }
+        
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (!gameManager.IsGameActive())
+        {
+            return;
+        }
+
+        if (lockStatus == LockStatus.None)
+        {
+            SetLockStatus(LockStatus.Single);
+        } 
+        else if (lockStatus == LockStatus.Single)
+        {
+            SetLockStatus(LockStatus.Double);
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (!gameManager.IsGameActive())
+        {
+            return;
+        }
+
+        if (lockStatus == LockStatus.Double) 
+        {
+            SetLockStatus(LockStatus.Single);
+        }
+        else if (lockStatus == LockStatus.Single)
+        {
+            SetLockStatus(LockStatus.None);
+        }
+    }
+
+    private void SetLockStatus(LockStatus status)
+    {
+        if (status == LockStatus.None)
+        {
+            bloom.intensity.value = 0f;
+            Destroy(doubleLockSparkle);
+        } else if (status == LockStatus.Single)
+        {
+            bloom.intensity.value = singleLockBloom;
+            Destroy(doubleLockSparkle);
+        } else
+        {
+            doubleLockStart = Time.time;
+            bloom.intensity.value = doubleLockBloom;
+            doubleLockSparkle = Instantiate<GameObject>(lockedEffect, transform.position, Quaternion.identity);
+        }
+
+        lockStatus = status;
+    }
+
+    private void Collect()
+    {
+        Destroy(doubleLockSparkle);
+        GameObject collectedSparkle = Instantiate<GameObject>(collectEffect);
+        collectedSparkle.transform.position = transform.position;
+        Destroy(collectedSparkle, 1.0f);
+        Destroy(gameObject);
+
+        gameManager.UpdateScore();
+    }
+}

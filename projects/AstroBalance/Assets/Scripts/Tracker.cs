@@ -1,12 +1,14 @@
-using UnityEngine;
-using Tobii.GameIntegration.Net;
 using System.Collections.Generic;
-using System;
+using Tobii.GameIntegration.Net;
+using UnityEngine;
 public class Tracker : MonoBehaviour
 {
+
     private GazePoint gp;
     private HeadPose hp;
     private TobiiRectangle rect;
+    private int screenWidthMm;
+    private int screenHeightMm;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -20,12 +22,23 @@ public class Tracker : MonoBehaviour
         Debug.Log($"Initialised = {TobiiGameIntegrationApi.IsApiInitialized()}");
         TobiiGameIntegrationApi.Update();
         TobiiGameIntegrationApi.UpdateTrackerInfos();
-        List<TrackerInfo> tis = TobiiGameIntegrationApi.GetTrackerInfos();
-        //Debug.Log($"Any tracker info? {tis[0].DisplayRectInOSCoordinates.Top}, {tis[0].DisplayRectInOSCoordinates.Bottom}, {tis[0].DisplayRectInOSCoordinates.Left}, {tis[0].DisplayRectInOSCoordinates.Right}");
-        Debug.Log($"Track? = {TobiiGameIntegrationApi.TrackRectangle(rect)}");
 
+        Debug.Log($"Track? = {TobiiGameIntegrationApi.TrackRectangle(rect)}");
         Debug.Log($"Is connected? = {TobiiGameIntegrationApi.IsTrackerConnected()}");
         Debug.Log($"Is enabled? = {TobiiGameIntegrationApi.IsTrackerEnabled()}");
+
+        // UpdateTrackerInfos() starts a scan that takes a while to finish. Until it is complete,
+        // GetTrackerInfos will return null
+        List<TrackerInfo> trackerInfos = null;
+        while (trackerInfos == null)
+        {
+            trackerInfos = TobiiGameIntegrationApi.GetTrackerInfos();
+        }
+
+        WidthHeight displaySizeMm = trackerInfos[0].DisplaySizeMm;
+        screenWidthMm = displaySizeMm.Width;
+        screenHeightMm = displaySizeMm.Height;
+        Debug.Log($"Detected screen size (mm) = {screenWidthMm}, {screenHeightMm}");
     }
 
     private void OnDestroy()
@@ -139,12 +152,59 @@ public class Tracker : MonoBehaviour
     }
 
     /// <summary>
-    /// Gets the most recently acquired head position information
+    /// Gets the most recently acquired head position information.
+    /// Position is measured in mm, with (0, 0, 0) at the centre of the screen.
     /// </summary>
     /// <returns>Head position is {X, Y, Z}</returns>
     public Position getHeadPosition()
     {
         return hp.Position;
+    }
+
+    /// <summary>
+    /// Gets most recent head point information, in unity viewport
+    /// coordinates. The 'head point' is the position on the screen based on head
+    /// pose alone i.e. assuming the user is looking straight ahead. 
+    /// 
+    /// (0,0) is the bottom left and (1, 1) is the top right.
+    /// Unity must be displayed full screen for coordinates to match.
+    /// </summary>
+    /// <returns>Head point as a Vector2 {X, Y}</returns>
+    public Vector2 getHeadViewportCoordinates()
+    {
+        Position headPosition = hp.Position;
+        Rotation headRotation = hp.Rotation;
+
+        // The calculated xPosition / yPosition below assumes the player has their head
+        // positioned near the centre of the screen in x/y. If required, we could consider
+        // compensating for the measured headPosition.x/y for higher accuracy.
+
+        // Base x position on the yaw angle
+        float xPositionMillimetre = Mathf.Tan(hp.Rotation.YawDegrees * Mathf.Deg2Rad) * headPosition.Z;
+        // Unity viewport centre is at (0.5, 0.5)
+        float xPositionViewport = 0.5f + (xPositionMillimetre / screenWidthMm);
+
+        // Base y position on the pitch angle
+        float yPositionMillimetre = Mathf.Tan(hp.Rotation.PitchDegrees * Mathf.Deg2Rad) * headPosition.Z;
+        float yPositionViewport = 0.5f + (yPositionMillimetre / screenHeightMm);
+
+        Vector2 headPointViewport = new Vector2(xPositionViewport, yPositionViewport);
+        headPointViewport = clipToRange(headPointViewport, 0, 1);
+
+        return headPointViewport;
+    }
+
+    /// <summary>
+    /// Gets most recent head point information, in unity world
+    /// coordinates. The 'head point' is the position on the screen based on head
+    /// pose alone i.e. assuming the user is looking straight ahead. 
+    /// Unity must be displayed full screen for coordinates to match.
+    /// </summary>
+    /// <returns>Head point as a Vector2 {X, Y}</returns>
+    public Vector2 getHeadWorldCoordinates()
+    {
+        Vector2 headPointViewport = getHeadViewportCoordinates();
+        return Camera.main.ViewportToWorldPoint(headPointViewport);
     }
 
     /// <summary>

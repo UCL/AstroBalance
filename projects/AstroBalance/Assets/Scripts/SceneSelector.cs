@@ -23,6 +23,11 @@ public class SceneSelector : MonoBehaviour
         SceneManager.LoadScene("Scenes/RocketLaunch");
     }
 
+    public void LoadStarSeek()
+    {
+        SceneManager.LoadScene("Scenes/StarSeek");
+    }
+
     public void QuitGame()
     {
         Application.Quit();
