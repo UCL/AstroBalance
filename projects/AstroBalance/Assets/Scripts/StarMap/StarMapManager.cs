@@ -12,7 +12,10 @@ public class StarMapManager : MonoBehaviour
     private int winningScore = 5;
     [SerializeField, Tooltip("Constellation of stars")]
     private Constellation constellation;
+    [SerializeField, Tooltip("Screen shown upon winning the game")]
+    private GameObject winScreen;
 
+    private TextMeshProUGUI winText;
     private bool gameActive = true;
     private int score = 0;
 
@@ -25,6 +28,8 @@ public class StarMapManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
+
         // Randomly choose forward or reverse direction
         Array orders = Enum.GetValues(typeof(RepeatOrder));
         RepeatOrder chosenOrder = (RepeatOrder) orders.GetValue(UnityEngine.Random.Range(0, orders.Length));
@@ -63,10 +68,8 @@ public class StarMapManager : MonoBehaviour
         {
             gameActive = false;
 
-            Debug.Log("Game ends");
-
-            //winText.text = "Congratulations! \n \n You collected " + score + " stars";
-            //winScreen.SetActive(true);
+            winText.text = "Congratulations! \n \n You matched " + score + " sequences";
+            winScreen.SetActive(true);
         }
     }
 }
