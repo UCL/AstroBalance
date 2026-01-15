@@ -14,7 +14,8 @@ public class rocket_control : MonoBehaviour
     private GameObject targetObject;
 
     [SerializeField, Tooltip("The game object that changes size based on head speed.")]
-    private GameObject speedObject;
+    //private GameObject speedObject;
+    private ParticleSystem speedObject;
 
     [SerializeField, Tooltip("The capacity of the gaze buffer to use.")]
     private int gazeBufferCapacity = 100;
@@ -92,7 +93,7 @@ public class rocket_control : MonoBehaviour
         Debug.Log(gazeIsSteady ? "Gaze is steady" : "Gaze is not steady");
         float headSpeed = headPoseBuffer.getSpeed(speedTime);
         Debug.Log("Speed = " + headSpeed);
-        speedObject.transform.localScale = new Vector3(headSpeed, headSpeed, 0);
-        // Debug.Log("Rocket control update" + TrackerInterface.getGazePoint()[0]);
+        var myEmitter = speedObject.emission;
+        myEmitter.rateOverTime = headSpeed;
     }
 }
