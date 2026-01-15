@@ -67,7 +67,6 @@ public class rocket_control : MonoBehaviour
             gp = tracker.getGazePoint();
             headPose = tracker.getHeadPose();
         }
-        //transform.Translate(new Vector3(gp.X, gp.Y, 0f));
         if (!gazeBuffer.addIfNew(gp))
         {
             Debug.Log("No new gaze point.");
@@ -94,6 +93,13 @@ public class rocket_control : MonoBehaviour
         float headSpeed = headPoseBuffer.getSpeed(speedTime);
         Debug.Log("Speed = " + headSpeed);
         var myEmitter = speedObject.emission;
-        myEmitter.rateOverTime = headSpeed;
+        if (gazeIsSteady)
+        {
+            myEmitter.rateOverTime = headSpeed;
+        }
+        else
+        {
+            myEmitter.rateOverTime = 0f;
+        }
     }
 }
