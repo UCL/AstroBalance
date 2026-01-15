@@ -4,7 +4,7 @@ using UnityEngine;
 public class StarMapStar : MonoBehaviour
 {
     [SerializeField, Tooltip("Number of seconds of held gaze required to select star")]
-    private float selectionTime = 0.5f;
+    private float selectionTime = 1f;
     [SerializeField, Tooltip("Particle system to highlight star")]
     private GameObject sparkleEffect;
     [SerializeField, Tooltip("Size increase for correctly selected star")]

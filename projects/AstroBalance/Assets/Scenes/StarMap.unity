@@ -326,6 +326,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 716514408}
     m_Modifications:
+    - target: {fileID: 1310726998895656672, guid: e83195dd2f79a1842a3c76deecadf485, type: 3}
+      propertyPath: selectionTime
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7594402928058972626, guid: e83195dd2f79a1842a3c76deecadf485, type: 3}
       propertyPath: m_Name
       value: Star-4
@@ -942,10 +946,6 @@ PrefabInstance:
     - target: {fileID: 8038978730115655264, guid: e83195dd2f79a1842a3c76deecadf485, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8038978730115655264, guid: e83195dd2f79a1842a3c76deecadf485, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
