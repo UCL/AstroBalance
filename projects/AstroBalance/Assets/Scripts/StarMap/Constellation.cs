@@ -29,8 +29,7 @@ public class Constellation : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        currentSequence = GenerateStarSequence(minSequenceLength);
-        HighlightStarSequence(currentSequence);
+        ShowNewSequence();
     }
 
     // Update is called once per frame
@@ -71,22 +70,34 @@ public class Constellation : MonoBehaviour
     {
         if (currentSequence[0] == star)
         {
-            // guessed star is correct.
-            // Remove it from the stars left to guess
-            currentSequence.RemoveAt(0);
-
-            if (currentSequence.Count() == 0)
-            {
-                // whole sequence has been guessed, create a new one
-                ShowNewSequence();
-            }
-
+            HandleCorrectGuess();
         } 
         else
         {
             // guess was wrong, create a new sequence
             ShowNewSequence();
         }
+    }
+
+    private void HandleCorrectGuess()
+    {
+        // Remove star from the stars left to guess
+        currentSequence.RemoveAt(0);
+
+        if (currentSequence.Count() == 0)
+        {
+            // whole sequence has been guessed correctly
+            gameManager.UpdateScore();
+
+            if (gameManager.IsGameActive())
+            {
+                ShowNewSequence();
+            } else
+            {
+                ResetStars();
+            }
+        }
+
     }
 
     public List<StarMapStar> GenerateStarSequence(int length)
