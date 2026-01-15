@@ -5097,7 +5097,7 @@ MonoBehaviour:
   gazeBufferCapacity: 100
   headPoseBufferCapacity: 10
   gazeTime: 3
-  gazeTolerance: 3
+  gazeTolerance: 50
   speedTime: 1
 --- !u!1001 &1416956829
 PrefabInstance:
