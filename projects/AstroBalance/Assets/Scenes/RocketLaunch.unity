@@ -5193,13 +5193,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d389fa4698ae03edb86de8a1e4891073, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useMouseForTracker: 0
-  targetObject: {fileID: 0}
-  speedObject: {fileID: 0}
+  useMouseForTracker: 1
+  targetObject: {fileID: 2083071172}
+  speedObject: {fileID: 599265587}
   gazeBufferCapacity: 100
   headPoseBufferCapacity: 10
   gazeTime: 3
-  gazeTolerance: 3
+  gazeTolerance: 30
   speedTime: 1
 --- !u!1001 &1416956829
 PrefabInstance:
@@ -5528,10 +5528,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -260
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5715721509225399226, guid: b98af56498e58ea4c8fb0052e160a11b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4602481120413652456, guid: b98af56498e58ea4c8fb0052e160a11b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2083071173}
   m_SourcePrefab: {fileID: 100100000, guid: b98af56498e58ea4c8fb0052e160a11b, type: 3}
 --- !u!1 &1649893697
 GameObject:
@@ -5754,6 +5758,24 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5654158056182331853, guid: b98af56498e58ea4c8fb0052e160a11b, type: 3}
   m_PrefabInstance: {fileID: 1614507052}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2083071172 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4602481120413652456, guid: b98af56498e58ea4c8fb0052e160a11b, type: 3}
+  m_PrefabInstance: {fileID: 1614507052}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2083071173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2083071172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1352aa213582ee74fa7d1f4f61c44763, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  countDownText: {fileID: 1465298198}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
