@@ -3,17 +3,28 @@ using UnityEngine;
 
 public class StarMapStar : MonoBehaviour
 {
-    [SerializeField, Tooltip("Number of seconds to select a star")]
+    [SerializeField, Tooltip("Number of seconds of held gaze required to select star")]
     private float selectionTime = 0.5f;
+    [SerializeField, Tooltip("Particle system to highlight star")]
+    private GameObject sparkleEffect;
+    [SerializeField, Tooltip("Size increase for correctly selected star")]
+    private float sizeIncrease = 1.3f;
+    [SerializeField, Tooltip("Size decrease for incorrectly selected star")]
+    private float sizeDecrease = 0.5f;
+    [SerializeField, Tooltip("Color for correctly selected star")]
+    private Color correctColor = new Color(1, 0.53f, 0.47f);
+    [SerializeField, Tooltip("Color for incorrectly selected star")]
+    private Color incorrectColor = Color.red;
 
-    private Color highlightColor = Color.red;
+
     private Color defaultColor = Color.white;
-
     private SpriteRenderer spriteRenderer;
     private Constellation constellation;
     private SelectionStatus selectionStatus;
+    private GameObject starSparkle;
 
     private float selectionStartTime;
+    private Vector3 defaultScale;
     private bool selectionEnabled = false;
 
     private enum SelectionStatus
@@ -26,6 +37,7 @@ public class StarMapStar : MonoBehaviour
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        defaultScale = transform.localScale;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -52,8 +64,13 @@ public class StarMapStar : MonoBehaviour
 
     public void ResetStar()
     {
-        selectionEnabled = false;
+        DisableSelection();
         SetSelectionStatus(SelectionStatus.None);
+    }
+
+    public void DisableSelection()
+    {
+        selectionEnabled = false;
     }
 
     public void EnableSelection()
@@ -62,19 +79,42 @@ public class StarMapStar : MonoBehaviour
     }
 
     /// <summary>
-    /// Highlight star for the given number of seconds.
+    /// Highlight correct star for the given number of seconds.
     /// </summary>
     /// <param name="seconds">Number of seconds.</param>
-    public void HighlightStar(int seconds)
+    public void HighlightCorrectForSeconds(float seconds)
     {
-        spriteRenderer.color = highlightColor;
-        StartCoroutine(ResetColor(seconds));
+        HighlightCorrect();
+        StartCoroutine(StopHighlight(seconds));
     }
 
-    IEnumerator ResetColor(int seconds)
+    /// <summary>
+    /// Highlight incorrect star for the given number of seconds.
+    /// </summary>
+    /// <param name="seconds">Number of seconds.</param>
+    public void HighlightIncorrectForSeconds(float seconds)
+    {
+        HighlightIncorrect();
+        StartCoroutine(StopHighlight(seconds));
+    }
+
+    IEnumerator StopHighlight(float seconds)
     {
         yield return new WaitForSeconds(seconds);
-        spriteRenderer.color = defaultColor;
+        ResetStar();
+    }
+
+    public void HighlightCorrect()
+    {
+        spriteRenderer.color = correctColor;
+        starSparkle = Instantiate<GameObject>(sparkleEffect, transform.position, Quaternion.identity);
+        transform.localScale = defaultScale * sizeIncrease;
+    }
+
+    public void HighlightIncorrect()
+    {
+        spriteRenderer.color = incorrectColor;
+        transform.localScale = defaultScale * sizeDecrease;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -107,18 +147,22 @@ public class StarMapStar : MonoBehaviour
         if (status == SelectionStatus.None)
         {
             spriteRenderer.color = defaultColor;
+            Destroy(starSparkle);
+            transform.localScale = defaultScale;
             selectionStatus = status;
         }
         else if (status == SelectionStatus.SelectionPending)
         {
-            spriteRenderer.color = highlightColor;
+            spriteRenderer.color = correctColor;
             selectionStartTime = Time.time;
+            Destroy(starSparkle);
+            transform.localScale = defaultScale;
             selectionStatus = status;
         } 
         else
         {
             // Star is selected
-            spriteRenderer.color = Color.blue;
+            transform.localScale = defaultScale * sizeIncrease;
             selectionStatus = status;
 
             if (constellation != null)

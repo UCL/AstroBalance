@@ -165,3 +165,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3326e8d004da65a4d87b2f667575a350, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectionTime: 0.5
+  sparkleEffect: {fileID: 7527662519254007312, guid: ff9c245d1433378428b46b7d2095ab5d, type: 3}
+  sizeIncrease: 1.3

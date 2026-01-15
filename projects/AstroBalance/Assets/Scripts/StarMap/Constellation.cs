@@ -6,16 +6,22 @@ using static StarMapManager;
 
 public class Constellation : MonoBehaviour
 {
-    [SerializeField, Tooltip("Number of seconds to highlight a star for")]
-    private int highlightTime = 1;
+    
     [SerializeField, Tooltip("Minimum number of stars in a sequence")]
     private int minSequenceLength = 2;
     [SerializeField, Tooltip("Number of incorrect sequences before reducing length")]
     private int maxIncorrectSequences = 2;
+    [SerializeField, Tooltip("Number of seconds to highlight each star when showing a new sequence")]
+    private int showSequenceHighlight = 1;
+    [SerializeField, Tooltip("Number of seconds to highlight a correct sequence")]
+    private float correctSequenceHighlight = 1.5f;
+    [SerializeField, Tooltip("Number of seconds to highlight an incorrect sequence")]
+    private float incorrectSequenceHighlight = 1f;
 
     private List<StarMapStar> stars;
     private StarMapManager gameManager;
     private List<StarMapStar> currentSequence;
+    private List<StarMapStar> selectedStars;
     private int currentSequenceLength;
     private int incorrectSequences = 0;  // Incorrect sequences at current length
     private RepeatOrder order = RepeatOrder.Same;
@@ -57,6 +63,14 @@ public class Constellation : MonoBehaviour
         }
     }
 
+    private void DisableStarSelection()
+    {
+        foreach (StarMapStar star in stars)
+        {
+            star.DisableSelection();
+        }
+    }
+
     private void EnableStarSelection()
     {
         foreach (StarMapStar star in stars)
@@ -65,17 +79,57 @@ public class Constellation : MonoBehaviour
         }
     }
 
+    private IEnumerator CompleteSequenceAndTriggerNext(bool correctGuess)
+    {
+        DisableStarSelection();
+
+        // wait for n seconds before highlighting the completed sequence,
+        // makes it easier for the player to see the start
+        yield return new WaitForSeconds(0.5f);
+
+        // highlight previously completed sequence, in different ways 
+        // depending on correct vs incorrect guess
+        float highlightTime;
+        if (correctGuess)
+        {
+            highlightTime = correctSequenceHighlight;
+        } 
+        else
+        {
+            highlightTime = incorrectSequenceHighlight;
+        }
+
+        foreach (StarMapStar star in selectedStars)
+        {
+            if (correctGuess)
+            {
+                star.HighlightCorrectForSeconds(highlightTime);
+            }
+            else
+            {
+                star.HighlightIncorrectForSeconds(highlightTime);
+            }
+        }
+        yield return new WaitForSeconds(highlightTime);
+
+        ShowNewSequence(order);
+    }
+
     public void ShowNewSequence(RepeatOrder repeatOrder)
     {
         order = repeatOrder;
+        currentSequence = new List<StarMapStar>();
+        selectedStars = new List<StarMapStar>();
 
         ResetStars();
         currentSequence = GenerateStarSequence(currentSequenceLength);
-        StartCoroutine(HighlightStarSequence(currentSequence));
+        StartCoroutine(HighlightNewStarSequence(currentSequence));
     }
 
     public void AddGuess(StarMapStar star)
     {
+        selectedStars.Add(star);
+
         if (currentSequence[0] == star)
         {
             HandleCorrectGuess();
@@ -100,7 +154,7 @@ public class Constellation : MonoBehaviour
             if (gameManager.IsGameActive())
             {
                 currentSequenceLength += 1;
-                ShowNewSequence(order);
+                StartCoroutine(CompleteSequenceAndTriggerNext(true));
             }
             else
             {
@@ -120,8 +174,8 @@ public class Constellation : MonoBehaviour
             currentSequenceLength -= 1;
             incorrectSequences = 0;
         }
-        ShowNewSequence(order);
 
+        StartCoroutine(CompleteSequenceAndTriggerNext(false));
     }
 
     public List<StarMapStar> GenerateStarSequence(int length)
@@ -147,12 +201,16 @@ public class Constellation : MonoBehaviour
 
     }
 
-    private IEnumerator HighlightStarSequence(List<StarMapStar> starSequence)
+    private IEnumerator HighlightNewStarSequence(List<StarMapStar> starSequence)
     {
+        // wait for n seconds before highlighting the sequence, makes
+        // it easier for the player to see the start
+        yield return new WaitForSeconds(1);
+
         foreach (StarMapStar star in starSequence)
         {
-            star.HighlightStar(highlightTime);
-            yield return new WaitForSeconds(highlightTime);
+            star.HighlightCorrectForSeconds(showSequenceHighlight);
+            yield return new WaitForSeconds(showSequenceHighlight);
         }
 
         // When the repeat order is opposite, reverse the order of the
