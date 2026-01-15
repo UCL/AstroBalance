@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -5,16 +6,31 @@ public class StarMapManager : MonoBehaviour
 {
     [SerializeField, Tooltip("Text mesh pro object for score text")]
     private TextMeshProUGUI scoreText;
+    [SerializeField, Tooltip("Text mesh pro object for order text i.e. same vs opposite")]
+    private TextMeshProUGUI orderText;
     [SerializeField, Tooltip("Correct sequences required to win")]
     private int winningScore = 5;
+    [SerializeField, Tooltip("Constellation of stars")]
+    private Constellation constellation;
 
     private bool gameActive = true;
-
     private int score = 0;
+
+    public enum RepeatOrder
+    {
+        Same,
+        Opposite,
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        // Randomly choose forward or reverse direction
+        Array orders = Enum.GetValues(typeof(RepeatOrder));
+        RepeatOrder chosenOrder = (RepeatOrder) orders.GetValue(UnityEngine.Random.Range(0, orders.Length));
+
+        orderText.text = "Repeat in " + chosenOrder.ToString().ToLower() + " order";
+        constellation.ShowNewSequence(chosenOrder);
     }
 
     // Update is called once per frame

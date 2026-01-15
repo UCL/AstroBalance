@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
+using static StarMapManager;
 
 public class Constellation : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class Constellation : MonoBehaviour
     private List<StarMapStar> currentSequence;
     private int currentSequenceLength;
     private int incorrectSequences = 0;  // Incorrect sequences at current length
+    private RepeatOrder order = RepeatOrder.Same;
 
     private void Awake()
     {
@@ -34,7 +36,6 @@ public class Constellation : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        ShowNewSequence();
     }
 
     // Update is called once per frame
@@ -64,8 +65,10 @@ public class Constellation : MonoBehaviour
         }
     }
 
-    public void ShowNewSequence()
+    public void ShowNewSequence(RepeatOrder repeatOrder)
     {
+        order = repeatOrder;
+
         ResetStars();
         currentSequence = GenerateStarSequence(currentSequenceLength);
         StartCoroutine(HighlightStarSequence(currentSequence));
@@ -97,7 +100,7 @@ public class Constellation : MonoBehaviour
             if (gameManager.IsGameActive())
             {
                 currentSequenceLength += 1;
-                ShowNewSequence();
+                ShowNewSequence(order);
             }
             else
             {
@@ -117,7 +120,7 @@ public class Constellation : MonoBehaviour
             currentSequenceLength -= 1;
             incorrectSequences = 0;
         }
-        ShowNewSequence();
+        ShowNewSequence(order);
 
     }
 
@@ -144,12 +147,19 @@ public class Constellation : MonoBehaviour
 
     }
 
-    IEnumerator HighlightStarSequence(List<StarMapStar> starSequence)
+    private IEnumerator HighlightStarSequence(List<StarMapStar> starSequence)
     {
         foreach (StarMapStar star in starSequence)
         {
             star.HighlightStar(highlightTime);
             yield return new WaitForSeconds(highlightTime);
+        }
+
+        // When the repeat order is opposite, reverse the order of the
+        // sequence for guessing
+        if (order == RepeatOrder.Opposite)
+        {
+            currentSequence.Reverse();
         }
 
         EnableStarSelection();
