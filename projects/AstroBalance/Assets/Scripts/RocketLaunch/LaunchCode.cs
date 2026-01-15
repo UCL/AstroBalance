@@ -3,11 +3,11 @@ using UnityEngine.UI;
 using TMPro;
 using System.Diagnostics;
 
-public class CountdownCreator: MonoBehaviour
+public class LaunchCode: MonoBehaviour
 {
     private float timerDuration = 1.0F;
     private float counter = 1.0F;
-    public int countDownNumber = 0;
+    private int countDownNumber = 0;
 
     public TextMeshProUGUI countDownText;
     void Start()
