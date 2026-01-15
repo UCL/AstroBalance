@@ -12,12 +12,17 @@ public class Constellation : MonoBehaviour
 
     private List<StarMapStar> stars;
     private StarMapManager gameManager;
-    private List<int> currentSequence;
+    private List<StarMapStar> currentSequence;
 
     private void Awake()
     {
         stars = new List<StarMapStar>(gameObject.GetComponentsInChildren<StarMapStar>());
         gameManager = FindFirstObjectByType<StarMapManager>();
+
+        foreach (StarMapStar star in stars)
+        {
+            star.SetConstellation(this);
+        }
     }
 
 
@@ -62,34 +67,55 @@ public class Constellation : MonoBehaviour
         StartCoroutine(HighlightStarSequence(currentSequence));
     }
 
-    public List<int> GenerateStarSequence(int length)
+    public void AddGuess(StarMapStar star)
+    {
+        if (currentSequence[0] == star)
+        {
+            // guessed star is correct.
+            // Remove it from the stars left to guess
+            currentSequence.RemoveAt(0);
+
+            if (currentSequence.Count() == 0)
+            {
+                // whole sequence has been guessed, create a new one
+                ShowNewSequence();
+            }
+
+        } 
+        else
+        {
+            // guess was wrong, create a new sequence
+            ShowNewSequence();
+        }
+    }
+
+    public List<StarMapStar> GenerateStarSequence(int length)
     {
         if (length > stars.Count())
         {
             length = stars.Count();
         }
 
-        List<int> randomSequence = new List<int>();
-        List<int> indexes = Enumerable.Range(0, stars.Count()).ToList();
+        List<StarMapStar> starSequence = new List<StarMapStar>();
+        List<StarMapStar> availableStars = new List<StarMapStar>(stars);
 
         for (int i = 0; i < length; i++)
         {
-            // choose a random item, then remove it so there are no
+            // choose a random star, then remove it so there are no
             // repeats in the sequence
-            int randomIndex = indexes[Random.Range(0, indexes.Count())];
-            randomSequence.Add(randomIndex);
-            indexes.Remove(randomIndex);
+            StarMapStar randomStar = availableStars[Random.Range(0, availableStars.Count())];
+            starSequence.Add(randomStar);
+            availableStars.Remove(randomStar);
         }
 
-        return randomSequence;
+        return starSequence;
 
     }
 
-    IEnumerator HighlightStarSequence(List<int> starIndexes)
+    IEnumerator HighlightStarSequence(List<StarMapStar> starSequence)
     {
-        foreach (int index in starIndexes)
+        foreach (StarMapStar star in starSequence)
         {
-            StarMapStar star = stars[index];
             star.HighlightStar(highlightTime);
             yield return new WaitForSeconds(highlightTime);
         }

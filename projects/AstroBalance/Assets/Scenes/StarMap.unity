@@ -379,7 +379,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightTime: 1
-  minSequenceLength: 7
+  minSequenceLength: 2
 --- !u!1 &705216657
 GameObject:
   m_ObjectHideFlags: 0

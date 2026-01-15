@@ -10,6 +10,7 @@ public class StarMapStar : MonoBehaviour
     private Color defaultColor = Color.white;
 
     private SpriteRenderer spriteRenderer;
+    private Constellation constellation;
     private SelectionStatus selectionStatus;
 
     private float selectionStartTime;
@@ -39,6 +40,14 @@ public class StarMapStar : MonoBehaviour
         {
             SetSelectionStatus(SelectionStatus.Selected);
         }
+    }
+
+    /// <summary>
+    /// When selected, the star will report a guess to this constellation.
+    /// </summary>
+    public void SetConstellation(Constellation inputConstellation)
+    {
+        constellation = inputConstellation;
     }
 
     public void ResetStar()
@@ -98,16 +107,24 @@ public class StarMapStar : MonoBehaviour
         if (status == SelectionStatus.None)
         {
             spriteRenderer.color = defaultColor;
+            selectionStatus = status;
         }
         else if (status == SelectionStatus.SelectionPending)
         {
             spriteRenderer.color = highlightColor;
             selectionStartTime = Time.time;
-        } else
+            selectionStatus = status;
+        } 
+        else
         {
+            // Star is selected
             spriteRenderer.color = Color.blue;
-        }
+            selectionStatus = status;
 
-        selectionStatus = status;
+            if (constellation != null)
+            {
+                constellation.AddGuess(this);
+            }
+        }
     }
 }
