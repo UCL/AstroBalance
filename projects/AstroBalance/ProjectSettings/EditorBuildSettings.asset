@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/StarCollector.unity
     guid: 0a28c029993d7574d925762876ce3571
+  - enabled: 1
+    path: Assets/Scenes/StarSeek.unity
+    guid: cbf3d9c26ba093c44890c5bd86b39752
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
