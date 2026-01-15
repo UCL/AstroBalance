@@ -9,15 +9,20 @@ public class Constellation : MonoBehaviour
     private int highlightTime = 1;
     [SerializeField, Tooltip("Minimum number of stars in a sequence")]
     private int minSequenceLength = 2;
+    [SerializeField, Tooltip("Number of incorrect sequences before reducing length")]
+    private int maxIncorrectSequences = 2;
 
     private List<StarMapStar> stars;
     private StarMapManager gameManager;
     private List<StarMapStar> currentSequence;
+    private int currentSequenceLength;
+    private int incorrectSequences = 0;  // Incorrect sequences at current length
 
     private void Awake()
     {
         stars = new List<StarMapStar>(gameObject.GetComponentsInChildren<StarMapStar>());
         gameManager = FindFirstObjectByType<StarMapManager>();
+        currentSequenceLength = minSequenceLength;
 
         foreach (StarMapStar star in stars)
         {
@@ -62,7 +67,7 @@ public class Constellation : MonoBehaviour
     public void ShowNewSequence()
     {
         ResetStars();
-        currentSequence = GenerateStarSequence(minSequenceLength);
+        currentSequence = GenerateStarSequence(currentSequenceLength);
         StartCoroutine(HighlightStarSequence(currentSequence));
     }
 
@@ -74,8 +79,7 @@ public class Constellation : MonoBehaviour
         } 
         else
         {
-            // guess was wrong, create a new sequence
-            ShowNewSequence();
+            HandleIncorrectGuess();
         }
     }
 
@@ -83,6 +87,7 @@ public class Constellation : MonoBehaviour
     {
         // Remove star from the stars left to guess
         currentSequence.RemoveAt(0);
+        incorrectSequences = 0;
 
         if (currentSequence.Count() == 0)
         {
@@ -91,12 +96,28 @@ public class Constellation : MonoBehaviour
 
             if (gameManager.IsGameActive())
             {
+                currentSequenceLength += 1;
                 ShowNewSequence();
-            } else
+            }
+            else
             {
                 ResetStars();
             }
         }
+    }
+
+    private void HandleIncorrectGuess()
+    {
+        incorrectSequences += 1;
+
+        // reduce length of next sequence, if the player 
+        // has had n incorrect guesses in a row
+        if (incorrectSequences == maxIncorrectSequences && currentSequenceLength > minSequenceLength)
+        {
+            currentSequenceLength -= 1;
+            incorrectSequences = 0;
+        }
+        ShowNewSequence();
 
     }
 
