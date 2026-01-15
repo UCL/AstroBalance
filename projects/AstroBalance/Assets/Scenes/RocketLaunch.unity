@@ -3817,13 +3817,14 @@ ParticleSystem:
   CollisionModule:
     enabled: 0
     serializedVersion: 4
-    type: 0
-    collisionMode: 0
+    type: 1
+    collisionMode: 1
     colliderForce: 0
     multiplyColliderForceByParticleSize: 0
     multiplyColliderForceByParticleSpeed: 0
     multiplyColliderForceByCollisionAngle: 1
-    m_Planes: []
+    m_Planes:
+    - {fileID: 0}
     m_Dampen:
       serializedVersion: 2
       minMaxState: 0
@@ -5091,8 +5092,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useMouseForTracker: 1
-  targetObject: {fileID: 0}
-  speedObject: {fileID: 678457852}
+  targetObject: {fileID: 1465298196}
+  speedObject: {fileID: 599265587}
   gazeBufferCapacity: 100
   headPoseBufferCapacity: 10
   gazeTime: 3
@@ -5257,12 +5258,17 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &1465298196 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 618440310631024091, guid: b98af56498e58ea4c8fb0052e160a11b, type: 3}
+  m_PrefabInstance: {fileID: 1614507052}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1465298198 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3994781564741070375, guid: b98af56498e58ea4c8fb0052e160a11b, type: 3}
   m_PrefabInstance: {fileID: 1614507052}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1465298196}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
