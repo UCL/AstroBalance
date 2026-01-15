@@ -65,7 +65,7 @@ public class rocket_control : MonoBehaviour
         else
         {
             gp = tracker.getGazePoint();
-            Vector2 worldGaze = tracker.convertGazePointToWorld(gp);
+            Vector2 worldGaze = tracker.ConvertGazePointToWorldCoordinates(gp);
             gp.X = worldGaze.x;
             gp.Y = worldGaze.y;
             headPose = tracker.getHeadPose();
