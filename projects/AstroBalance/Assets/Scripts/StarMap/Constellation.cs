@@ -148,7 +148,6 @@ public class Constellation : MonoBehaviour
     {
         // Remove star from the stars left to guess
         currentSequence.RemoveAt(0);
-        incorrectSequences = 0;
 
         if (currentSequence.Count() == 0)
         {
@@ -158,6 +157,7 @@ public class Constellation : MonoBehaviour
             if (gameManager.IsGameActive())
             {
                 currentSequenceLength += 1;
+                incorrectSequences = 0;
                 StartCoroutine(CompleteSequenceAndTriggerNext(true));
             }
             else
