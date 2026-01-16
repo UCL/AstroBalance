@@ -10,6 +10,10 @@
 
 You may need to [download the drivers](https://www.gaming.tobii.com/getstarted/) for the Tobii Eyetracker 5, and calibrate the tracker using the Tobii Experience app.
 
+## Documentation
+
+Documentation for each mini-game is provided under [`docs/`](/docs/), focusing on how to edit important fields during play testing.
+
 ## Acknowledgements
 
 The Dionaea Fonts (DOTMATRIX) are made by Svein K�re Gunnarsoni. http://www.dionaea.com/information/fonts.html. The fonts are freeware
