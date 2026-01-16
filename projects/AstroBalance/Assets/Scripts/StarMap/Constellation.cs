@@ -20,8 +20,8 @@ public class Constellation : MonoBehaviour
 
     private List<StarMapStar> stars;
     private StarMapManager gameManager;
-    private List<StarMapStar> currentSequence;
-    private List<StarMapStar> selectedStars;
+    private List<StarMapStar> currentSequence; // stars left to guess
+    private List<StarMapStar> selectedStars; // stars selected so far
     private int currentSequenceLength;
     private int incorrectSequences = 0;  // Incorrect sequences at current length
     private RepeatOrder order = RepeatOrder.Same;
@@ -50,9 +50,38 @@ public class Constellation : MonoBehaviour
         
     }
 
-    public int GetNumberOfStars()
+    /// <summary>
+    /// Choose a new random sequence of stars, and display it to the player.
+    /// Once display completes, stars are enabled for selection.
+    /// </summary>
+    /// <param name="repeatOrder">Order the player must repeat the sequence in</param>
+    public void ShowNewSequence(RepeatOrder repeatOrder)
     {
-        return stars.Count();
+        order = repeatOrder;
+        currentSequence = new List<StarMapStar>();
+        selectedStars = new List<StarMapStar>();
+
+        ResetStars();
+        currentSequence = GenerateStarSequence(currentSequenceLength);
+        StartCoroutine(HighlightNewStarSequence(currentSequence));
+    }
+
+    /// <summary>
+    /// Add a guess for the next star in the sequence.
+    /// </summary>
+    /// <param name="star">The selected star.</param>
+    public void AddGuess(StarMapStar star)
+    {
+        selectedStars.Add(star);
+
+        if (currentSequence[0] == star)
+        {
+            HandleCorrectGuess();
+        }
+        else
+        {
+            HandleIncorrectGuess();
+        }
     }
 
     private void ResetStars()
@@ -87,7 +116,7 @@ public class Constellation : MonoBehaviour
         // makes it easier for the player to see the start
         yield return new WaitForSeconds(0.5f);
 
-        // highlight previously completed sequence, in different ways 
+        // highlight completed sequence, in different ways 
         // depending on correct vs incorrect guess
         float highlightTime;
         if (correctGuess)
@@ -113,31 +142,6 @@ public class Constellation : MonoBehaviour
         yield return new WaitForSeconds(highlightTime);
 
         ShowNewSequence(order);
-    }
-
-    public void ShowNewSequence(RepeatOrder repeatOrder)
-    {
-        order = repeatOrder;
-        currentSequence = new List<StarMapStar>();
-        selectedStars = new List<StarMapStar>();
-
-        ResetStars();
-        currentSequence = GenerateStarSequence(currentSequenceLength);
-        StartCoroutine(HighlightNewStarSequence(currentSequence));
-    }
-
-    public void AddGuess(StarMapStar star)
-    {
-        selectedStars.Add(star);
-
-        if (currentSequence[0] == star)
-        {
-            HandleCorrectGuess();
-        } 
-        else
-        {
-            HandleIncorrectGuess();
-        }
     }
 
     private void HandleCorrectGuess()
@@ -178,7 +182,12 @@ public class Constellation : MonoBehaviour
         StartCoroutine(CompleteSequenceAndTriggerNext(false));
     }
 
-    public List<StarMapStar> GenerateStarSequence(int length)
+    /// <summary>
+    /// Create a random sequence of stars of the given length.
+    /// </summary>
+    /// <param name="length">Number of stars in sequence.</param>
+    /// <returns>A list of stars</returns>
+    private List<StarMapStar> GenerateStarSequence(int length)
     {
         if (length > stars.Count())
         {
@@ -198,7 +207,6 @@ public class Constellation : MonoBehaviour
         }
 
         return starSequence;
-
     }
 
     private IEnumerator HighlightNewStarSequence(List<StarMapStar> starSequence)

@@ -62,6 +62,9 @@ public class StarMapStar : MonoBehaviour
         constellation = inputConstellation;
     }
 
+    /// <summary>
+    /// Reset star colour / size, and disable selection.
+    /// </summary>
     public void ResetStar()
     {
         DisableSelection();
@@ -84,7 +87,10 @@ public class StarMapStar : MonoBehaviour
     /// <param name="seconds">Number of seconds.</param>
     public void HighlightCorrectForSeconds(float seconds)
     {
-        HighlightCorrect();
+        spriteRenderer.color = correctColor;
+        starSparkle = Instantiate<GameObject>(sparkleEffect, transform.position, Quaternion.identity);
+        transform.localScale = defaultScale * sizeIncrease;
+
         StartCoroutine(StopHighlight(seconds));
     }
 
@@ -94,7 +100,9 @@ public class StarMapStar : MonoBehaviour
     /// <param name="seconds">Number of seconds.</param>
     public void HighlightIncorrectForSeconds(float seconds)
     {
-        HighlightIncorrect();
+        spriteRenderer.color = incorrectColor;
+        transform.localScale = defaultScale * sizeDecrease;
+
         StartCoroutine(StopHighlight(seconds));
     }
 
@@ -102,19 +110,6 @@ public class StarMapStar : MonoBehaviour
     {
         yield return new WaitForSeconds(seconds);
         ResetStar();
-    }
-
-    public void HighlightCorrect()
-    {
-        spriteRenderer.color = correctColor;
-        starSparkle = Instantiate<GameObject>(sparkleEffect, transform.position, Quaternion.identity);
-        transform.localScale = defaultScale * sizeIncrease;
-    }
-
-    public void HighlightIncorrect()
-    {
-        spriteRenderer.color = incorrectColor;
-        transform.localScale = defaultScale * sizeDecrease;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
