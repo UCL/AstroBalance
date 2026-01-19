@@ -10,13 +10,13 @@ public class TileManager : MonoBehaviour
 {
 
     [SerializeField, Tooltip("Min number of mm of head movement to count as a step")]
-    private int minStepMm = 200;
+    private int minStepMm = 50;
     [SerializeField, Tooltip("Max number of mm of head movement to count as a step")]
     private int maxStepMm = 2000;
     [SerializeField, Tooltip(
         "Number of mm of head movement perpendicular to the step direction to accept e.g. if step is forward, how many mm do we allow them to move left/right?"
     )]
-    private int toleranceMm = 200;
+    private int toleranceMm = 400;
 
     private List<Tile> directionTiles = new List<Tile>();
     private Tile centreTile;
@@ -48,19 +48,40 @@ public class TileManager : MonoBehaviour
     {
     }
 
-    public void StartSelectingTiles()
+    void Update()
     {
-        restingHeadPosition = tracker.getHeadPosition();
+
+        // needs to separate centre tile from teh other tiles
+        // choose an ohter tile, then centre, then other, then centre...
+
+        // Tile needs a head position range to consider as a 'hit'
+
+    }
+
+    public void ActivateNextTile()
+    {
+        // This is our first time selecting a tile - record the head position
+        if (currentTile == null)
+        {
+            restingHeadPosition = tracker.getHeadPosition();
+        }
 
         Debug.Log("rest" + restingHeadPosition.X + "," + restingHeadPosition.Y + "," + restingHeadPosition.Z);
 
-        if (currentTile == null)
+        if(currentTile != null && currentTile.GetDirection() != Tile.Direction.None)
         {
-            Tile randomTile = directionTiles[UnityEngine.Random.Range(0, directionTiles.Count)];
-            var bounds = GetTileHeadBounds(randomTile.GetDirection());
-            randomTile.ActivateTile(bounds.xMin, bounds.xMax, bounds.zMin, bounds.zMax);
+            // Last tile was a directional step, now go back to centre
+            currentTile = centreTile;
+
+        }
+        else
+        {
+            // We're at the centre - choose a direction
+            currentTile = directionTiles[UnityEngine.Random.Range(0, directionTiles.Count)];
         }
 
+        var bounds = GetTileHeadBounds(currentTile.GetDirection());
+        currentTile.ActivateTile(bounds.xMin, bounds.xMax, bounds.zMin, bounds.zMax);
     }
 
     private (float xMin, float xMax, float zMin, float zMax) GetTileHeadBounds(Tile.Direction direction)
@@ -106,19 +127,11 @@ public class TileManager : MonoBehaviour
                     xMin: restingHeadPosition.X - toleranceMm,
                     xMax: restingHeadPosition.X + toleranceMm,
                     zMin: restingHeadPosition.Z - toleranceMm,
-                    zMax: restingHeadPosition.Z - toleranceMm
+                    zMax: restingHeadPosition.Z + toleranceMm
                 );
         }
     }
 
     // Update is called once per frame
-    void Update()
-    {
-
-        // needs to separate centre tile from teh other tiles
-        // choose an ohter tile, then centre, then other, then centre...
-
-        // Tile needs a head position range to consider as a 'hit'
-        
-    }
+    
 }

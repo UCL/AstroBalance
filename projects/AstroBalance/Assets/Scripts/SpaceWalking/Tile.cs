@@ -1,4 +1,8 @@
+using NUnit.Framework;
+using System.Collections;
 using Tobii.GameIntegration.Net;
+using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEditor.Tilemaps;
 using UnityEngine;
 
@@ -8,9 +12,13 @@ public class Tile : MonoBehaviour
     private Direction direction;
     [SerializeField, Tooltip("Particle system to show on pending tile selection.")]
     private GameObject sparkleEffect;
+    [SerializeField, Tooltip("Number of seconds to show particle system.")]
+    private int sparkleTime = 1;
 
     private SpriteRenderer spriteRenderer;
     private Tracker tracker;
+    private TileManager tileManager;
+    private GameObject selectedSparkle;
     private float headXMin;
     private float headXMax;
     private float headZMin;
@@ -31,6 +39,7 @@ public class Tile : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         tracker = FindFirstObjectByType<Tracker>();
+        tileManager = GetComponentInParent<TileManager>();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -89,7 +98,16 @@ public class Tile : MonoBehaviour
     private void SelectTile()
     {
         tileActive = false;
+        selectedSparkle = Instantiate<GameObject>(sparkleEffect, transform.position, Quaternion.identity);
+        StartCoroutine(ResetTile());
+    }
 
-        GameObject selectedSparkle = Instantiate<GameObject>(sparkleEffect, transform.position, Quaternion.identity);
+    private IEnumerator ResetTile()
+    {
+        yield return new WaitForSeconds(sparkleTime);
+
+        Destroy(selectedSparkle);
+        spriteRenderer.color = Color.white;
+        tileManager.ActivateNextTile();
     }
 }

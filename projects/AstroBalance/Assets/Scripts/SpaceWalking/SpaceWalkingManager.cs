@@ -24,7 +24,7 @@ public class SpaceWalkingManager : MonoBehaviour
     {
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
 
-        tileManager.StartSelectingTiles();
+        tileManager.ActivateNextTile();
     }
 
     // Update is called once per frame
