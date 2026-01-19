@@ -5193,13 +5193,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d389fa4698ae03edb86de8a1e4891073, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useMouseForTracker: 1
+  useMouseForTracker: 0
   targetObject: {fileID: 2083071172}
   speedObject: {fileID: 599265587}
   gazeBufferCapacity: 100
   headPoseBufferCapacity: 10
   gazeTime: 3
-  gazeTolerance: 30
+  gazeTolerance: 3
   speedTime: 1
   statusText: {fileID: 1091449924}
 --- !u!1 &1091449922
@@ -5236,7 +5236,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -400, y: 453.38586}
+  m_AnchoredPosition: {x: -400, y: 100}
   m_SizeDelta: {x: 800, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1091449924
@@ -5529,11 +5529,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2061288543795418744, guid: b98af56498e58ea4c8fb0052e160a11b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -820
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 2061288543795418744, guid: b98af56498e58ea4c8fb0052e160a11b, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -260
+      value: -100
       objectReference: {fileID: 0}
     - target: {fileID: 3543010120439325154, guid: b98af56498e58ea4c8fb0052e160a11b, type: 3}
       propertyPath: countDownText
@@ -5641,11 +5641,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5654158056182331853, guid: b98af56498e58ea4c8fb0052e160a11b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 1768
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5654158056182331853, guid: b98af56498e58ea4c8fb0052e160a11b, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -87
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5654158056182331853, guid: b98af56498e58ea4c8fb0052e160a11b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -5661,11 +5661,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8803054260691242270, guid: b98af56498e58ea4c8fb0052e160a11b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -820
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 8803054260691242270, guid: b98af56498e58ea4c8fb0052e160a11b, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -260
+      value: -100
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5715721509225399226, guid: b98af56498e58ea4c8fb0052e160a11b, type: 3}
@@ -5914,6 +5914,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1352aa213582ee74fa7d1f4f61c44763, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  countDownText: {fileID: 1465298198}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

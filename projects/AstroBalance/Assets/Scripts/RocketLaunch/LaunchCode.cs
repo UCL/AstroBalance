@@ -10,7 +10,8 @@ public class LaunchCode: MonoBehaviour
     private float counter = 1.0F;
     private string countDownNumber;
     private List<string> countDownNumbers = new List<string> {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
-
+    
+    [SerializeField]
     private TextMeshProUGUI countDownText;
     void Start()
     {

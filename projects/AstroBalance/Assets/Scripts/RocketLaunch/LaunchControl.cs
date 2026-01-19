@@ -46,7 +46,7 @@ public class rocket_control : MonoBehaviour
         tracker = FindFirstObjectByType<Tracker>();
         gazeBuffer = new GazeBuffer(gazeBufferCapacity);
         headPoseBuffer = new HeadPoseBuffer(headPoseBufferCapacity);
-	pitch = !pitch;
+	    pitch = !pitch;
     }
 
     // Update is called once per frame
@@ -90,7 +90,8 @@ public class rocket_control : MonoBehaviour
             GazePoint targetPoint = new GazePoint();
             targetPoint.X = targetObject.transform.position.x;
             targetPoint.Y = targetObject.transform.position.y;
-            Debug.Log("Look hear" + targetObject.transform.position);
+            targetPoint.X = 0f;
+            targetPoint.Y = 0f;
             gazeIsSteady = gazeBuffer.gazeSteady(gazeTime, gazeTolerance, targetPoint);
         }
         else
@@ -98,19 +99,17 @@ public class rocket_control : MonoBehaviour
             gazeIsSteady = gazeBuffer.gazeSteady(gazeTime, gazeTolerance);
         }
 
-        Debug.Log(gazeIsSteady ? "Gaze is steady" : "Gaze is not steady");
         float headSpeed = headPoseBuffer.getSpeed(speedTime);
-        Debug.Log("Speed = " + headSpeed);
-	if (statusText != null)
-	{
-	    string speedText = pitch ? "Pitch Speed" : "Yaw Speed";
-	    string steadyText = gazeIsSteady ? "Gaze is steady" : "Gaze is not steady";
-	    statusText.text = "Look here -> " + targetObject.transform.position + "\n" +
-			       "Looking here -> " + gp.X + ", " + gp.Y + "\n" +
-			       speedText + " = " + headSpeed + "\n" +
-			       steadyText;
 
-	}
+	    if (statusText != null)
+	    {
+	        string speedText = pitch ? "Pitch Speed" : "Yaw Speed";
+	        string steadyText = gazeIsSteady ? "Gaze is steady" : "Gaze is not steady";
+	        statusText.text = "Look here -> " + targetPoint.X + ", " + targetPoint.Y + "\n" +
+			           "Looking here -> " + gp.X + ", " + gp.Y + "\n" +
+			           speedText + " = " + headSpeed + "\n" +
+			        steadyText;
+	    }
         var myEmitter = speedObject.emission;
         if (gazeIsSteady)
         {
