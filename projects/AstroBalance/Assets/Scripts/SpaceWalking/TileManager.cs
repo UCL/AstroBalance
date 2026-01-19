@@ -15,6 +15,7 @@ public class TileManager : MonoBehaviour
     private int toleranceMm = 400;
 
     private List<Tile> directionTiles = new List<Tile>();
+    private List<Tile> directionTilesLeft = new List<Tile>();
     private Tile centreTile;
     
     private Tile currentTile;
@@ -37,6 +38,8 @@ public class TileManager : MonoBehaviour
                 directionTiles.Add(tile);
             }
         }
+
+        directionTilesLeft = new List<Tile>(directionTiles);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -68,16 +71,30 @@ public class TileManager : MonoBehaviour
         {
             // Last tile was a directional step, now go back to centre
             currentTile = centreTile;
-
         }
         else
         {
             // We're at the centre - choose a direction
-            currentTile = directionTiles[Random.Range(0, directionTiles.Count)];
+            ChooseRandomDirection();
         }
 
         var bounds = GetTileHeadBounds(currentTile.GetDirection());
         currentTile.ActivateTile(bounds.xMin, bounds.xMax, bounds.zMin, bounds.zMax);
+    }
+
+    private void ChooseRandomDirection()
+    {
+        if (directionTilesLeft.Count == 0)
+        {
+            directionTilesLeft = new List<Tile>(directionTiles);
+        }
+
+        // Choose a tile, then remove it from the list to select from.
+        // This ensures we cover all directions in a random order, before
+        // starting again (using a truly random order can result in many 
+        // repeats of the same few directions in a row)
+        currentTile = directionTilesLeft[Random.Range(0, directionTilesLeft.Count)];
+        directionTilesLeft.Remove(currentTile);
     }
 
     private (float xMin, float xMax, float zMin, float zMax) GetTileHeadBounds(Tile.Direction direction)
