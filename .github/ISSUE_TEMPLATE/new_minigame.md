@@ -29,6 +29,8 @@ assignees: ''
 
 - [ ] Code is tested? (unit/integration).
 
+- [ ] Docs/Readme.md for level added, detailing how to do play testing and modify variables.
+
 - [ ] Feedback from play testing.
 
 - [ ] Sign off from clinical team.
