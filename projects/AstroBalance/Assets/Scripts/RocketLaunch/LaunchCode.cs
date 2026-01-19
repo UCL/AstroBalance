@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -7,12 +8,16 @@ public class LaunchCode: MonoBehaviour
 {
     private float timerDuration = 1.0F;
     private float counter = 1.0F;
-    private int countDownNumber = 0;
+    private string countDownNumber;
+    private List<string> countDownNumbers = new List<string> {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
 
     public TextMeshProUGUI countDownText;
     void Start()
     {
-        countDownNumber = Random.Range(0, 10);
+
+        countDownNumber = countDownNumbers[Random.Range(0, countDownNumbers.Count)];
+        // remove the number from the list to avoid selected a repeat number next time.
+        countDownNumbers.Remove(countDownNumber);
     }
     void Update()
     {
@@ -23,15 +28,11 @@ public class LaunchCode: MonoBehaviour
         else
         {
             counter = timerDuration;
-            int newCountDownNumber = Random.Range(0, 10);
-            // for the purposes of the game we want to make sure that the 
-            // time changes every second, so keep trying random until
-            // we get a new one.
-            while (newCountDownNumber == countDownNumber)
-                newCountDownNumber = Random.Range(0, 10);
+            string newCountDownNumber = countDownNumbers[Random.Range(0, countDownNumbers.Count)];
+            countDownNumbers.Remove(newCountDownNumber);
+            countDownNumbers.Add(countDownNumber);
             countDownNumber = newCountDownNumber;
-            UnityEngine.Debug.Log(countDownNumber.ToString());
-            countDownText.text = countDownNumber.ToString();
+            countDownText.text = countDownNumber;
             
         }
     }
