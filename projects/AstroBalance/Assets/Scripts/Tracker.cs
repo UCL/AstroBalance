@@ -11,7 +11,7 @@ public class Tracker : MonoBehaviour
     private int screenHeightMm;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
         gp = new GazePoint();
         rect.Left = 0;
@@ -39,6 +39,14 @@ public class Tracker : MonoBehaviour
         screenWidthMm = displaySizeMm.Width;
         screenHeightMm = displaySizeMm.Height;
         Debug.Log($"Detected screen size (mm) = {screenWidthMm}, {screenHeightMm}");
+
+        // call refresh once during awake, to ensure tracking data is available immediately
+        RefreshTrackingData();
+    }
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
     }
 
     private void OnDestroy()
@@ -49,13 +57,13 @@ public class Tracker : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        RefreshTrackingData();
+    }
+
+    private void RefreshTrackingData()
+    {
         TobiiGameIntegrationApi.Update();
-
-        if (TobiiGameIntegrationApi.TryGetLatestGazePoint(out gp))
-        {
-            //Debug.Log($"Gaze point = {gp.X}, {gp.Y}");
-        }
-
+        TobiiGameIntegrationApi.TryGetLatestGazePoint(out gp);
         TobiiGameIntegrationApi.TryGetLatestHeadPose(out hp);
     }
 

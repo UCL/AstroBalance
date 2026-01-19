@@ -100,3 +100,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d66d595d261912f4da2dd566feafa727, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  direction: 0
+  sparkleEffect: {fileID: 7527662519254007312, guid: ff9c245d1433378428b46b7d2095ab5d, type: 3}
