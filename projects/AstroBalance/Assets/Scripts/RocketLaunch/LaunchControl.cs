@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 using Tobii.GameIntegration.Net;
 using TrackerBuffers;
 
@@ -32,8 +33,12 @@ public class rocket_control : MonoBehaviour
     [SerializeField, Tooltip("The time in seconds to measure head speed over.")]
     private float speedTime = 1.0f;
 
+    [SerializeField, Tooltip("An optional status text window for debugging.")]
+    private TextMeshProUGUI statusText;
+
     private GazeBuffer gazeBuffer;
     private HeadPoseBuffer headPoseBuffer;
+    private bool pitch; //true if we're using pitch speed, false if we're using yaw speed.
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -41,6 +46,7 @@ public class rocket_control : MonoBehaviour
         tracker = FindFirstObjectByType<Tracker>();
         gazeBuffer = new GazeBuffer(gazeBufferCapacity);
         headPoseBuffer = new HeadPoseBuffer(headPoseBufferCapacity);
+	pitch = !pitch;
     }
 
     // Update is called once per frame
@@ -95,6 +101,16 @@ public class rocket_control : MonoBehaviour
         Debug.Log(gazeIsSteady ? "Gaze is steady" : "Gaze is not steady");
         float headSpeed = headPoseBuffer.getSpeed(speedTime);
         Debug.Log("Speed = " + headSpeed);
+	if (statusText != null)
+	{
+	    string speedText = pitch ? "Pitch Speed" : "Yaw Speed";
+	    string steadyText = gazeIsSteady ? "Gaze is steady" : "Gaze is not steady";
+	    statusText.text = "Look here -> " + targetObject.transform.position + "\n" +
+			       "Looking here -> " + gp.X + ", " + gp.Y + "\n" +
+			       speedText + " = " + headSpeed + "\n" +
+			       steadyText;
+
+	}
         var myEmitter = speedObject.emission;
         if (gazeIsSteady)
         {
