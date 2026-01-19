@@ -10,13 +10,13 @@ public class TileManager : MonoBehaviour
 {
 
     [SerializeField, Tooltip("Min number of mm of head movement to count as a step")]
-    private int minStepMm = 300;
+    private int minStepMm = 200;
     [SerializeField, Tooltip("Max number of mm of head movement to count as a step")]
     private int maxStepMm = 2000;
     [SerializeField, Tooltip(
         "Number of mm of head movement perpendicular to the step direction to accept e.g. if step is forward, how many mm do we allow them to move left/right?"
     )]
-    private int toleranceMm = 20;
+    private int toleranceMm = 200;
 
     private List<Tile> directionTiles = new List<Tile>();
     private Tile centreTile;
@@ -72,22 +72,22 @@ public class TileManager : MonoBehaviour
                 return (
                     xMin: restingHeadPosition.X - toleranceMm,
                     xMax: restingHeadPosition.X + toleranceMm,
-                    zMin: restingHeadPosition.Z + minStepMm,
-                    zMax: restingHeadPosition.Z + maxStepMm
+                    zMin: restingHeadPosition.Z - maxStepMm,
+                    zMax: restingHeadPosition.Z - minStepMm
                 );
 
             case Tile.Direction.Backward:
                 return (
                     xMin: restingHeadPosition.X - toleranceMm,
                     xMax: restingHeadPosition.X + toleranceMm,
-                    zMin: restingHeadPosition.Z - minStepMm,
-                    zMax: restingHeadPosition.Z - maxStepMm
+                    zMin: restingHeadPosition.Z + minStepMm,
+                    zMax: restingHeadPosition.Z + maxStepMm
                 );
 
             case Tile.Direction.Left:
                 return (
-                    xMin: restingHeadPosition.X - minStepMm,
-                    xMax: restingHeadPosition.X - maxStepMm,
+                    xMin: restingHeadPosition.X - maxStepMm,
+                    xMax: restingHeadPosition.X - minStepMm,
                     zMin: restingHeadPosition.Z - toleranceMm,
                     zMax: restingHeadPosition.Z + toleranceMm
                 );

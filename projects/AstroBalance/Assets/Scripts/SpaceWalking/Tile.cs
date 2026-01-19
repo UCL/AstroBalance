@@ -47,6 +47,7 @@ public class Tile : MonoBehaviour
         }
 
         Position headPosition = tracker.getHeadPosition();
+        //Debug.Log(headPosition.X + "," + headPosition.Y + "," + headPosition.Z);
         if (
             headPosition.X >= headXMin && 
             headPosition.X <= headXMax && 
@@ -69,10 +70,10 @@ public class Tile : MonoBehaviour
     public void ActivateTile(float xMin, float xMax, float zMin, float zMax)
     {
         Debug.Log("bounds");
-        Debug.Log(xMin);
-        Debug.Log(xMax);
-        Debug.Log(zMin);
-        Debug.Log(zMax);
+        Debug.Log("xmin " + xMin);
+        Debug.Log("xmax " + xMax);
+        Debug.Log("zmin " + zMin);
+        Debug.Log("zmax " + zMax);
 
         headXMin = xMin;
         headXMax = xMax;
