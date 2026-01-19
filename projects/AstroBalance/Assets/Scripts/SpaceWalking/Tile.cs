@@ -18,6 +18,7 @@ public class Tile : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Tracker tracker;
     private TileManager tileManager;
+    private SpaceWalkingManager gameManager;
     private GameObject selectedSparkle;
     private float headXMin;
     private float headXMax;
@@ -39,6 +40,7 @@ public class Tile : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         tracker = FindFirstObjectByType<Tracker>();
+        gameManager = FindFirstObjectByType<SpaceWalkingManager>();
         tileManager = GetComponentInParent<TileManager>();
     }
 
@@ -108,6 +110,14 @@ public class Tile : MonoBehaviour
 
         Destroy(selectedSparkle);
         spriteRenderer.color = Color.white;
+
+        if (direction == Direction.None)
+        {
+            // If the centre tile has been selected successfully, then we have completed a 
+            // step in and out + the score must be updated
+            gameManager.UpdateScore();
+        }
+
         tileManager.ActivateNextTile();
     }
 }

@@ -6,10 +6,10 @@ using UnityEngine;
 public class SpaceWalkingManager : MonoBehaviour
 {
 
-    //[SerializeField, Tooltip("Text mesh pro object for score text")]
-    //private TextMeshProUGUI scoreText;
+    [SerializeField, Tooltip("Text mesh pro object for score text")]
+    private TextMeshProUGUI scoreText;
     [SerializeField, Tooltip("Complete steps required to win")]
-    private int winningScore = 5;
+    private int winningScore = 20;
     [SerializeField, Tooltip("Screen shown upon winning the game")]
     private GameObject winScreen;
     [SerializeField, Tooltip("Direction tile manager")]
@@ -39,7 +39,7 @@ public class SpaceWalkingManager : MonoBehaviour
     public void UpdateScore()
     {
         score += 1;
-        //scoreText.text = score.ToString();
+        scoreText.text = score.ToString();
 
         if (score == winningScore)
         {
@@ -58,7 +58,7 @@ public class SpaceWalkingManager : MonoBehaviour
         {
             gameActive = false;
 
-            winText.text = "Congratulations! \n \n You matched " + score + " sequences";
+            winText.text = "Congratulations! \n \n You completed " + score + " steps";
             winScreen.SetActive(true);
         }
     }

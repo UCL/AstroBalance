@@ -1,9 +1,5 @@
-using NUnit.Framework;
-using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Tobii.GameIntegration.Net;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class TileManager : MonoBehaviour
@@ -77,7 +73,7 @@ public class TileManager : MonoBehaviour
         else
         {
             // We're at the centre - choose a direction
-            currentTile = directionTiles[UnityEngine.Random.Range(0, directionTiles.Count)];
+            currentTile = directionTiles[Random.Range(0, directionTiles.Count)];
         }
 
         var bounds = GetTileHeadBounds(currentTile.GetDirection());
