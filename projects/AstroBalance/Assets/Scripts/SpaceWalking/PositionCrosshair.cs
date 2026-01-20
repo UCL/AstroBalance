@@ -1,0 +1,52 @@
+using Tobii.GameIntegration.Net;
+using UnityEngine;
+
+public class PositionCrosshair : MonoBehaviour
+{
+
+    [SerializeField, Tooltip("Direction tile manager")]
+    private TileManager tileManager;
+
+    private Tracker tracker;
+    private float yScaling;
+    private float xScaling;
+    private Vector3 centrePosition;
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        tracker = FindFirstObjectByType<Tracker>();
+        centrePosition = tileManager.GetTilePosition(Tile.Direction.None);
+        float stepMm = tileManager.GetMinStepMm();
+        
+        // This assumes the forward / backward tile are equally spaced from the central tile
+        float yDistUnityUnits = tileManager.GetTilePosition(Tile.Direction.Forward).y - centrePosition.y;
+        yScaling = yDistUnityUnits / stepMm;
+
+        // This assumes the left / right tile are equally spaced from the central tile
+        float xDistUnityUnits = tileManager.GetTilePosition(Tile.Direction.Right).x - centrePosition.x;
+        xScaling = xDistUnityUnits / stepMm;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        Vector2 worldPos = getWorldPosition();
+        transform.position = new Vector3(worldPos.x, worldPos.y, 0);
+    }
+
+    /// <summary>
+    /// Convert current head position, to a point in unity world coordinates.
+    /// This should match the direction tile layout.
+    /// </summary>
+    private Vector2 getWorldPosition()
+    {
+        Position headPosition = tracker.getHeadPosition();
+        float xPosUnity = centrePosition.x + (headPosition.X * xScaling);
+        // We use the head Z position (i.e. distance to/from the screen) from the eye tracker, to set the
+        // position on the unity y axis
+        float yPosUnity = centrePosition.y - ((headPosition.Z - tileManager.GetStartDistance()) * yScaling);
+        
+        return new Vector2(xPosUnity, yPosUnity);
+    }
+}

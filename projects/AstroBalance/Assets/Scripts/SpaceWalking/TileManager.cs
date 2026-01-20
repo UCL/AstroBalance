@@ -6,13 +6,15 @@ public class TileManager : MonoBehaviour
 {
 
     [SerializeField, Tooltip("Min number of mm of head movement to count as a step")]
-    private int minStepMm = 50;
+    private int minStepMm = 200;
     [SerializeField, Tooltip("Max number of mm of head movement to count as a step")]
-    private int maxStepMm = 2000;
+    private int maxStepMm = 2000; // default to a very high value - we don't mind if the player steps too far
     [SerializeField, Tooltip(
         "Number of mm of head movement perpendicular to the step direction to accept e.g. if step is forward, how many mm do we allow them to move left/right?"
     )]
-    private int toleranceMm = 400;
+    private int toleranceMm = 100;
+    [SerializeField, Tooltip("Starting distance from screen in mm")]
+    private int startDistance = 700; 
 
     private List<Tile> directionTiles = new List<Tile>();
     private List<Tile> directionTilesLeft = new List<Tile>();
@@ -55,6 +57,39 @@ public class TileManager : MonoBehaviour
 
         // Tile needs a head position range to consider as a 'hit'
 
+    }
+
+    public int GetStartDistance()
+    {
+        return startDistance;
+    }
+
+    public Vector3 GetCentreTilePosition()
+    {
+        return centreTile.transform.position;
+    }
+
+    public Vector3 GetTilePosition(Tile.Direction direction)
+    {
+        Tile chosenTile = centreTile;
+
+        if (direction != Tile.Direction.None) {
+            foreach (Tile tile in directionTiles)
+            {
+                if (tile.GetDirection() == direction)
+                {
+                    chosenTile = tile;
+                    break;
+                }
+            }
+        }
+
+        return chosenTile.transform.position;
+    }
+
+    public int GetMinStepMm()
+    {
+        return minStepMm;
     }
 
     public void ActivateNextTile()
