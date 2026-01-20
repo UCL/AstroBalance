@@ -158,18 +158,18 @@ namespace TrackerBuffers
             return false;
         }
 
-        public float getSpeed(float speedTime)
+        public float getSpeed(float speedTime, bool usePitch)
         {
             float averageSpeed = 0f;
             if (size == 0)
                 return averageSpeed;
             int timeInMicroseconds = (int)(speedTime * 1e6);
-            CopyToTwoArrays(timeInMicroseconds, out float[] xPosArray, out float[] timeStampMicroSecondsArray);
+            CopyToTwoArrays(timeInMicroseconds, usePitch, out float[] posArray, out float[] timeStampMicroSecondsArray);
 
             float totalDistance = 0f;
-            for (int i = 0; i < xPosArray.Length - 1; i++)
+            for (int i = 0; i < posArray.Length - 1; i++)
             {
-                totalDistance += Math.Abs(xPosArray[i + 1] - xPosArray[i]);
+                totalDistance += Math.Abs(posArray[i + 1] - xPosArray[i]);
             }
 
             double totalTime = (timeStampMicroSecondsArray[0] - timeStampMicroSecondsArray[xPosArray.Length - 1]) / 1e6;
@@ -186,23 +186,24 @@ namespace TrackerBuffers
         }
 
         // <summary>
-        // creates two arrays, one of x positions and one of timestamps, from which we can
-        // calculate average speeds
-        private void CopyToTwoArrays(long speedTime, out float[] x_array, out float[] timestamp_array)
+        // creates two arrays, one of positions and one of timestamps, from which we can
+        // calculate average speed. Positions can either be yaw, or pitch, switched
+        // by the value of usePitches
+        private void CopyToTwoArrays(long speedTime, bool usePitches, out float[] pos_array, out float[] timestamp_array)
         {
             if (size == 0)
             {
-                x_array = new float[0];
+                pos_array = new float[0];
                 timestamp_array = new float[0];
                 return;
             }
             int _index = getLatestEntryIndex();
 
             int arrayIndex = 0;
-            x_array = new float[size];
+            pos_array = new float[size];
             timestamp_array = new float[size];
 
-            x_array[arrayIndex] = buffer[_index].Position.X;
+            pos_array[arrayIndex] = usePitches ? buffer[_index].Rotation.PitchDegrees : buffer[_index].Rotation.YawDegrees;
             timestamp_array[arrayIndex] = buffer[_index].TimeStampMicroSeconds;
             long timestamp = buffer[_index].TimeStampMicroSeconds - speedTime;
 
@@ -211,7 +212,7 @@ namespace TrackerBuffers
 
             while (_index != head && buffer[_index].TimeStampMicroSeconds >= timestamp)
             {
-                x_array[arrayIndex] = buffer[_index].Position.X;
+                pos_array[arrayIndex] = usePitches ? buffer[_index].Rotation.PitchDegrees : buffer[_index].Rotation.YawDegrees;
                 timestamp_array[arrayIndex] = buffer[_index].TimeStampMicroSeconds;
                 _index = _index > 0 ? _index - 1 : size - 1;
                 arrayIndex++;
@@ -219,12 +220,12 @@ namespace TrackerBuffers
             // Add head if it falls in time range
             if (size > 1 && _index == head && buffer[_index].TimeStampMicroSeconds >= timestamp)
             {
-                x_array[arrayIndex] = buffer[_index].Position.X;
+                pos_array[arrayIndex] = usePitches ? buffer[_index].Rotation.PitchDegrees : buffer[_index].Rotation.YawDegrees;
                 timestamp_array[arrayIndex] = buffer[_index].TimeStampMicroSeconds;
                 arrayIndex++;
             }
 
-            Array.Resize(ref x_array, arrayIndex);
+            Array.Resize(ref pos_array, arrayIndex);
             Array.Resize(ref timestamp_array, arrayIndex);
         }
 

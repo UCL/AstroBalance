@@ -38,7 +38,7 @@ public class rocket_control : MonoBehaviour
 
     private GazeBuffer gazeBuffer;
     private HeadPoseBuffer headPoseBuffer;
-    private bool pitch; //true if we're using pitch speed, false if we're using yaw speed.
+    private bool usePitch; //true if we're using pitch speed, false if we're using yaw speed.
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -46,7 +46,7 @@ public class rocket_control : MonoBehaviour
         tracker = FindFirstObjectByType<Tracker>();
         gazeBuffer = new GazeBuffer(gazeBufferCapacity);
         headPoseBuffer = new HeadPoseBuffer(headPoseBufferCapacity);
-	pitch = PitchOrYaw.GetPitch();
+        usePitch = PitchOrYaw.GetPitch();
     }
 
     // Update is called once per frame
@@ -63,8 +63,8 @@ public class rocket_control : MonoBehaviour
             headPose.Position.X = mousePos.x;
             headPose.Position.Y = 0f;
             headPose.Position.Z = 0.5f;
-            headPose.Rotation.YawDegrees = 0f;
-            headPose.Rotation.PitchDegrees = 0f;
+            headPose.Rotation.YawDegrees = mousePos.x;
+            headPose.Rotation.PitchDegrees = mousePos.y;
             headPose.Rotation.RollDegrees = 0f;
             headPose.TimeStampMicroSeconds = (long)(Time.timeSinceLevelLoad * 1000000);
         }
@@ -99,17 +99,17 @@ public class rocket_control : MonoBehaviour
             gazeIsSteady = gazeBuffer.gazeSteady(gazeTime, gazeTolerance);
         }
 
-        float headSpeed = headPoseBuffer.getSpeed(speedTime);
+        float headSpeed = headPoseBuffer.getSpeed(speedTime, usePitch);
 
-	    if (statusText != null)
-	    {
-	        string speedText = pitch ? "Pitch Speed" : "Yaw Speed";
-	        string steadyText = gazeIsSteady ? "Gaze is steady" : "Gaze is not steady";
-	        statusText.text = "Look here -> " + targetPoint.X + ", " + targetPoint.Y + "\n" +
-			           "Looking here -> " + gp.X + ", " + gp.Y + "\n" +
-			           speedText + " = " + headSpeed + "\n" +
-			        steadyText;
-	    }
+        if (statusText != null)
+        {
+            string speedText = usePitch ? "Pitch Speed" : "Yaw Speed";
+            string steadyText = gazeIsSteady ? "Gaze is steady" : "Gaze is not steady";
+            statusText.text = "Look here -> " + targetPoint.X + ", " + targetPoint.Y + "\n" +
+                              "Looking here -> " + gp.X + ", " + gp.Y + "\n" +
+                              speedText + " = " + headSpeed + "\n" +
+                              steadyText;
+        }
         var myEmitter = speedObject.emission;
         if (gazeIsSteady)
         {
