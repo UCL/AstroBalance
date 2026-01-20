@@ -22,12 +22,13 @@ public class TileManager : MonoBehaviour
     
     private Tile currentTile;
     private Tracker tracker;
-    private Position restingHeadPosition;
+    private Vector3 centralHeadPosition; // expected head position at central tile (matching tobii mm units)
 
 
     void Awake()
     {
         tracker = FindFirstObjectByType<Tracker>();
+        centralHeadPosition = new Vector3(0, 0, startDistance);
 
         Tile[] tiles = GetComponentsInChildren<Tile>();
         foreach (Tile tile in tiles)
@@ -94,14 +95,6 @@ public class TileManager : MonoBehaviour
 
     public void ActivateNextTile()
     {
-        // This is our first time selecting a tile - record the head position
-        if (currentTile == null)
-        {
-            restingHeadPosition = tracker.getHeadPosition();
-        }
-
-        Debug.Log("rest" + restingHeadPosition.X + "," + restingHeadPosition.Y + "," + restingHeadPosition.Z);
-
         if(currentTile != null && currentTile.GetDirection() != Tile.Direction.None)
         {
             // Last tile was a directional step, now go back to centre
@@ -139,47 +132,45 @@ public class TileManager : MonoBehaviour
         {
             case Tile.Direction.Forward:
                 return (
-                    xMin: restingHeadPosition.X - toleranceMm,
-                    xMax: restingHeadPosition.X + toleranceMm,
-                    zMin: restingHeadPosition.Z - maxStepMm,
-                    zMax: restingHeadPosition.Z - minStepMm
+                    xMin: centralHeadPosition.x - toleranceMm,
+                    xMax: centralHeadPosition.x + toleranceMm,
+                    zMin: centralHeadPosition.z - maxStepMm,
+                    zMax: centralHeadPosition.z - minStepMm
                 );
 
             case Tile.Direction.Backward:
                 return (
-                    xMin: restingHeadPosition.X - toleranceMm,
-                    xMax: restingHeadPosition.X + toleranceMm,
-                    zMin: restingHeadPosition.Z + minStepMm,
-                    zMax: restingHeadPosition.Z + maxStepMm
+                    xMin: centralHeadPosition.x - toleranceMm,
+                    xMax: centralHeadPosition.x + toleranceMm,
+                    zMin: centralHeadPosition.z+ minStepMm,
+                    zMax: centralHeadPosition.z + maxStepMm
                 );
 
             case Tile.Direction.Left:
                 return (
-                    xMin: restingHeadPosition.X - maxStepMm,
-                    xMax: restingHeadPosition.X - minStepMm,
-                    zMin: restingHeadPosition.Z - toleranceMm,
-                    zMax: restingHeadPosition.Z + toleranceMm
+                    xMin: centralHeadPosition.x - maxStepMm,
+                    xMax: centralHeadPosition.x - minStepMm,
+                    zMin: centralHeadPosition.z - toleranceMm,
+                    zMax: centralHeadPosition.z + toleranceMm
                 );
 
             case Tile.Direction.Right:
                 return (
-                    xMin: restingHeadPosition.X + minStepMm,
-                    xMax: restingHeadPosition.X + maxStepMm,
-                    zMin: restingHeadPosition.Z - toleranceMm,
-                    zMax: restingHeadPosition.Z + toleranceMm
+                    xMin: centralHeadPosition.x + minStepMm,
+                    xMax: centralHeadPosition.x + maxStepMm,
+                    zMin: centralHeadPosition.z - toleranceMm,
+                    zMax: centralHeadPosition.z + toleranceMm
                 );
 
             // central tile
             default:
                 return (
-                    xMin: restingHeadPosition.X - toleranceMm,
-                    xMax: restingHeadPosition.X + toleranceMm,
-                    zMin: restingHeadPosition.Z - toleranceMm,
-                    zMax: restingHeadPosition.Z + toleranceMm
+                    xMin: centralHeadPosition.x - toleranceMm,
+                    xMax: centralHeadPosition.x + toleranceMm,
+                    zMin: centralHeadPosition.z - toleranceMm,
+                    zMax: centralHeadPosition.z + toleranceMm
                 );
         }
     }
-
-    // Update is called once per frame
     
 }
