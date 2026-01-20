@@ -169,10 +169,10 @@ namespace TrackerBuffers
             float totalDistance = 0f;
             for (int i = 0; i < posArray.Length - 1; i++)
             {
-                totalDistance += Math.Abs(posArray[i + 1] - xPosArray[i]);
+                totalDistance += Math.Abs(posArray[i + 1] - posArray[i]);
             }
 
-            double totalTime = (timeStampMicroSecondsArray[0] - timeStampMicroSecondsArray[xPosArray.Length - 1]) / 1e6;
+            double totalTime = (timeStampMicroSecondsArray[0] - timeStampMicroSecondsArray[posArray.Length - 1]) / 1e6;
             averageSpeed = (float)(totalDistance / totalTime);
             return averageSpeed;
         }
