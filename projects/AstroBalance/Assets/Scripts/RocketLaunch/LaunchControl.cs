@@ -46,7 +46,7 @@ public class rocket_control : MonoBehaviour
         tracker = FindFirstObjectByType<Tracker>();
         gazeBuffer = new GazeBuffer(gazeBufferCapacity);
         headPoseBuffer = new HeadPoseBuffer(headPoseBufferCapacity);
-	    pitch = !pitch;
+	pitch = PitchOrYaw.GetPitch();
     }
 
     // Update is called once per frame
@@ -85,9 +85,9 @@ public class rocket_control : MonoBehaviour
             Debug.Log("No new head pose.");
         }
         bool gazeIsSteady = false;
+        GazePoint targetPoint = new GazePoint();
         if (targetObject != null)
         {
-            GazePoint targetPoint = new GazePoint();
             targetPoint.X = targetObject.transform.position.x;
             targetPoint.Y = targetObject.transform.position.y;
             targetPoint.X = 0f;
