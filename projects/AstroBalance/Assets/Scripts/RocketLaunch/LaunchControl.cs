@@ -21,6 +21,9 @@ public class rocket_control : MonoBehaviour
     [SerializeField, Tooltip("The capacity of the gaze buffer to use.")]
     private int gazeBufferCapacity = 100;
 
+    [SerializeField, Tooltip("The time (in seconds) to launch.")]
+    private int launchTime = 30;
+
     [SerializeField, Tooltip("The capacity of the head pose buffer to use.")]
     private int headPoseBufferCapacity = 10;
 
@@ -36,6 +39,13 @@ public class rocket_control : MonoBehaviour
     [SerializeField, Tooltip("An optional status text window for debugging.")]
     private TextMeshProUGUI statusText;
 
+    [SerializeField, Tooltip("Countdown timer prefab")]
+    private CountdownTimer timer;
+
+    [SerializeField, Tooltip("Screen shown upon winning the game")]
+    private GameObject winScreen;
+
+    private TextMeshProUGUI winText;
     private GazeBuffer gazeBuffer;
     private HeadPoseBuffer headPoseBuffer;
     private bool usePitch; //true if we're using pitch speed, false if we're using yaw speed.
@@ -43,15 +53,23 @@ public class rocket_control : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
+        winScreen.SetActive(false);
         tracker = FindFirstObjectByType<Tracker>();
         gazeBuffer = new GazeBuffer(gazeBufferCapacity);
         headPoseBuffer = new HeadPoseBuffer(headPoseBufferCapacity);
         usePitch = PitchOrYaw.GetPitch();
+        timer.StartCountdown(launchTime);
     }
 
     // Update is called once per frame
     void Update()
     {
+        // If time limit reached, end game
+        if (timer.GetTimeRemaining() <= 0)
+        {
+            EndGame();
+        }
         GazePoint gp = new GazePoint();
         HeadPose headPose = new HeadPose();
         if (useMouseForTracker)
@@ -119,5 +137,13 @@ public class rocket_control : MonoBehaviour
         {
             myEmitter.rateOverTime = 0f;
         }
+    }
+
+
+    private void EndGame()
+    {
+        winText.text = "Blast Off! Well Done.";
+        winScreen.SetActive(true);
+        this.enabled = false;
     }
 }
