@@ -5,29 +5,23 @@ using UnityEngine;
 public class TileManager : MonoBehaviour
 {
 
-    [SerializeField, Tooltip("Min number of mm of head movement to count as a step")]
-    private int minStepMm = 200;
-    [SerializeField, Tooltip("Max number of mm of head movement to count as a step")]
-    private int maxStepMm = 2000; // default to a very high value - we don't mind if the player steps too far
-    [SerializeField, Tooltip(
-        "Number of mm of head movement perpendicular to the step direction to accept e.g. if step is forward, how many mm do we allow them to move left/right?"
-    )]
+    [SerializeField, Tooltip("Number of mm of head movement to count as a step")]
+    private int stepMm = 300;
+    [SerializeField, Tooltip("stepMm +/- toleranceMm will still count as a step")]
     private int toleranceMm = 100;
     [SerializeField, Tooltip("Starting distance from screen in mm")]
-    private int startDistance = 700; 
+    private int startDistance = 900; 
 
     private List<Tile> directionTiles = new List<Tile>();
     private List<Tile> directionTilesLeft = new List<Tile>();
     private Tile centreTile;
     
     private Tile currentTile;
-    private Tracker tracker;
     private Vector3 centralHeadPosition; // expected head position at central tile (matching tobii mm units)
 
 
     void Awake()
     {
-        tracker = FindFirstObjectByType<Tracker>();
         centralHeadPosition = new Vector3(0, 0, startDistance);
 
         Tile[] tiles = GetComponentsInChildren<Tile>();
@@ -88,9 +82,9 @@ public class TileManager : MonoBehaviour
         return chosenTile.transform.position;
     }
 
-    public int GetMinStepMm()
+    public int GetStepMm()
     {
-        return minStepMm;
+        return stepMm;
     }
 
     public void ActivateNextTile()
@@ -127,50 +121,37 @@ public class TileManager : MonoBehaviour
 
     private (float xMin, float xMax, float zMin, float zMax) GetTileHeadBounds(Tile.Direction direction)
     {
+        var bounds = (
+            xMin: centralHeadPosition.x - toleranceMm,
+            xMax: centralHeadPosition.x + toleranceMm,
+            zMin: centralHeadPosition.z - toleranceMm,
+            zMax: centralHeadPosition.z + toleranceMm
+        );
 
         switch (direction)
         {
             case Tile.Direction.Forward:
-                return (
-                    xMin: centralHeadPosition.x - toleranceMm,
-                    xMax: centralHeadPosition.x + toleranceMm,
-                    zMin: centralHeadPosition.z - maxStepMm,
-                    zMax: centralHeadPosition.z - minStepMm
-                );
+                bounds.zMin -= stepMm;
+                bounds.zMax -= stepMm;
+                break;
 
             case Tile.Direction.Backward:
-                return (
-                    xMin: centralHeadPosition.x - toleranceMm,
-                    xMax: centralHeadPosition.x + toleranceMm,
-                    zMin: centralHeadPosition.z+ minStepMm,
-                    zMax: centralHeadPosition.z + maxStepMm
-                );
+                bounds.zMin += stepMm;
+                bounds.zMax += stepMm;
+                break;
 
             case Tile.Direction.Left:
-                return (
-                    xMin: centralHeadPosition.x - maxStepMm,
-                    xMax: centralHeadPosition.x - minStepMm,
-                    zMin: centralHeadPosition.z - toleranceMm,
-                    zMax: centralHeadPosition.z + toleranceMm
-                );
+                bounds.xMin -= stepMm;
+                bounds.xMax -= stepMm;
+                break;
 
             case Tile.Direction.Right:
-                return (
-                    xMin: centralHeadPosition.x + minStepMm,
-                    xMax: centralHeadPosition.x + maxStepMm,
-                    zMin: centralHeadPosition.z - toleranceMm,
-                    zMax: centralHeadPosition.z + toleranceMm
-                );
-
-            // central tile
-            default:
-                return (
-                    xMin: centralHeadPosition.x - toleranceMm,
-                    xMax: centralHeadPosition.x + toleranceMm,
-                    zMin: centralHeadPosition.z - toleranceMm,
-                    zMax: centralHeadPosition.z + toleranceMm
-                );
+                bounds.xMin += stepMm;
+                bounds.xMax += stepMm;
+                break;
         }
+
+        return bounds;
     }
     
 }

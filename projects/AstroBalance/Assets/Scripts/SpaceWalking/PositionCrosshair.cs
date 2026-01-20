@@ -17,7 +17,7 @@ public class PositionCrosshair : MonoBehaviour
     {
         tracker = FindFirstObjectByType<Tracker>();
         centrePosition = tileManager.GetTilePosition(Tile.Direction.None);
-        float stepMm = tileManager.GetMinStepMm();
+        float stepMm = tileManager.GetStepMm();
         
         // This assumes the forward / backward tile are equally spaced from the central tile
         float yDistUnityUnits = tileManager.GetTilePosition(Tile.Direction.Forward).y - centrePosition.y;
