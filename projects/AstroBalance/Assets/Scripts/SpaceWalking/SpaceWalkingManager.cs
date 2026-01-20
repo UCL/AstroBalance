@@ -1,6 +1,5 @@
-using System;
+using System.Collections;
 using TMPro;
-using Tobii.GameIntegration.Net;
 using UnityEngine;
 
 public class SpaceWalkingManager : MonoBehaviour
@@ -12,6 +11,8 @@ public class SpaceWalkingManager : MonoBehaviour
     private int winningScore = 20;
     [SerializeField, Tooltip("Screen shown upon winning the game")]
     private GameObject winScreen;
+    [SerializeField, Tooltip("Seconds until first tile activation")]
+    private int activationDelay = 1;
     [SerializeField, Tooltip("Direction tile manager")]
     private TileManager tileManager;
 
@@ -23,14 +24,19 @@ public class SpaceWalkingManager : MonoBehaviour
     void Start()
     {
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
-
-        tileManager.ActivateNextTile();
+        StartCoroutine(StartTileActivation());
     }
 
     // Update is called once per frame
     void Update()
     {
 
+    }
+
+    private IEnumerator StartTileActivation()
+    {
+        yield return new WaitForSeconds(activationDelay);
+        tileManager.ActivateNextTile();
     }
 
     /// <summary>

@@ -1,9 +1,5 @@
-using NUnit.Framework;
 using System.Collections;
 using Tobii.GameIntegration.Net;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.Tilemaps;
 using UnityEngine;
 
 public class Tile : MonoBehaviour
@@ -26,6 +22,7 @@ public class Tile : MonoBehaviour
     private float headZMax;
 
     private bool tileActive = false;
+    private bool allowScoring = false;
 
     public enum Direction
     {
@@ -78,7 +75,7 @@ public class Tile : MonoBehaviour
         return direction;
     }
 
-    public void ActivateTile(float xMin, float xMax, float zMin, float zMax)
+    public void ActivateTile(float xMin, float xMax, float zMin, float zMax, bool scored)
     {
         Debug.Log("bounds");
         Debug.Log("xmin " + xMin);
@@ -90,6 +87,7 @@ public class Tile : MonoBehaviour
         headXMax = xMax;
         headZMin = zMin;
         headZMax = zMax;
+        allowScoring = scored;
 
         Debug.Log("Highlighting" + gameObject.name);
         spriteRenderer.color = Color.red;
@@ -111,7 +109,7 @@ public class Tile : MonoBehaviour
         Destroy(selectedSparkle);
         spriteRenderer.color = Color.white;
 
-        if (direction == Direction.None)
+        if (direction == Direction.None && allowScoring)
         {
             // If the centre tile has been selected successfully, then we have completed a 
             // step in and out + the score must be updated

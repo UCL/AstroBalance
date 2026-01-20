@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Tobii.GameIntegration.Net;
 using UnityEngine;
 
 public class TileManager : MonoBehaviour
@@ -46,22 +45,11 @@ public class TileManager : MonoBehaviour
 
     void Update()
     {
-
-        // needs to separate centre tile from teh other tiles
-        // choose an ohter tile, then centre, then other, then centre...
-
-        // Tile needs a head position range to consider as a 'hit'
-
     }
 
     public int GetStartDistance()
     {
         return startDistance;
-    }
-
-    public Vector3 GetCentreTilePosition()
-    {
-        return centreTile.transform.position;
     }
 
     public Vector3 GetTilePosition(Tile.Direction direction)
@@ -89,9 +77,19 @@ public class TileManager : MonoBehaviour
 
     public void ActivateNextTile()
     {
-        if(currentTile != null && currentTile.GetDirection() != Tile.Direction.None)
+        bool scored = true;
+
+        if(currentTile == null)
         {
-            // Last tile was a directional step, now go back to centre
+            // This is our first tile (we need to start at the centre). It shouldn't 
+            // be scored, as it just ensures the player starts the game from the right
+            // position
+            currentTile = centreTile;
+            scored = false;
+        } 
+        else if (currentTile.GetDirection() != Tile.Direction.None)
+        {
+            // The last tile was a directional step, and now we need to go back to the centre
             currentTile = centreTile;
         }
         else
@@ -101,7 +99,13 @@ public class TileManager : MonoBehaviour
         }
 
         var bounds = GetTileHeadBounds(currentTile.GetDirection());
-        currentTile.ActivateTile(bounds.xMin, bounds.xMax, bounds.zMin, bounds.zMax);
+        currentTile.ActivateTile(
+            bounds.xMin, 
+            bounds.xMax, 
+            bounds.zMin, 
+            bounds.zMax,
+            scored
+        );
     }
 
     private void ChooseRandomDirection()

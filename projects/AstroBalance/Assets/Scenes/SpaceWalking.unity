@@ -253,6 +253,7 @@ MonoBehaviour:
   scoreText: {fileID: 1023074205}
   winningScore: 5
   winScreen: {fileID: 956792729}
+  activationDelay: 1
   tileManager: {fileID: 803069668}
 --- !u!4 &277788980
 Transform:
@@ -601,8 +602,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 367a8213c92a2c7428caea23f894ed50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minStepMm: 200
-  maxStepMm: 2000
+  stepMm: 300
   toleranceMm: 100
   startDistance: 900
 --- !u!1 &838870385
@@ -1594,5 +1594,5 @@ SceneRoots:
   - {fileID: 2094798014}
   - {fileID: 1375991393}
   - {fileID: 1712257677}
-  - {fileID: 277788980}
   - {fileID: 1571585002}
+  - {fileID: 277788980}
