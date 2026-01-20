@@ -1,14 +1,16 @@
-using UnityEngine;
 using TMPro;
 using Tobii.GameIntegration.Net;
 using TrackerBuffers;
-
+using UnityEngine;
 
 public class rocket_control : MonoBehaviour
 {
     Tracker tracker;
 
-    [SerializeField, Tooltip("Set to true to substitute the mouse for the eye tracker (for debugging purposes)")]
+    [
+        SerializeField,
+        Tooltip("Set to true to substitute the mouse for the eye tracker (for debugging purposes)")
+    ]
     private bool useMouseForTracker = false;
 
     [SerializeField, Tooltip("The game object the user is supposed to look at.")]
@@ -123,10 +125,22 @@ public class rocket_control : MonoBehaviour
         {
             string speedText = usePitch ? "Pitch Speed" : "Yaw Speed";
             string steadyText = gazeIsSteady ? "Gaze is steady" : "Gaze is not steady";
-            statusText.text = "Look here -> " + targetPoint.X + ", " + targetPoint.Y + "\n" +
-                              "Looking here -> " + gp.X + ", " + gp.Y + "\n" +
-                              speedText + " = " + headSpeed + "\n" +
-                              steadyText;
+            statusText.text =
+                "Look here -> "
+                + targetPoint.X
+                + ", "
+                + targetPoint.Y
+                + "\n"
+                + "Looking here -> "
+                + gp.X
+                + ", "
+                + gp.Y
+                + "\n"
+                + speedText
+                + " = "
+                + headSpeed
+                + "\n"
+                + steadyText;
         }
         var myEmitter = speedObject.emission;
         if (gazeIsSteady)
@@ -138,7 +152,6 @@ public class rocket_control : MonoBehaviour
             myEmitter.rateOverTime = 0f;
         }
     }
-
 
     private void EndGame()
     {
