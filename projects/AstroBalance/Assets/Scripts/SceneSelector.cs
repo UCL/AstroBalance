@@ -10,17 +10,14 @@ public static class PitchOrYaw
     public static bool GetPitch()
     {
         pitch = !pitch;
-	return pitch;
+        return pitch;
     }
 }
 
 public class SceneSelector : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-
-    }
+    void Start() { }
 
     public void LoadMenuScreen()
     {
@@ -48,8 +45,5 @@ public class SceneSelector : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-
-    }
+    void Update() { }
 }
