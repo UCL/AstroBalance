@@ -245,7 +245,7 @@ GameObject:
   - component: {fileID: 522649602}
   - component: {fileID: 522649601}
   m_Layer: 0
-  m_Name: CountDown
+  m_Name: LaunchCode
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
