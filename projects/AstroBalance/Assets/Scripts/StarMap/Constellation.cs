@@ -13,10 +13,14 @@ public class Constellation : MonoBehaviour
     private int maxIncorrectSequences = 2;
     [SerializeField, Tooltip("Number of seconds to highlight each star when showing a new sequence")]
     private int showSequenceHighlight = 1;
+    [SerializeField, Tooltip("Number of seconds to delay before showing a new star sequence")]
+    private float showSequenceDelay = 1f;
     [SerializeField, Tooltip("Number of seconds to highlight a correct sequence")]
     private float correctSequenceHighlight = 1.5f;
     [SerializeField, Tooltip("Number of seconds to highlight an incorrect sequence")]
     private float incorrectSequenceHighlight = 1f;
+    [SerializeField, Tooltip("Number of seconds to delay before highlighting a correct/incorrect sequence")]
+    private float completeSequenceDelay = 0.5f;
 
     private List<StarMapStar> stars;
     private StarMapManager gameManager;
@@ -114,7 +118,7 @@ public class Constellation : MonoBehaviour
 
         // wait for n seconds before highlighting the completed sequence,
         // makes it easier for the player to see the start
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(completeSequenceDelay);
 
         // highlight completed sequence, in different ways 
         // depending on correct vs incorrect guess
@@ -213,7 +217,7 @@ public class Constellation : MonoBehaviour
     {
         // wait for n seconds before highlighting the sequence, makes
         // it easier for the player to see the start
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(showSequenceDelay);
 
         foreach (StarMapStar star in starSequence)
         {
