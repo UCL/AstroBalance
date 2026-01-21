@@ -3,12 +3,11 @@ using UnityEngine;
 public class GazeCrosshair : MonoBehaviour
 {
     private Tracker tracker;
-    
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        tracker = FindFirstObjectByType<Tracker>(); 
+        tracker = FindFirstObjectByType<Tracker>();
     }
 
     // Update is called once per frame
@@ -28,7 +27,7 @@ public class GazeCrosshair : MonoBehaviour
         {
             worldPoint = tracker.getGazeWorldCoordinates();
         }
-        
+
         transform.position = new Vector3(worldPoint.x, worldPoint.y, transform.position.z);
     }
 }
