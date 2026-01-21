@@ -14,14 +14,9 @@ public class rocket_control : MonoBehaviour
     ]
     private bool useMouseForTracker = false;
 
-    [SerializeField, Tooltip("The game object the user is supposed to look at.")]
-    private GameObject targetObject;
 
     [SerializeField, Tooltip("The game object that changes size based on head speed.")]
     private ParticleSystem speedObject;
-
-    [SerializeField, Tooltip("The capacity of the gaze buffer to use.")]
-    private int gazeBufferCapacity = 100;
 
     [SerializeField, Tooltip("The time (in seconds) to launch.")]
     private int launchTime = 30;
@@ -29,17 +24,14 @@ public class rocket_control : MonoBehaviour
     [SerializeField, Tooltip("The capacity of the head pose buffer to use.")]
     private int headPoseBufferCapacity = 10;
 
-    [SerializeField, Tooltip("The time in seconds that the gaze should be steady for.")]
-    private float gazeTime = 3.0f;
-
-    [SerializeField, Tooltip("The tolerance in pixels that gaze needs to stay within.")]
-    private float gazeTolerance = 3.0f;
-
     [SerializeField, Tooltip("The time in seconds to measure head speed over.")]
     private float speedTime = 1.0f;
 
     [SerializeField, Tooltip("An optional status text window for debugging.")]
     private TextMeshProUGUI statusText;
+
+    [SerializeField, Tooltip("A test box for the instructions.")]
+    private TextMeshProUGUI instructionsText;
 
     [SerializeField, Tooltip("Countdown timer prefab")]
     private CountdownTimer timer;
@@ -48,7 +40,6 @@ public class rocket_control : MonoBehaviour
     private GameObject winScreen;
 
     private TextMeshProUGUI winText;
-    private GazeBuffer gazeBuffer;
     private HeadPoseBuffer headPoseBuffer;
     private bool usePitch; //true if we're using pitch speed, false if we're using yaw speed.
 
@@ -58,9 +49,9 @@ public class rocket_control : MonoBehaviour
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
         winScreen.SetActive(false);
         tracker = FindFirstObjectByType<Tracker>();
-        gazeBuffer = new GazeBuffer(gazeBufferCapacity);
         headPoseBuffer = new HeadPoseBuffer(headPoseBufferCapacity);
         usePitch = PitchOrYaw.GetPitch();
+        instructionsText.text = usePitch ? "Nod your head and repeat the code to launch the rocket!" : "Shake your head and repeat the code to launch the rocket!";
         timer.StartCountdown(launchTime);
     }
 
@@ -72,14 +63,10 @@ public class rocket_control : MonoBehaviour
         {
             EndGame();
         }
-        GazePoint gp = new GazePoint();
         HeadPose headPose = new HeadPose();
         if (useMouseForTracker)
         {
             var mousePos = Input.mousePosition;
-            gp.X = mousePos.x;
-            gp.Y = mousePos.y;
-            gp.TimeStampMicroSeconds = (long)(Time.timeSinceLevelLoad * 1000000);
             headPose.Position.X = mousePos.x;
             headPose.Position.Y = 0f;
             headPose.Position.Z = 0.5f;
@@ -90,65 +77,20 @@ public class rocket_control : MonoBehaviour
         }
         else
         {
-            gp = tracker.getGazePoint();
-            Vector2 worldGaze = tracker.ConvertGazePointToWorldCoordinates(gp);
-            gp.X = worldGaze.x;
-            gp.Y = worldGaze.y;
             headPose = tracker.getHeadPose();
         }
-        if (!gazeBuffer.addIfNew(gp))
-        {
-            Debug.Log("No new gaze point.");
-        }
-        if (!headPoseBuffer.addIfNew(headPose))
-        {
-            Debug.Log("No new head pose.");
-        }
-        bool gazeIsSteady = false;
-        GazePoint targetPoint = new GazePoint();
-        if (targetObject != null)
-        {
-            targetPoint.X = targetObject.transform.position.x;
-            targetPoint.Y = targetObject.transform.position.y;
-            gazeIsSteady = gazeBuffer.gazeSteady(gazeTime, gazeTolerance, targetPoint);
-        }
-        else
-        {
-            gazeIsSteady = gazeBuffer.gazeSteady(gazeTime, gazeTolerance);
-        }
+
+        headPoseBuffer.addIfNew(headPose);
 
         float headSpeed = headPoseBuffer.getSpeed(speedTime, usePitch);
 
         if (statusText != null)
         {
             string speedText = usePitch ? "Pitch Speed" : "Yaw Speed";
-            string steadyText = gazeIsSteady ? "Gaze is steady" : "Gaze is not steady";
-            statusText.text =
-                "Look here -> "
-                + targetPoint.X
-                + ", "
-                + targetPoint.Y
-                + "\n"
-                + "Looking here -> "
-                + gp.X
-                + ", "
-                + gp.Y
-                + "\n"
-                + speedText
-                + " = "
-                + headSpeed
-                + "\n"
-                + steadyText;
+            statusText.text = speedText + " = " + headSpeed;
         }
         var myEmitter = speedObject.emission;
-        if (gazeIsSteady)
-        {
-            myEmitter.rateOverTime = headSpeed;
-        }
-        else
-        {
-            myEmitter.rateOverTime = 0f;
-        }
+        myEmitter.rateOverTime = headSpeed;
     }
 
     private void EndGame()
