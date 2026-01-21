@@ -28,6 +28,11 @@ public class SceneSelector : MonoBehaviour
         SceneManager.LoadScene("Scenes/StarSeek");
     }
 
+    public void LoadSpaceWalking()
+    {
+        SceneManager.LoadScene("Scenes/SpaceWalking");
+    }
+
     public void QuitGame()
     {
         Application.Quit();

@@ -251,7 +251,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scoreText: {fileID: 1023074205}
-  winningScore: 5
+  winningScore: 20
   winScreen: {fileID: 956792729}
   activationDelay: 1
   tileManager: {fileID: 803069668}
