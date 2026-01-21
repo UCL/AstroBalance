@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using TMPro;
 using Tobii.GameIntegration.Net;
+using TrackerBuffers;
 using UnityEngine;
 using UnityEngine.UI;
-using TrackerBuffers;
 
 public class LaunchCode : MonoBehaviour
 {
@@ -13,16 +13,22 @@ public class LaunchCode : MonoBehaviour
         Tooltip("Set to true to substitute the mouse for the eye tracker (for debugging purposes)")
     ]
     private bool useMouseForTracker = false;
+
     [SerializeField, Tooltip("Time between new random numbers in seconds.")]
     private float timerDuration = 1.0F;
+
     [SerializeField, Tooltip("Sprites to display on the countdown.")]
     private List<Sprite> countDownSprites;
+
     [SerializeField, Tooltip("The capacity of the gaze buffer to use.")]
     private int gazeBufferCapacity = 100;
+
     [SerializeField, Tooltip("The time in seconds that the gaze should be steady for.")]
     private float gazeTime = 3.0f;
+
     [SerializeField, Tooltip("The tolerance in unity coordinates that gaze needs to stay within.")]
     private float gazeTolerance = 3.0f;
+
     [SerializeField, Tooltip("An optional status text window for debugging.")]
     private TextMeshProUGUI statusText;
 
@@ -33,9 +39,9 @@ public class LaunchCode : MonoBehaviour
     private float counter;
     private Sprite countDownSprite;
     private GazeBuffer gazeBuffer;
+
     void Start()
     {
-
         tracker = FindFirstObjectByType<Tracker>();
         countDownSprite = countDownSprites[Random.Range(0, countDownSprites.Count)];
         // remove the number from the list to avoid selected a repeat number next time.

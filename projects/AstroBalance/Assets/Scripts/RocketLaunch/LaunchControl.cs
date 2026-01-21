@@ -14,7 +14,6 @@ public class rocket_control : MonoBehaviour
     ]
     private bool useMouseForTracker = false;
 
-
     [SerializeField, Tooltip("The game object that changes size based on head speed.")]
     private ParticleSystem speedObject;
 
@@ -51,7 +50,9 @@ public class rocket_control : MonoBehaviour
         tracker = FindFirstObjectByType<Tracker>();
         headPoseBuffer = new HeadPoseBuffer(headPoseBufferCapacity);
         usePitch = PitchOrYaw.GetPitch();
-        instructionsText.text = usePitch ? "Nod your head and repeat the code to launch the rocket!" : "Shake your head and repeat the code to launch the rocket!";
+        instructionsText.text = usePitch
+            ? "Nod your head and repeat the code to launch the rocket!"
+            : "Shake your head and repeat the code to launch the rocket!";
         timer.StartCountdown(launchTime);
     }
 
@@ -82,7 +83,9 @@ public class rocket_control : MonoBehaviour
 
         headPoseBuffer.addIfNew(headPose);
 
-        float headSpeed = headPoseBuffer.getSpeed(speedTime, usePitch) - headPoseBuffer.getSpeed(speedTime, !usePitch);
+        float headSpeed =
+            headPoseBuffer.getSpeed(speedTime, usePitch)
+            - headPoseBuffer.getSpeed(speedTime, !usePitch);
         headSpeed = Mathf.Max(0, headSpeed); // Clamp to zero to avoid negative speeds
 
         if (statusText != null)
