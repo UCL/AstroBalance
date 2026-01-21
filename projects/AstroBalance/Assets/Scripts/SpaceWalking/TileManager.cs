@@ -16,7 +16,7 @@ public class TileManager : MonoBehaviour
     private Tile centreTile;
     
     private Tile currentTile;
-    private Vector3 centralHeadPosition; // expected head position at central tile (matching tobii mm units)
+    private Vector3 centralHeadPosition; // expected head position at central tile (tobii mm units)
 
 
     void Awake()
@@ -47,11 +47,20 @@ public class TileManager : MonoBehaviour
     {
     }
 
+    /// <summary>
+    /// Get the starting distance from the screen in mm.
+    /// </summary>
+    /// <returns>Distance in mm</returns>
     public int GetStartDistance()
     {
         return startDistance;
     }
 
+    /// <summary>
+    /// Get position of tile in unity world coordinates.
+    /// </summary>
+    /// <param name="direction">Direction of tile</param>
+    /// <returns>Tile position as Vector3{x, y, z}</returns>
     public Vector3 GetTilePosition(Tile.Direction direction)
     {
         Tile chosenTile = centreTile;
@@ -75,6 +84,10 @@ public class TileManager : MonoBehaviour
         return stepMm;
     }
 
+    /// <summary>
+    /// Activate the next tile - this will alternate between a directional tile
+    /// (up / down / left / right) and the central tile.
+    /// </summary>
     public void ActivateNextTile()
     {
         bool scored = true;
@@ -83,7 +96,7 @@ public class TileManager : MonoBehaviour
         {
             // This is our first tile (we need to start at the centre). It shouldn't 
             // be scored, as it just ensures the player starts the game from the right
-            // position
+            // position.
             currentTile = centreTile;
             scored = false;
         } 
@@ -123,6 +136,13 @@ public class TileManager : MonoBehaviour
         directionTilesLeft.Remove(currentTile);
     }
 
+    /// <summary>
+    /// Get head position bounds (in mm) to select a given tile direction.
+    /// We only give bounds on tobii's x axis (left-right) and z axis (towards /
+    /// away from the screen), as we don't care about head up/down movement (y axis).
+    /// </summary>
+    /// <param name="direction">Tile direction</param>
+    /// <returns>Bounds in mm as (xMin, xMax, zMin, zMax)</returns>
     private (float xMin, float xMax, float zMin, float zMax) GetTileHeadBounds(Tile.Direction direction)
     {
         var bounds = (

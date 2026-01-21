@@ -36,7 +36,7 @@ public class PositionCrosshair : MonoBehaviour
         if (tracker.isPlayerDetected())
         {
             spriteRenderer.enabled = true;
-            Vector2 worldPos = getWorldPosition();
+            Vector2 worldPos = GetWorldPosition();
             transform.position = new Vector3(worldPos.x, worldPos.y, 0);
         } 
         else
@@ -46,10 +46,10 @@ public class PositionCrosshair : MonoBehaviour
     }
 
     /// <summary>
-    /// Convert current head position, to a point in unity world coordinates.
-    /// This should match the direction tile layout.
+    /// Convert current head position to a point in unity world coordinates
+    /// (matching the directional tile layout)
     /// </summary>
-    private Vector2 getWorldPosition()
+    private Vector2 GetWorldPosition()
     {
         Position headPosition = tracker.getHeadPosition();
         float xPosUnity = centrePosition.x + (headPosition.X * xScaling);

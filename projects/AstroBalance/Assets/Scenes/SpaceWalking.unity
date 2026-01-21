@@ -211,6 +211,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Head Pose Debugger
       objectReference: {fileID: 0}
+    - target: {fileID: 3963520631102135163, guid: 61125f32186bebb4aadc71f1810d8ebd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

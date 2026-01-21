@@ -6,10 +6,12 @@ public class Tile : MonoBehaviour
 {
     [SerializeField, Tooltip("The step direction of this tile. Use None for the centre tile.")]
     private Direction direction;
-    [SerializeField, Tooltip("Particle system to show on pending tile selection.")]
+    [SerializeField, Tooltip("Particle system to show on tile selection.")]
     private GameObject sparkleEffect;
     [SerializeField, Tooltip("Number of seconds to show particle system.")]
     private int sparkleTime = 1;
+    [SerializeField, Tooltip("Tile activation colour")]
+    private Color activatedColor = Color.red;
 
     private SpriteRenderer spriteRenderer;
     private Tracker tracker;
@@ -24,6 +26,9 @@ public class Tile : MonoBehaviour
     private bool tileActive = false;
     private bool allowScoring = false;
 
+    /// <summary>
+    /// Direction of step required to select this tile.
+    /// </summary>
     public enum Direction
     {
         None,
@@ -55,7 +60,6 @@ public class Tile : MonoBehaviour
         }
 
         Position headPosition = tracker.getHeadPosition();
-        //Debug.Log(headPosition.X + "," + headPosition.Y + "," + headPosition.Z);
         if (
             headPosition.X >= headXMin && 
             headPosition.X <= headXMax && 
@@ -63,11 +67,8 @@ public class Tile : MonoBehaviour
             headPosition.Z <= headZMax
             )
         {
-            Debug.Log(headPosition.X + "," + headPosition.Y + "," + headPosition.Z);
-            Debug.Log("SELECTING TILE");
             SelectTile();
         }
-        
     }
 
     public Direction GetDirection()
@@ -75,23 +76,24 @@ public class Tile : MonoBehaviour
         return direction;
     }
 
+    /// <summary>
+    /// Activate the tile - allowing it to be selected via head movement 
+    /// into a given x / z range.
+    /// </summary>
+    /// <param name="xMin">Minimum head x position (mm) for selection</param>
+    /// <param name="xMax">Maximum head x position (mm) for selection</param>
+    /// <param name="zMin">Minumum head z position (mm) for selection</param>
+    /// <param name="zMax">Maximum head z position (mm) for selection</param>
+    /// <param name="scored">Whether selection of this tile adds to the game's score</param>
     public void ActivateTile(float xMin, float xMax, float zMin, float zMax, bool scored)
     {
-        Debug.Log("bounds");
-        Debug.Log("xmin " + xMin);
-        Debug.Log("xmax " + xMax);
-        Debug.Log("zmin " + zMin);
-        Debug.Log("zmax " + zMax);
-
         headXMin = xMin;
         headXMax = xMax;
         headZMin = zMin;
         headZMax = zMax;
         allowScoring = scored;
 
-        Debug.Log("Highlighting" + gameObject.name);
-        spriteRenderer.color = Color.red;
-
+        spriteRenderer.color = activatedColor;
         tileActive = true;
     }
 
