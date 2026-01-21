@@ -118,6 +118,9 @@ public class Tile : MonoBehaviour
             gameManager.UpdateScore();
         }
 
-        tileManager.ActivateNextTile();
+        if (gameManager.IsGameActive())
+        {
+            tileManager.ActivateNextTile();
+        }
     }
 }
