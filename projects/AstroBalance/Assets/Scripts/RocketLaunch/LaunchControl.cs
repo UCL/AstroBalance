@@ -2,6 +2,7 @@ using TMPro;
 using Tobii.GameIntegration.Net;
 using TrackerBuffers;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class rocket_control : MonoBehaviour
 {
@@ -17,7 +18,6 @@ public class rocket_control : MonoBehaviour
     private GameObject targetObject;
 
     [SerializeField, Tooltip("The game object that changes size based on head speed.")]
-    //private GameObject speedObject;
     private ParticleSystem speedObject;
 
     [SerializeField, Tooltip("The capacity of the gaze buffer to use.")]
@@ -110,8 +110,6 @@ public class rocket_control : MonoBehaviour
         {
             targetPoint.X = targetObject.transform.position.x;
             targetPoint.Y = targetObject.transform.position.y;
-            targetPoint.X = 0f;
-            targetPoint.Y = 0f;
             gazeIsSteady = gazeBuffer.gazeSteady(gazeTime, gazeTolerance, targetPoint);
         }
         else

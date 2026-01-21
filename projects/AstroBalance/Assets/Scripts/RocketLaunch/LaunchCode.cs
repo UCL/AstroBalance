@@ -8,29 +8,19 @@ public class LaunchCode : MonoBehaviour
 {
     private float timerDuration = 1.0F;
     private float counter = 1.0F;
-    private string countDownNumber;
-    private List<string> countDownNumbers = new List<string>
-    {
-        "0",
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-    };
+    private Sprite countDownSprite;
+    [SerializeField, Tooltip("Sprites to display on the countdown.")]
+    private List<Sprite> countDownSprites;
 
     [SerializeField]
     private TextMeshProUGUI countDownText;
 
     void Start()
     {
-        countDownNumber = countDownNumbers[Random.Range(0, countDownNumbers.Count)];
+        countDownSprite = countDownSprites[Random.Range(0, countDownSprites.Count)];
         // remove the number from the list to avoid selected a repeat number next time.
-        countDownNumbers.Remove(countDownNumber);
+        countDownSprites.Remove(countDownSprite);
+        gameObject.GetComponent<SpriteRenderer>().sprite = countDownSprite;
     }
 
     void Update()
@@ -42,11 +32,13 @@ public class LaunchCode : MonoBehaviour
         else
         {
             counter = timerDuration;
-            string newCountDownNumber = countDownNumbers[Random.Range(0, countDownNumbers.Count)];
-            countDownNumbers.Remove(newCountDownNumber);
-            countDownNumbers.Add(countDownNumber);
-            countDownNumber = newCountDownNumber;
-            countDownText.text = countDownNumber;
+
+            Sprite newCountDownSprite = countDownSprites[Random.Range(0, countDownSprites.Count)];
+            // remove the number from the list to avoid selected a repeat number next time.
+            countDownSprites.Remove(newCountDownSprite);
+            countDownSprites.Add(countDownSprite);
+            countDownSprite = newCountDownSprite;
+            gameObject.GetComponent<SpriteRenderer>().sprite = newCountDownSprite;
         }
     }
 }
