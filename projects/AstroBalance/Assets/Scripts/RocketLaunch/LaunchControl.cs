@@ -82,7 +82,8 @@ public class rocket_control : MonoBehaviour
 
         headPoseBuffer.addIfNew(headPose);
 
-        float headSpeed = headPoseBuffer.getSpeed(speedTime, usePitch);
+        float headSpeed = headPoseBuffer.getSpeed(speedTime, usePitch) - headPoseBuffer.getSpeed(speedTime, !usePitch);
+        headSpeed = Mathf.Max(0, headSpeed); // Clamp to zero to avoid negative speeds
 
         if (statusText != null)
         {
