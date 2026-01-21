@@ -7,6 +7,7 @@ public class Tracker : MonoBehaviour
     private GazePoint gp;
     private HeadPose hp;
     private TobiiRectangle rect;
+    private bool playerDetected;
     private int screenWidthMm;
     private int screenHeightMm;
 
@@ -65,6 +66,16 @@ public class Tracker : MonoBehaviour
         TobiiGameIntegrationApi.Update();
         TobiiGameIntegrationApi.TryGetLatestGazePoint(out gp);
         TobiiGameIntegrationApi.TryGetLatestHeadPose(out hp);
+        playerDetected = TobiiGameIntegrationApi.IsPresent();
+    }
+
+    /// <summary>
+    /// Return true if the eye tracker detects the player is present.
+    /// </summary>
+    /// <returns>true/false</returns>
+    public bool isPlayerDetected()
+    {
+        return playerDetected;
     }
 
     /// <summary>

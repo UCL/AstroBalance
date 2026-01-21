@@ -604,7 +604,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stepMm: 300
   toleranceMm: 100
-  startDistance: 900
+  startDistance: 800
 --- !u!1 &838870385
 GameObject:
   m_ObjectHideFlags: 0

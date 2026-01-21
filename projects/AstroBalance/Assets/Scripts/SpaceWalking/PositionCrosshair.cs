@@ -11,11 +11,13 @@ public class PositionCrosshair : MonoBehaviour
     private float yScaling;
     private float xScaling;
     private Vector3 centrePosition;
+    private SpriteRenderer spriteRenderer;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         tracker = FindFirstObjectByType<Tracker>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         centrePosition = tileManager.GetTilePosition(Tile.Direction.None);
         float stepMm = tileManager.GetStepMm();
         
@@ -31,8 +33,16 @@ public class PositionCrosshair : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector2 worldPos = getWorldPosition();
-        transform.position = new Vector3(worldPos.x, worldPos.y, 0);
+        if (tracker.isPlayerDetected())
+        {
+            spriteRenderer.enabled = true;
+            Vector2 worldPos = getWorldPosition();
+            transform.position = new Vector3(worldPos.x, worldPos.y, 0);
+        } 
+        else
+        {
+            spriteRenderer.enabled = false;
+        }
     }
 
     /// <summary>
