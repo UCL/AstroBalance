@@ -9,7 +9,7 @@ public class TileManager : MonoBehaviour
     [SerializeField, Tooltip("stepMm +/- toleranceMm will still count as a step")]
     private int toleranceMm = 100;
     [SerializeField, Tooltip("Starting distance from screen in mm")]
-    private int startDistance = 900; 
+    private int startDistance = 800; 
 
     private List<Tile> directionTiles = new List<Tile>();
     private List<Tile> directionTilesLeft = new List<Tile>();
