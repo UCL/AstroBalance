@@ -26,6 +26,9 @@ public class LaunchControl : MonoBehaviour
     [SerializeField, Tooltip("The time in seconds to measure head speed over.")]
     private float speedTime = 1.0f;
 
+    [SerializeField, Tooltip("A scale factor to control the ratio of head speed to flame size.")]
+    private float speedScale = 1.0f;
+
     [SerializeField, Tooltip("Launch acceleration factor. Bigger for faster launch.")]
     private float acceleration = 0.04f;
 
@@ -120,7 +123,7 @@ public class LaunchControl : MonoBehaviour
                 statusText.text = speedText + " = " + headSpeed;
             }
             var myEmitter = speedObject.emission;
-            myEmitter.rateOverTime = headSpeed;
+            myEmitter.rateOverTime = headSpeed * speedScale;
         }
     }
 
