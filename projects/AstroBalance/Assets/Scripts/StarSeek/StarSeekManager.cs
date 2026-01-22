@@ -5,10 +5,13 @@ public class StarSeekManager : MonoBehaviour
 {
     [SerializeField, Tooltip("Text mesh pro object for score text")]
     private TextMeshProUGUI scoreText;
+
     [SerializeField, Tooltip("Countdown timer prefab")]
     private CountdownTimer timer;
+
     [SerializeField, Tooltip("Screen shown upon winning the game")]
     private GameObject winScreen;
+
     [SerializeField, Tooltip("Game time limit in seconds")]
     private int timeLimit = 120;
 

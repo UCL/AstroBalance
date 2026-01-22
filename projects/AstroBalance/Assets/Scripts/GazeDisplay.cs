@@ -5,6 +5,7 @@ public class GazeDisplay : MonoBehaviour
 {
     private Tracker tracker;
     TextMeshProUGUI gazeText;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -17,7 +18,6 @@ public class GazeDisplay : MonoBehaviour
     {
         var gp = tracker.getGazePoint();
         var gpWorld = tracker.getGazeWorldCoordinates();
-
 
         gazeText.text = "Gaze Point: (" + gp.X + ", " + gp.Y + ") \n";
         gazeText.text += "Unity coords: (" + gpWorld.x + ", " + gpWorld.y + ") \n";

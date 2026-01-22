@@ -1,25 +1,36 @@
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static StarMapManager;
 
 public class Constellation : MonoBehaviour
 {
-    
     [SerializeField, Tooltip("Minimum number of stars in a sequence")]
     private int minSequenceLength = 2;
+
     [SerializeField, Tooltip("Number of incorrect sequences before reducing length")]
     private int maxIncorrectSequences = 2;
-    [SerializeField, Tooltip("Number of seconds to highlight each star when showing a new sequence")]
+
+    [
+        SerializeField,
+        Tooltip("Number of seconds to highlight each star when showing a new sequence")
+    ]
     private int showSequenceHighlight = 1;
+
     [SerializeField, Tooltip("Number of seconds to delay before showing a new star sequence")]
     private float showSequenceDelay = 1f;
+
     [SerializeField, Tooltip("Number of seconds to highlight a correct sequence")]
     private float correctSequenceHighlight = 1.5f;
+
     [SerializeField, Tooltip("Number of seconds to highlight an incorrect sequence")]
     private float incorrectSequenceHighlight = 1f;
-    [SerializeField, Tooltip("Number of seconds to delay before highlighting a correct/incorrect sequence")]
+
+    [
+        SerializeField,
+        Tooltip("Number of seconds to delay before highlighting a correct/incorrect sequence")
+    ]
     private float completeSequenceDelay = 0.5f;
 
     private List<StarMapStar> stars;
@@ -27,7 +38,7 @@ public class Constellation : MonoBehaviour
     private List<StarMapStar> currentSequence; // stars left to guess
     private List<StarMapStar> selectedStars; // stars selected so far
     private int currentSequenceLength;
-    private int incorrectSequences = 0;  // Incorrect sequences at current length
+    private int incorrectSequences = 0; // Incorrect sequences at current length
     private RepeatOrder order = RepeatOrder.Same;
 
     private void Awake()
@@ -42,17 +53,11 @@ public class Constellation : MonoBehaviour
         }
     }
 
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-    }
+    void Start() { }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    void Update() { }
 
     /// <summary>
     /// Choose a new random sequence of stars, and display it to the player.
@@ -120,13 +125,13 @@ public class Constellation : MonoBehaviour
         // makes it easier for the player to see the start
         yield return new WaitForSeconds(completeSequenceDelay);
 
-        // highlight completed sequence, in different ways 
+        // highlight completed sequence, in different ways
         // depending on correct vs incorrect guess
         float highlightTime;
         if (correctGuess)
         {
             highlightTime = correctSequenceHighlight;
-        } 
+        }
         else
         {
             highlightTime = incorrectSequenceHighlight;
@@ -175,9 +180,12 @@ public class Constellation : MonoBehaviour
     {
         incorrectSequences += 1;
 
-        // reduce length of next sequence, if the player 
+        // reduce length of next sequence, if the player
         // has had n incorrect guesses in a row
-        if (incorrectSequences == maxIncorrectSequences && currentSequenceLength > minSequenceLength)
+        if (
+            incorrectSequences == maxIncorrectSequences
+            && currentSequenceLength > minSequenceLength
+        )
         {
             currentSequenceLength -= 1;
             incorrectSequences = 0;

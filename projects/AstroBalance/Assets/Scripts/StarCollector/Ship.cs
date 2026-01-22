@@ -6,6 +6,7 @@ public class Ship : MonoBehaviour
 
     [SerializeField, Tooltip("Scaling factor for x velocity movement")]
     private float vByDegrees = 1f;
+
     [SerializeField, Tooltip("Scaling factor for x movement")]
     private float xByDegrees = 0.1f;
 
