@@ -194,7 +194,7 @@ namespace TrackerBuffers
         public float getSpeed(float speedTime, bool usePitch)
         {
             float averageSpeed = 0f;
-            if (size == 0)
+            if (size < 2)
                 return averageSpeed;
             int timeInMicroseconds = (int)(speedTime * 1e6);
             CopyToTwoArrays(
