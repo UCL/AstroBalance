@@ -6,7 +6,7 @@ and gaze steadiness.
 ## Main objects / values to edit during play testing
 
 - **LaunchController**: Varies flame size depending on head motion and contains overall timer.
-  - Launch time The overall time in seconds that the level takes.
+  - Launch time: The overall time in seconds that the level takes.
   - Head Pose Buffer Capacity (n) and speed time (s), head speed is measured as the average change in pitch or yaw over the time period speed time. The buffer will need to be sufficiently large to support the time based on game frame rate.
   
 
