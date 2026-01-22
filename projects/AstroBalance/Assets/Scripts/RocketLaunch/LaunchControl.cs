@@ -46,6 +46,7 @@ public class LaunchControl : MonoBehaviour
     private bool usePitch; //true if we're using pitch speed, false if we're using yaw speed.
     private RocketLaunchData rocketLaunchData;
     private float rocketSpeed;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
