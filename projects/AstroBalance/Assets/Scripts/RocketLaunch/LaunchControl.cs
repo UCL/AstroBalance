@@ -41,6 +41,7 @@ public class LaunchControl : MonoBehaviour
     private TextMeshProUGUI winText;
     private HeadPoseBuffer headPoseBuffer;
     private bool usePitch; //true if we're using pitch speed, false if we're using yaw speed.
+    private RocketLaunchData rocketLaunchData;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -49,7 +50,17 @@ public class LaunchControl : MonoBehaviour
         winScreen.SetActive(false);
         tracker = FindFirstObjectByType<Tracker>();
         headPoseBuffer = new HeadPoseBuffer(headPoseBufferCapacity);
-        usePitch = PitchOrYaw.GetPitch();
+        rocketLaunchData = new RocketLaunchData();
+        RocketLaunchData.SaveData lastGameData = rocketLaunchData.Load();
+        if (lastGameData == null)
+        {
+            usePitch = true;
+        }
+        else
+        {
+            usePitch = !lastGameData.pitch;
+        }
+
         instructionsText.text = usePitch
             ? "Nod your head and repeat the code to launch the rocket!"
             : "Shake your head and repeat the code to launch the rocket!";
@@ -101,6 +112,7 @@ public class LaunchControl : MonoBehaviour
     {
         winText.text = "Blast Off! Well Done.";
         winScreen.SetActive(true);
+        rocketLaunchData.Save(usePitch);
         this.enabled = false;
     }
 }

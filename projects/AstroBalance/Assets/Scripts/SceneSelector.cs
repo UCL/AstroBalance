@@ -1,18 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-// A static class to enable us to alternate between using pitch and yaw control
-// on the rocket launch game.
-public static class PitchOrYaw
-{
-    private static bool pitch = false;
-
-    public static bool GetPitch()
-    {
-        pitch = !pitch;
-        return pitch;
-    }
-}
 
 public class SceneSelector : MonoBehaviour
 {
