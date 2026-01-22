@@ -1,6 +1,6 @@
 # Rocket Launch
 
-The rocker launch mini-game increases the size of the rocket launch flame based on head movement (pitch or yaw)
+The rocket launch mini-game increases the size of the rocket launch flame based on head movement (pitch or yaw)
 and gaze steadiness.
 
 ## Main objects / values to edit during play testing
