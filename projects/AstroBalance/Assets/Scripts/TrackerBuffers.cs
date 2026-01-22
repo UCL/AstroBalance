@@ -176,7 +176,7 @@ namespace TrackerBuffers
             : base(capacity, true) { }
 
         // <summary>
-        // Adds a new gaze point to the buffer if it has a different timestamp to the last added gaze point.
+        // Adds a new head pose to the buffer if it has a different timestamp to the last added head pose.
         // returns true if the point was added, false otherwise.
         public bool addIfNew(HeadPose item)
         {
