@@ -26,6 +26,9 @@ public class LaunchControl : MonoBehaviour
     [SerializeField, Tooltip("The time in seconds to measure head speed over.")]
     private float speedTime = 1.0f;
 
+    [SerializeField, Tooltip("Launch acceleration factor. Bigger for faster launch.")]
+    private float acceleration = 0.04f;
+
     [SerializeField, Tooltip("An optional status text window for debugging.")]
     private TextMeshProUGUI statusText;
 
@@ -42,10 +45,11 @@ public class LaunchControl : MonoBehaviour
     private HeadPoseBuffer headPoseBuffer;
     private bool usePitch; //true if we're using pitch speed, false if we're using yaw speed.
     private RocketLaunchData rocketLaunchData;
-
+    private float rocketSpeed;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        rocketSpeed = 0f;
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
         winScreen.SetActive(false);
         tracker = FindFirstObjectByType<Tracker>();
@@ -73,39 +77,50 @@ public class LaunchControl : MonoBehaviour
         // If time limit reached, end game
         if (timer.GetTimeRemaining() <= 0)
         {
-            EndGame();
-        }
-        HeadPose headPose = new HeadPose();
-        if (useMouseForTracker)
-        {
-            var mousePos = Input.mousePosition;
-            headPose.Position.X = mousePos.x;
-            headPose.Position.Y = 0f;
-            headPose.Position.Z = 0.5f;
-            headPose.Rotation.YawDegrees = mousePos.x;
-            headPose.Rotation.PitchDegrees = mousePos.y;
-            headPose.Rotation.RollDegrees = 0f;
-            headPose.TimeStampMicroSeconds = (long)(Time.timeSinceLevelLoad * 1000000);
+            if (transform.position.y < 10)
+            {
+                rocketSpeed += Time.deltaTime * acceleration;
+                transform.Translate(Vector3.up * rocketSpeed);
+            }
+            else
+            {
+                EndGame();
+            }
         }
         else
         {
-            headPose = tracker.getHeadPose();
+            HeadPose headPose = new HeadPose();
+            if (useMouseForTracker)
+            {
+                var mousePos = Input.mousePosition;
+                headPose.Position.X = mousePos.x;
+                headPose.Position.Y = 0f;
+                headPose.Position.Z = 0.5f;
+                headPose.Rotation.YawDegrees = mousePos.x;
+                headPose.Rotation.PitchDegrees = mousePos.y;
+                headPose.Rotation.RollDegrees = 0f;
+                headPose.TimeStampMicroSeconds = (long)(Time.timeSinceLevelLoad * 1000000);
+            }
+            else
+            {
+                headPose = tracker.getHeadPose();
+            }
+
+            headPoseBuffer.addIfNew(headPose);
+
+            float headSpeed =
+                headPoseBuffer.getSpeed(speedTime, usePitch)
+                - headPoseBuffer.getSpeed(speedTime, !usePitch);
+            headSpeed = Mathf.Max(0, headSpeed); // Clamp to zero to avoid negative speeds
+
+            if (statusText != null)
+            {
+                string speedText = usePitch ? "Pitch Speed" : "Yaw Speed";
+                statusText.text = speedText + " = " + headSpeed;
+            }
+            var myEmitter = speedObject.emission;
+            myEmitter.rateOverTime = headSpeed;
         }
-
-        headPoseBuffer.addIfNew(headPose);
-
-        float headSpeed =
-            headPoseBuffer.getSpeed(speedTime, usePitch)
-            - headPoseBuffer.getSpeed(speedTime, !usePitch);
-        headSpeed = Mathf.Max(0, headSpeed); // Clamp to zero to avoid negative speeds
-
-        if (statusText != null)
-        {
-            string speedText = usePitch ? "Pitch Speed" : "Yaw Speed";
-            statusText.text = speedText + " = " + headSpeed;
-        }
-        var myEmitter = speedObject.emission;
-        myEmitter.rateOverTime = headSpeed;
     }
 
     private void EndGame()
