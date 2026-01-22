@@ -49,7 +49,7 @@ namespace TrackerBuffers
         // param y_target (in nan we use the mean)
         public bool gazeSteady(float time, float tolerance, GazePoint targetGazePoint)
         {
-            if (size == 0)
+            if (size < 2)
                 return false;
             int timeInMicroseconds = (int)(time * 1e6);
             CopyToTwoArrays(timeInMicroseconds, out float[] x_array, out float[] y_array);
