@@ -4,7 +4,7 @@ using TrackerBuffers;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class rocket_control : MonoBehaviour
+public class LaunchControl : MonoBehaviour
 {
     Tracker tracker;
 
