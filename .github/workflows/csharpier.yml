@@ -1,0 +1,18 @@
+name: Check Style
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+jobs:
+  check_formatting:
+    runs-on: ubuntu-slim
+    name: Run csharpier
+    steps:
+      
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '8.0.x'
+      - run: |
+          dotnet tool restore
+          dotnet csharpier check .
