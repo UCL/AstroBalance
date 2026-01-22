@@ -16,7 +16,19 @@ Documentation for each mini-game is provided under [`docs/`](/docs/), focusing o
 
 ## Developing
 
-We use [csharpier](https://csharpier.com/) to enforce code style on pull requests. To help with formatting we have added a pre-commit configuration in `.pre-commit-config.yaml`. We have not added pre-commit hooks, so you can commit to a branch without a forced style check. You can run `pre-commit` to reformat staged files, or `pre-commit run --all-files` at any time to fix all files. We recommend using [prek](https://github.com/j178/prek) as a faster alternative `prek` or `prek run --all-files`.
+We use [csharpier](https://csharpier.com/) to enforce code style on pull requests. To help with formatting we have added a pre-commit configuration in `.pre-commit-config.yaml`. We have not added pre-commit hooks, so you can commit to a branch without a forced style check, but you will need to fix style errors before merging to main. 
+
+We recommend using [prek](https://github.com/j178/prek) as an alternative to pre-commit. 
+Run 
+```
+prek                  # to reformat staged files, or
+prek run --all-files  # at any time to fix all files.
+```
+Or with pre-commit 
+```
+pre-commit                  # to reformat staged files, or
+pre-commit run --all-files  # at any time to fix all files.
+```
 
 ## Acknowledgements
 
