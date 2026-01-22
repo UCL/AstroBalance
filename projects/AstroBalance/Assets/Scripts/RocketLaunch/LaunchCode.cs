@@ -1,10 +1,8 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using TMPro;
 using Tobii.GameIntegration.Net;
 using TrackerBuffers;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class LaunchCode : MonoBehaviour
 {
