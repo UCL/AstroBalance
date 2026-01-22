@@ -68,7 +68,7 @@ namespace TrackerBuffers
         // param tolerance (float the allowable range)
         public bool gazeSteady(float time, float tolerance)
         {
-            if (size == 0)
+            if (size < 2)
                 return false;
             int timeInMicroseconds = (int)(time * 1e6);
             CopyToTwoArrays(timeInMicroseconds, out float[] x_array, out float[] y_array);
