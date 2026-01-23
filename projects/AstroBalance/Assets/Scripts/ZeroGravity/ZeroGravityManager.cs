@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
@@ -12,8 +13,12 @@ public class ZeroGravityManager : MonoBehaviour
     private CountdownTimer timer;
     [SerializeField, Tooltip("Avatar showing poses for player to copy")]
     private PoseAvatar poseAvatar;
+    [SerializeField, Tooltip("Number of seconds to demonstrate each pose")]
+    private int poseDisplaySeconds = 20;
+    [SerializeField, Tooltip("Number of seconds of countdown to copy pose")]
+    private int poseCountdownSeconds = 3;
     [SerializeField, Tooltip("Number of seconds the player must hold each pose")]
-    private int poseSeconds = 20;
+    private int poseHoldSeconds = 20;
 
     private TextMeshProUGUI winText;
     private int score = 0;
@@ -24,7 +29,7 @@ public class ZeroGravityManager : MonoBehaviour
     {
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
         poseAvatar.ShowNextSprite();
-        timer.StartCountdown(poseSeconds);
+        timer.StartCountdown(poseHoldSeconds);
     }
 
     // Update is called once per frame
@@ -35,13 +40,24 @@ public class ZeroGravityManager : MonoBehaviour
             bool poseAvailable = poseAvatar.ShowNextSprite();
             if (poseAvailable)
             {
-                timer.StartCountdown(poseSeconds);
+                timer.StartCountdown(poseHoldSeconds);
             } else
             {
                 EndGame();
             }
         }
     }
+
+    private IEnumerator StartNextPose()
+    {
+        poseAvatar.ShowNextSprite();
+        yield return new WaitForSeconds(poseDisplaySeconds);
+
+
+
+      
+    }
+
 
     /// <summary>
     /// Increase score (successfully guessed sequences) by one.

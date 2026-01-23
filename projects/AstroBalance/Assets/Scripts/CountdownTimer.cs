@@ -3,13 +3,20 @@ using UnityEngine;
 
 public class CountdownTimer : MonoBehaviour
 {
-    private TextMeshProUGUI timerText;
+    [SerializeField, Tooltip("Format of time text")]
+    private TimeFormat timeFormat = TimeFormat.MinutesSeconds;
 
+    private TextMeshProUGUI timerText;
     private int timeLimit;  // total time limit in seconds
     private float timerStart;  // time when timer was started
     private float timeRemaining; // time remaining in seconds
-
     private bool timerRunning = false;
+
+    private enum TimeFormat
+    {
+        MinutesSeconds,
+        Seconds,    
+    }
 
     private void Awake()
     {
@@ -85,6 +92,12 @@ public class CountdownTimer : MonoBehaviour
         if (secondsLeft < 0)
         {
             secondsLeft = 0;
+        }
+
+        if (timeFormat == TimeFormat.Seconds)
+        {
+            timerText.text = Mathf.CeilToInt(secondsLeft).ToString();
+            return;
         }
 
         float minutes = Mathf.FloorToInt(secondsLeft / 60);
