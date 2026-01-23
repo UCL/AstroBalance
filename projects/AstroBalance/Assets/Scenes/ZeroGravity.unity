@@ -1419,7 +1419,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 157, y: -87}
+  m_AnchoredPosition: {x: 1502, y: -87}
   m_SizeDelta: {x: 229.31812, y: 87.22803}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1576040584 stripped
@@ -1464,7 +1464,7 @@ MonoBehaviour:
   poseAvatar: {fileID: 581241827}
   poseDisplaySeconds: 2
   poseCountdownSeconds: 3
-  poseHoldSeconds: 5
+  poseHoldSeconds: 20
   scorePerTime: 5
   holdTimeIncrement: 1
 --- !u!4 &1607611137
@@ -1941,6 +1941,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0425828130a806444a08fd01bc6cbfc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  poseHoldTimer: {fileID: 1701992181}
   headXScaling: 0.01
   headXTolerance: 100
   inRangeColor: {r: 1, g: 1, b: 1, a: 1}

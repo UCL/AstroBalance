@@ -80,6 +80,14 @@ public class CountdownTimer : MonoBehaviour
     }
 
     /// <summary>
+    /// Get total time limit or current countdown.
+    /// </summary>
+    public float GetTimeLimit()
+    {
+        return timeLimit;
+    }
+
+    /// <summary>
     /// Get the time when the timer was started
     /// </summary>
     public float GetTimerStart()

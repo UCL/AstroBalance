@@ -69,9 +69,9 @@ public class ZeroGravityManager : MonoBehaviour
 
     private IEnumerator DisplayNextPose()
     {
-        activeTimer = ActiveTimer.None;
         swayLine.DeactivateScoring();
-
+        activeTimer = ActiveTimer.None;
+        
         poseHoldTimer.gameObject.SetActive(false);
         poseCountdownTimer.gameObject.SetActive(false);
         scoreDisplay.SetActive(false);
@@ -98,8 +98,8 @@ public class ZeroGravityManager : MonoBehaviour
         poseAvatar.HideExplanationText();
 
         poseHoldTimer.StartCountdown(poseHoldSeconds);
-        activeTimer = ActiveTimer.PoseHold;
         swayLine.ActivateScoring(holdTimeIncrement);
+        activeTimer = ActiveTimer.PoseHold;
     }
 
 
