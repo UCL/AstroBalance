@@ -1,7 +1,6 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
 
 public class ZeroGravityManager : MonoBehaviour
 {
@@ -67,6 +66,9 @@ public class ZeroGravityManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Display the next pose in the sequence, and start countdown to pose hold.
+    /// </summary>
     private IEnumerator DisplayNextPose()
     {
         swayLine.DeactivateScoring();
@@ -87,7 +89,10 @@ public class ZeroGravityManager : MonoBehaviour
         poseCountdownTimer.StartCountdown(poseCountdownSeconds);
         activeTimer = ActiveTimer.PoseCountdown;
     }
-
+    
+    /// <summary>
+    /// Activate the hold pose timer and allow scoring when head is in range.
+    /// </summary>
     private void HoldPose()
     {
         activeTimer = ActiveTimer.None;

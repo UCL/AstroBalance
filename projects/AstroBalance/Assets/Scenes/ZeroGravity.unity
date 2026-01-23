@@ -1466,7 +1466,7 @@ MonoBehaviour:
   poseAvatar: {fileID: 581241827}
   poseDisplaySeconds: 2
   poseCountdownSeconds: 3
-  poseHoldSeconds: 5
+  poseHoldSeconds: 20
   scorePerTime: 5
   holdTimeIncrement: 1
 --- !u!4 &1607611137

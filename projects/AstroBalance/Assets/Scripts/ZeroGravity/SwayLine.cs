@@ -18,7 +18,7 @@ public class SwayLine : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private ZeroGravityManager gameManager;
     private bool scoringActive = false;
-    private float timeIncrement;
+    private float timeIncrement; // time increment required to score
     private float timeOfNextScoreIncrease; // time remaining on pose hold timer at next score increase
     private bool headOutOfRange = false;
 
@@ -30,6 +30,11 @@ public class SwayLine : MonoBehaviour
         gameManager = FindFirstObjectByType<ZeroGravityManager>();
     }
 
+    /// <summary>
+    /// Allow scoring when the head is in range (and no scoring when it is out of range).
+    /// </summary>
+    /// <param name="timeLimit">Total time limit of this pose</param>
+    /// <param name="timeIncrement">Time in seconds head must stay in range to score</param>
     public void ActivateScoring(int timeLimit, float timeIncrement)
     {
         this.timeIncrement = timeIncrement;
@@ -40,6 +45,10 @@ public class SwayLine : MonoBehaviour
         scoringActive = true;
     }
 
+    /// <summary>
+    /// Deactivate all scoring. The score will remain the same whether the head
+    /// is in range or not.
+    /// </summary>
     public void DeactivateScoring()
     {
         // One last call to HandleScoring(), to make sure all relevant hold
