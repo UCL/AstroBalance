@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Tobii.GameIntegration.Net;
 using UnityEngine;
 
@@ -14,12 +15,29 @@ public class SwayLine : MonoBehaviour
 
     private Tracker tracker;
     private SpriteRenderer spriteRenderer;
+    private ZeroGravityManager gameManager;
+    private bool scoringActive = false;
+    private float timeIncrement;
+    private float timeToNextScoreIncrease;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         tracker = FindFirstObjectByType<Tracker>();   
         spriteRenderer = GetComponent<SpriteRenderer>();
+        gameManager = FindFirstObjectByType<ZeroGravityManager>();
+    }
+
+    public void ActivateScoring(float timeIncrement)
+    {
+        this.timeIncrement = timeIncrement;
+        timeToNextScoreIncrease = timeIncrement;
+        scoringActive = true;
+    }
+
+    public void DeactivateScoring()
+    {
+        scoringActive = false;
     }
 
     // Update is called once per frame
@@ -29,12 +47,16 @@ public class SwayLine : MonoBehaviour
         float xPosMm = currentHeadPose.Position.X;
         float rollDegrees = currentHeadPose.Rotation.RollDegrees;
 
-        if (Mathf.Abs(xPosMm) >= headXTolerance)
+        bool outOfRange = Mathf.Abs(xPosMm) >= headXTolerance;
+
+        if (outOfRange)
         {
             spriteRenderer.color = outRangeColor;
-        } else
+        } 
+        else
         {
             spriteRenderer.color = inRangeColor;
+            HandleScoring();
         }
         
         // We only move the sway line on the x axis - left/right (we don't care about
@@ -43,5 +65,20 @@ public class SwayLine : MonoBehaviour
 
         // We rotate only with head roll
         transform.eulerAngles = new Vector3(0, 0, -rollDegrees);
+    }
+
+    private void HandleScoring()
+    {
+        if (!scoringActive)
+        {
+            return;
+        }
+
+        timeToNextScoreIncrease -= Time.deltaTime;
+        if (timeToNextScoreIncrease <= 0)
+        {
+            gameManager.UpdateScore();
+            timeToNextScoreIncrease = timeIncrement;
+        }
     }
 }

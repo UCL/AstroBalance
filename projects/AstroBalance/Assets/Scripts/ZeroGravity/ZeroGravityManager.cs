@@ -13,6 +13,8 @@ public class ZeroGravityManager : MonoBehaviour
     private CountdownTimer poseHoldTimer;
     [SerializeField, Tooltip("Pose countdown timer")]
     private CountdownTimer poseCountdownTimer;
+    [SerializeField, Tooltip("Sway line game object")]
+    private SwayLine swayLine;
     [SerializeField, Tooltip("Avatar showing poses for player to copy")]
     private PoseAvatar poseAvatar;
     [SerializeField, Tooltip("Number of seconds to demonstrate each pose")]
@@ -21,6 +23,10 @@ public class ZeroGravityManager : MonoBehaviour
     private int poseCountdownSeconds = 3;
     [SerializeField, Tooltip("Number of seconds the player must hold each pose")]
     private int poseHoldSeconds = 20;
+    [SerializeField, Tooltip("Score per time increment of holding the pose")]
+    private int scorePerTime = 5;
+    [SerializeField, Tooltip("Number of seconds the pose must be held for a score increase")]
+    private int holdTimeIncrement = 1;
 
     private TextMeshProUGUI winText;
     private TextMeshProUGUI scoreText;
@@ -64,6 +70,7 @@ public class ZeroGravityManager : MonoBehaviour
     private IEnumerator DisplayNextPose()
     {
         activeTimer = ActiveTimer.None;
+        swayLine.DeactivateScoring();
 
         poseHoldTimer.gameObject.SetActive(false);
         poseCountdownTimer.gameObject.SetActive(false);
@@ -92,15 +99,16 @@ public class ZeroGravityManager : MonoBehaviour
 
         poseHoldTimer.StartCountdown(poseHoldSeconds);
         activeTimer = ActiveTimer.PoseHold;
+        swayLine.ActivateScoring(holdTimeIncrement);
     }
 
 
     /// <summary>
-    /// Increase score (successfully guessed sequences) by one.
+    /// Increase score - the pose has been held for the time increment.
     /// </summary>
     public void UpdateScore()
     {
-        score += 1;
+        score += scorePerTime;
         scoreText.text = score.ToString();
     }
 

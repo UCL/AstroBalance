@@ -1460,10 +1460,13 @@ MonoBehaviour:
   winScreen: {fileID: 1576040584}
   poseHoldTimer: {fileID: 1701992181}
   poseCountdownTimer: {fileID: 622212769}
+  swayLine: {fileID: 2041521169}
   poseAvatar: {fileID: 581241827}
   poseDisplaySeconds: 2
   poseCountdownSeconds: 3
   poseHoldSeconds: 5
+  scorePerTime: 5
+  holdTimeIncrement: 1
 --- !u!4 &1607611137
 Transform:
   m_ObjectHideFlags: 0
@@ -1939,6 +1942,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   headXScaling: 0.01
+  headXTolerance: 100
+  inRangeColor: {r: 1, g: 1, b: 1, a: 1}
+  outRangeColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!50 &2041521170
 Rigidbody2D:
   serializedVersion: 5
