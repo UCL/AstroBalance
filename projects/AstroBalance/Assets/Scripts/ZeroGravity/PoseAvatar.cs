@@ -43,6 +43,13 @@ public class PoseAvatar : MonoBehaviour
 
         spriteRenderer.sprite = sprites[currentIndex];
         poseText.text = poseExplanations[currentIndex];
+        poseText.gameObject.SetActive(true);
+
         return true;
+    }
+
+    public void HideExplanationText()
+    {
+        poseText.gameObject.SetActive(false);
     }
 }

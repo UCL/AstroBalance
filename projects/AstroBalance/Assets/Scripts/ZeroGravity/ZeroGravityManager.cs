@@ -88,6 +88,7 @@ public class ZeroGravityManager : MonoBehaviour
         poseCountdownTimer.gameObject.SetActive(false);
         poseHoldTimer.gameObject.SetActive(true);
         scoreDisplay.gameObject.SetActive(true);
+        poseAvatar.HideExplanationText();
 
         poseHoldTimer.StartCountdown(poseHoldSeconds);
         activeTimer = ActiveTimer.PoseHold;
