@@ -242,7 +242,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &161264841
 Transform:
   m_ObjectHideFlags: 0
@@ -661,12 +661,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 401316249697125598, guid: 601b1fdf228b813439188f126748f092, type: 3}
+  m_Sprite: {fileID: -5071563641634004584, guid: 0f315cd658ad4034998c0755307fc38a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.73, y: 1.87}
+  m_Size: {x: 0.76, y: 1.9}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -681,7 +681,7 @@ Transform:
   m_GameObject: {fileID: 581241824}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.076024145, y: -0.9, z: 0}
+  m_LocalPosition: {x: -0.02, y: -0.9, z: 0}
   m_LocalScale: {x: 2.97, y: 2.97, z: 2.97}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -702,9 +702,11 @@ MonoBehaviour:
   sprites:
   - {fileID: 401316249697125598, guid: 601b1fdf228b813439188f126748f092, type: 3}
   - {fileID: -6991619701891548096, guid: faa32c7cee78c3b47b4e011b3e211d92, type: 3}
+  - {fileID: -5071563641634004584, guid: 0f315cd658ad4034998c0755307fc38a, type: 3}
   poseExplanations:
   - Stand on your left leg
   - Stand on your right leg
+  - Stand with eyes closed
   poseText: {fileID: 897678168}
 --- !u!224 &594054979 stripped
 RectTransform:
@@ -950,7 +952,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Stand on one leg
+  m_text: Stand on  your left leg
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1464,7 +1466,7 @@ MonoBehaviour:
   poseAvatar: {fileID: 581241827}
   poseDisplaySeconds: 2
   poseCountdownSeconds: 3
-  poseHoldSeconds: 20
+  poseHoldSeconds: 5
   scorePerTime: 5
   holdTimeIncrement: 1
 --- !u!4 &1607611137
@@ -1611,7 +1613,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1895894237
 Transform:
   m_ObjectHideFlags: 0
