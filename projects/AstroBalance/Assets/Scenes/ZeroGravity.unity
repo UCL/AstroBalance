@@ -572,6 +572,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6674992317796393325, guid: 5ea1d87315b37344988469cdd5b723a8, type: 3}
   m_PrefabInstance: {fileID: 4987095636894490965}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &622212769 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2561817600396471551, guid: 5ea1d87315b37344988469cdd5b723a8, type: 3}
+  m_PrefabInstance: {fileID: 4987095636894490965}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 034d34253de97b048980bb1e34677996, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &664664948
 GameObject:
   m_ObjectHideFlags: 0
@@ -1133,13 +1144,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3850b02a9921ec40929b4414cb24bf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scoreText: {fileID: 664664951}
+  scoreDisplay: {fileID: 1531801827}
   winScreen: {fileID: 1576040584}
-  timer: {fileID: 0}
+  poseHoldTimer: {fileID: 1701992181}
+  poseCountdownTimer: {fileID: 622212769}
   poseAvatar: {fileID: 581241827}
-  poseDisplaySeconds: 20
+  poseDisplaySeconds: 2
   poseCountdownSeconds: 3
-  poseHoldSeconds: 20
+  poseHoldSeconds: 5
 --- !u!4 &1607611137
 Transform:
   m_ObjectHideFlags: 0
@@ -1257,6 +1269,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5654158056182331853, guid: b98af56498e58ea4c8fb0052e160a11b, type: 3}
   m_PrefabInstance: {fileID: 1701992179}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1701992181 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5715721509225399226, guid: b98af56498e58ea4c8fb0052e160a11b, type: 3}
+  m_PrefabInstance: {fileID: 1701992179}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 034d34253de97b048980bb1e34677996, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1967100637
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1437,7 +1460,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6674992317796393325, guid: 5ea1d87315b37344988469cdd5b723a8, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: -733
       objectReference: {fileID: 0}
     - target: {fileID: 6674992317796393325, guid: 5ea1d87315b37344988469cdd5b723a8, type: 3}
       propertyPath: m_AnchoredPosition.y
