@@ -30,12 +30,13 @@ public class SwayLine : MonoBehaviour
         gameManager = FindFirstObjectByType<ZeroGravityManager>();
     }
 
-    public void ActivateScoring(float timeIncrement)
+    public void ActivateScoring(int timeLimit, float timeIncrement)
     {
         this.timeIncrement = timeIncrement;
         // We base scoring on the pose hold timer so that everything stays in sync,
         // and exactly matches the displayed countdown times
-        timeOfNextScoreIncrease = poseHoldTimer.GetTimeLimit() - timeIncrement;
+        poseHoldTimer.StartCountdown(timeLimit);
+        timeOfNextScoreIncrease = timeLimit - timeIncrement;
         scoringActive = true;
     }
 
@@ -44,6 +45,7 @@ public class SwayLine : MonoBehaviour
         // One last call to HandleScoring(), to make sure all relevant hold
         // seconds have been scored
         HandleScoring();
+        poseHoldTimer.StopCountdown();
         scoringActive = false;
     }
 
