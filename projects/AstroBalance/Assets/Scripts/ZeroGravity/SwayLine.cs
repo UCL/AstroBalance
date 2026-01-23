@@ -19,9 +19,13 @@ public class SwayLine : MonoBehaviour
     {
         HeadPose currentHeadPose = tracker.getHeadPose();
         float xPosMm = currentHeadPose.Position.X;
+        float rollDegrees = currentHeadPose.Rotation.RollDegrees;
 
         // We only move the sway line on the x axis - left/right (we don't care about
         // changes in head height, or distance from screen)
         transform.position = new Vector3(xPosMm * headXScaling, transform.position.y, 0);
+
+        // We rotate only with head roll
+        transform.eulerAngles = new Vector3(0, 0, -rollDegrees);
     }
 }
