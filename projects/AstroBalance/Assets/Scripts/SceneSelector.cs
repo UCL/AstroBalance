@@ -38,6 +38,11 @@ public class SceneSelector : MonoBehaviour
         SceneManager.LoadScene("Scenes/SpaceWalking");
     }
 
+    public void LoadZeroGravity()
+    {
+        SceneManager.LoadScene("Scenes/ZeroGravity");
+    }
+
     public void QuitGame()
     {
         Application.Quit();

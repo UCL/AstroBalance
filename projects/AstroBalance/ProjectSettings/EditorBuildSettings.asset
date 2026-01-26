@@ -26,6 +26,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SpaceWalking.unity
     guid: c7ba2fdddfa8c794b8e86bd760373d50
+  - enabled: 1
+    path: Assets/Scenes/ZeroGravity.unity
+    guid: 2a376fea6300bca4aa070c255f1c6d0a
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
