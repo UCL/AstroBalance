@@ -4,6 +4,10 @@ using Tobii.GameIntegration.Net;
 using TrackerBuffers;
 using UnityEngine;
 
+/// <summary>
+/// Manages the display of a random integer that changes every second if
+/// gaze is maintained.
+/// </summary>
 public class LaunchCode : MonoBehaviour
 {
     [

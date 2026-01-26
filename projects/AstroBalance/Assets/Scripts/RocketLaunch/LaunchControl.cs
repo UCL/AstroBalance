@@ -4,6 +4,11 @@ using TrackerBuffers;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+
+/// <summary>
+/// Mangages the size of a rocket flame based on head speed, and controls
+/// overall game time.
+/// </summary>
 public class LaunchControl : MonoBehaviour
 {
     Tracker tracker;
