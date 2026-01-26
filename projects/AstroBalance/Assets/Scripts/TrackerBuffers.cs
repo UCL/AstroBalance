@@ -9,17 +9,16 @@ namespace TrackerBuffers
     /// <summary>
     /// Will hold the gazepoint buffer and provide methods to check gaze stability and direction.
     /// </summary>
-    ///
-    ///
     /// TODO Understand how to make this thread safe.
     public class GazeBuffer : RingBuffer<GazePoint>
     {
         public GazeBuffer(int capacity)
             : base(capacity, true) { }
 
-        // <summary>
-        // Adds a new gaze point to the buffer if it has a different timestamp to the last added gaze point.
-        // returns true if the point was added, false otherwise.
+        /// <summary>
+        /// Adds a new gaze point to the buffer if it has a different timestamp to the last added gaze point.
+        /// returns true if the point was added, false otherwise.
+        /// </summary>
         public bool addIfNew(GazePoint item)
         {
             if (
@@ -41,12 +40,13 @@ namespace TrackerBuffers
             return last_entry;
         }
 
-        // <summary>
-        // returns true if the gaze points in the buffer are all within a small radius.
-        // param time (float in seconds to sample over)
-        // param tolerance (float the allowable range)
-        // param x_target (if nan we use the mean)
-        // param y_target (in nan we use the mean)
+        /// <summary>
+        /// returns true If the gaze points more recent that the time have a summed
+        /// square distance from the target point less than the tolerance.
+        /// </summary>
+        /// <param name="time">in seconds to sample over</param>
+        /// <param name="tolerance">the allowable range</param>
+        /// <param name="targetGazePoint">the target gaze point</param>
         public bool gazeSteady(float time, float tolerance, GazePoint targetGazePoint)
         {
             if (size < 2)
@@ -62,10 +62,12 @@ namespace TrackerBuffers
             );
         }
 
-        // <summary>
-        // returns true if the gaze points in the buffer are all within a small radius.
-        // param time (float in seconds to sample over)
-        // param tolerance (float the allowable range)
+        /// <summary>
+        /// returns true If the gaze points more recent that the time have a standard deviation
+        /// less than the tolerance.
+        /// </summary>
+        /// <param name="time">in seconds to sample over</param>
+        /// <param name="tolerance">the allowable standard deviation</param>
         public bool gazeSteady(float time, float tolerance)
         {
             if (size < 2)
@@ -118,14 +120,11 @@ namespace TrackerBuffers
             return steady;
         }
 
-        /** <summary>
-        Copies the contents of the RingBuffer to two arrays,
-        one for the x coordinates and one for the y, stopping
-        when the timestamps are older than <paramref name="timestamp"/>
-        TODO thread safety? What happens if another thread writes to the buffer
-        Whilst this is running? There's a syncRoot object, but I'm not clear how
-        it is used.
-        </summary> */
+        ///<summary>
+        ///Copies the contents of the RingBuffer to two arrays,
+        ///one for the x coordinates and one for the y, stopping
+        /// when the timestamps are older than <paramref name="timestamp"/>
+        ///</summary>
         private void CopyToTwoArrays(long gazeTime, out float[] x_array, out float[] y_array)
         {
             if (size == 0)
@@ -166,19 +165,22 @@ namespace TrackerBuffers
         }
     }
 
+    /// <summary>
     /// Will hold the HeadPose buffer and provide methods to check movement speed.
-    /// </summary>
+    /// TODO Understand how to make this thread safe.
     /// TODO I should be able to use inheritance to reduce duplication here, but
     /// had difficultly with templating.
+    /// </summary>
     public class HeadPoseBuffer : RingBuffer<HeadPose>
     {
         public HeadPoseBuffer(int capacity)
             : base(capacity, true) { }
 
-        // <summary>
-        // Adds a new head pose to the buffer if it has a different timestamp to the last added head pose.
-        // returns true if the point was added, false otherwise.
-        public bool addIfNew(HeadPose item)
+        /// <summary>
+        /// Adds a new head pose to the buffer if it has a different timestamp to the last added head pose.
+        /// Returns true if the point was added, false otherwise.
+        /// </summary>
+        public bool AddIfNew(HeadPose item)
         {
             if (
                 size == 0
@@ -191,6 +193,12 @@ namespace TrackerBuffers
             return false;
         }
 
+        /// <summary>
+        /// Calculates the average speed of the head pose buffer over a given time period.
+        /// </summary>
+        /// <param name="speedTime">The time period in seconds over which to calculate the average speed.</param>
+        /// <param name="usePitch">Whether to use pitch in the calculation.</param>
+        /// <returns>The average speed of the head pose buffer over the given time period.</returns>
         public float getSpeed(float speedTime, bool usePitch)
         {
             float averageSpeed = 0f;
@@ -225,10 +233,15 @@ namespace TrackerBuffers
             return last_entry;
         }
 
-        // <summary>
-        // creates two arrays, one of positions and one of timestamps, from which we can
-        // calculate average speed. Positions can either be yaw, or pitch, switched
-        // by the value of usePitches
+        /// <summary>
+        /// creates two arrays, one of positions and one of timestamps, from which we can
+        /// calculate average speed. Positions can either be yaw, or pitch, switched
+        /// by the value of usePitches
+        /// </summary>
+        /// <param name="speedTime">The time period over which the speed is calculated</param>
+        /// <param name="usePitches">Whether to use pitch or yaw</param>
+        /// <param name="pos_array">The return array of positions</param>
+        /// <param name="timestamp_array">The return array of timestamps</param>
         private void CopyToTwoArrays(
             long speedTime,
             bool usePitches,
@@ -266,7 +279,7 @@ namespace TrackerBuffers
                 _index = _index > 0 ? _index - 1 : size - 1;
                 arrayIndex++;
             }
-            // Add head if it falls in time range
+            /// Add head if it falls in time range
             if (size > 1 && _index == head && buffer[_index].TimeStampMicroSeconds >= timestamp)
             {
                 pos_array[arrayIndex] = usePitches
