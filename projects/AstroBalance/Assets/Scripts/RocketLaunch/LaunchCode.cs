@@ -38,7 +38,7 @@ public class LaunchCode : MonoBehaviour
     private GameObject targetObject;
 
     Tracker tracker;
-    private float counter;
+    private float timeToSpriteChange;
     private Sprite countDownSprite;
     private GazeBuffer gazeBuffer;
 
@@ -49,7 +49,7 @@ public class LaunchCode : MonoBehaviour
         // remove the number from the list to avoid selected a repeat number next time.
         countDownSprites.Remove(countDownSprite);
         gameObject.GetComponent<SpriteRenderer>().sprite = countDownSprite;
-        counter = timerDuration;
+        timeToSpriteChange = timerDuration;
         gazeBuffer = new GazeBuffer(gazeBufferCapacity);
     }
 
@@ -103,16 +103,16 @@ public class LaunchCode : MonoBehaviour
                 + steadyText;
         }
 
-        if (counter > 0)
+        if (timeToSpriteChange > 0)
         {
             if (gazeIsSteady)
             {
-                counter -= Time.deltaTime;
+                timeToSpriteChange -= Time.deltaTime;
             }
         }
         else
         {
-            counter = timerDuration;
+            timeToSpriteChange = timerDuration;
 
             Sprite newCountDownSprite = countDownSprites[Random.Range(0, countDownSprites.Count)];
             // remove the number from the list to avoid selected a repeat number next time.
