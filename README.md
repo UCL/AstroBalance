@@ -10,6 +10,10 @@
 
 You may need to [download the drivers](https://www.gaming.tobii.com/getstarted/) for the Tobii Eyetracker 5, and calibrate the tracker using the Tobii Experience app.
 
+## Documentation
+
+Documentation for each mini-game is provided under [`docs/`](/docs/), focusing on how to edit important values during play testing.
+
 ## Acknowledgements
 
 Funded by [Ménière’s & Vestibular UK](https://www.meandve.org.uk/).

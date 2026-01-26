@@ -20,6 +20,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/StarSeek.unity
     guid: cbf3d9c26ba093c44890c5bd86b39752
+  - enabled: 1
+    path: Assets/Scenes/StarMap.unity
+    guid: ad549d230ed12f44394ec13fc8b88148
+  - enabled: 1
+    path: Assets/Scenes/SpaceWalking.unity
+    guid: c7ba2fdddfa8c794b8e86bd760373d50
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
