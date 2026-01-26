@@ -61,6 +61,21 @@ public class SwayLine : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if (tracker.isPlayerDetected())
+        {
+            spriteRenderer.enabled = true;
+            UpdateLinePosition();
+        }
+        else
+        {
+            spriteRenderer.enabled = false;
+            headOutOfRange = true;
+        }
+    }
+
+    private void UpdateLinePosition()
+    {
         HeadPose currentHeadPose = tracker.getHeadPose();
         float xPosMm = currentHeadPose.Position.X;
         float rollDegrees = currentHeadPose.Rotation.RollDegrees;
@@ -71,14 +86,14 @@ public class SwayLine : MonoBehaviour
         {
             spriteRenderer.color = outRangeColor;
             headOutOfRange = true;
-        } 
+        }
         else
         {
             HandleScoring();
             headOutOfRange = false;
             spriteRenderer.color = inRangeColor;
         }
-        
+
         // We only move the sway line on the x axis - left/right (we don't care about
         // changes in head height, or distance from screen)
         transform.position = new Vector3(xPosMm * headXScaling, transform.position.y, 0);
