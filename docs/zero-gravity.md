@@ -15,7 +15,6 @@ The zero gravity mini-game asks the player to copy various poses, and awards poi
   - The limit of head movement before scoring stops
   - The colour when the head is in / out of range
 
-- **PoseAvatar**: 
-  values related to display of poses
+- **PoseAvatar**: values related to display of poses
   - Sprites for each pose
   - Text explanations for each pose
