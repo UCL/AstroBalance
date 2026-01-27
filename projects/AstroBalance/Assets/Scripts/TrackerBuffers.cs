@@ -180,7 +180,7 @@ namespace TrackerBuffers
         /// Adds a new head pose to the buffer if it has a different timestamp to the last added head pose.
         /// Returns true if the point was added, false otherwise.
         /// </summary>
-        public bool AddIfNew(HeadPose item)
+        public bool addIfNew(HeadPose item)
         {
             if (
                 size == 0
