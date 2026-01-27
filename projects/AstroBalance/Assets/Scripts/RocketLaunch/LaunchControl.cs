@@ -2,7 +2,6 @@ using TMPro;
 using Tobii.GameIntegration.Net;
 using TrackerBuffers;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 
 /// <summary>
