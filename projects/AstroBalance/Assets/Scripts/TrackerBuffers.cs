@@ -6,6 +6,12 @@ using UnityEngine;
 
 namespace TrackerBuffers
 {
+    public class TobiiBuffer<T> where T : struct
+    {
+        protected int lastAdded = -1;
+    }
+
+
     /// <summary>
     /// Will hold the gazepoint buffer and provide methods to check gaze stability and direction.
     /// </summary>
