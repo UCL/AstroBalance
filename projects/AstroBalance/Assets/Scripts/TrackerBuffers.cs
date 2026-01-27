@@ -63,7 +63,7 @@ namespace TrackerBuffers
         }
 
         /// <summary>
-        /// returns true If the gaze points more recent that the time have a standard deviation
+        /// returns true if the gaze points more recent than the time have a standard deviation
         /// less than the tolerance.
         /// </summary>
         /// <param name="time">in seconds to sample over</param>
