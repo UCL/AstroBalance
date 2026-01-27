@@ -41,7 +41,7 @@ namespace TrackerBuffers
         }
 
         /// <summary>
-        /// returns true If the gaze points more recent that the time have a summed
+        /// returns true if the gaze points more recent than the time have a summed
         /// square distance from the target point less than the tolerance.
         /// </summary>
         /// <param name="time">in seconds to sample over</param>
