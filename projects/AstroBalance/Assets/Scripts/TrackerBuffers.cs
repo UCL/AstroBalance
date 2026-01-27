@@ -6,17 +6,17 @@ using UnityEngine;
 
 namespace TrackerBuffers
 {
-    interface ITimeStampMicroSeconds
+    public interface ITimeStampMicroSeconds
     {
         long TimeStampMicroSeconds();
     }
 
-    interface IBufferData
+    public interface IBufferData
     {
         float[] GetData();
     }
 
-    class RocketGazePoint : ITimeStampMicroSeconds, IBufferData
+    public class RocketGazePoint : ITimeStampMicroSeconds, IBufferData
     {
         public GazePoint gazePoint;
 
@@ -35,18 +35,22 @@ namespace TrackerBuffers
             new float[] { headPose.TimeStampMicroSeconds, headPose.Rotation.PitchDegrees };
     }
 
-    class TobiiBuffer<T>
+    public class TobiiBuffer<T>
         where T : ITimeStampMicroSeconds, IBufferData
     {
         protected int lastAddedIndex;
         private bool hasData; // a flag to indicate if the buffer has any data
+        protected bool hasEnoughData; // a flag to indicate if the buffer has enough data to calculate speed or steadiness.
+        private int minDataRequired;
         protected T[] buffer;
 
-        public TobiiBuffer(int capacity)
+        public TobiiBuffer(int capacity, int minDataRequired)
         {
             buffer = new T[capacity];
             lastAddedIndex = -1;
             hasData = false;
+            hasEnoughData = false;
+            this.minDataRequired = minDataRequired;
         }
 
         /// <summary>
@@ -61,6 +65,10 @@ namespace TrackerBuffers
             )
             {
                 int newIndex = lastAddedIndex + 1;
+                if (newIndex >= minDataRequired)
+                {
+                    hasEnoughData = true;
+                }
                 if (newIndex >= buffer.Length)
                 {
                     newIndex = 0;
@@ -117,35 +125,10 @@ namespace TrackerBuffers
     /// Will hold the gazepoint buffer and provide methods to check gaze stability and direction.
     /// </summary>
     /// TODO Understand how to make this thread safe.
-    public class GazeBuffer : RingBuffer<GazePoint>
+    public class GazeBuffer : TobiiBuffer<RocketGazePoint>
     {
         public GazeBuffer(int capacity)
-            : base(capacity, true) { }
-
-        /// <summary>
-        /// Adds a new gaze point to the buffer if it has a different timestamp to the last added gaze point.
-        /// returns true if the point was added, false otherwise.
-        /// </summary>
-        public bool addIfNew(GazePoint item)
-        {
-            if (
-                size == 0
-                || item.TimeStampMicroSeconds != buffer[getLatestEntryIndex()].TimeStampMicroSeconds
-            )
-            {
-                base.Add(item);
-                return true;
-            }
-            return false;
-        }
-
-        private int getLatestEntryIndex()
-        {
-            int last_entry = tail - 1;
-            if (last_entry < 0)
-                last_entry = size - 1;
-            return last_entry;
-        }
+            : base(capacity, 2) { }
 
         /// <summary>
         /// returns true if the gaze points more recent than the time have a summed
@@ -156,7 +139,7 @@ namespace TrackerBuffers
         /// <param name="targetGazePoint">the target gaze point</param>
         public bool gazeSteady(float time, float tolerance, GazePoint targetGazePoint)
         {
-            if (size < 2)
+            if (!hasEnoughData)
                 return false;
             int timeInMicroseconds = (int)(time * 1e6);
             CopyToTwoArrays(timeInMicroseconds, out float[] x_array, out float[] y_array);
@@ -177,7 +160,7 @@ namespace TrackerBuffers
         /// <param name="tolerance">the allowable standard deviation</param>
         public bool gazeSteady(float time, float tolerance)
         {
-            if (size < 2)
+            if (!hasEnoughData)
                 return false;
             int timeInMicroseconds = (int)(time * 1e6);
             CopyToTwoArrays(timeInMicroseconds, out float[] x_array, out float[] y_array);
@@ -225,50 +208,6 @@ namespace TrackerBuffers
                     + " samples"
             );
             return steady;
-        }
-
-        ///<summary>
-        ///Copies the contents of the RingBuffer to two arrays,
-        ///one for the x coordinates and one for the y, stopping
-        /// when the timestamps are older than <paramref name="timestamp"/>
-        ///</summary>
-        private void CopyToTwoArrays(long gazeTime, out float[] x_array, out float[] y_array)
-        {
-            if (size == 0)
-            {
-                x_array = new float[0];
-                y_array = new float[0];
-                return;
-            }
-            int _index = getLatestEntryIndex();
-
-            int arrayIndex = 0;
-            x_array = new float[size];
-            y_array = new float[size];
-            x_array[arrayIndex] = buffer[_index].X;
-            y_array[arrayIndex] = buffer[_index].Y;
-            long timestamp = buffer[_index].TimeStampMicroSeconds - gazeTime;
-
-            _index = _index > 0 ? _index - 1 : size - 1;
-            arrayIndex++;
-
-            while (_index != head && buffer[_index].TimeStampMicroSeconds >= timestamp)
-            {
-                x_array[arrayIndex] = buffer[_index].X;
-                y_array[arrayIndex] = buffer[_index].Y;
-                _index = _index > 0 ? _index - 1 : size - 1;
-                arrayIndex++;
-            }
-            // Add head if it falls in time range
-            if (size > 1 && _index == head && buffer[_index].TimeStampMicroSeconds >= timestamp)
-            {
-                x_array[arrayIndex] = buffer[_index].X;
-                y_array[arrayIndex] = buffer[_index].Y;
-                arrayIndex++;
-            }
-
-            Array.Resize(ref x_array, arrayIndex);
-            Array.Resize(ref y_array, arrayIndex);
         }
     }
 

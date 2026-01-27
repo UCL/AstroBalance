@@ -55,20 +55,20 @@ public class LaunchCode : MonoBehaviour
 
     void Update()
     {
-        GazePoint gazePoint = new GazePoint();
+        RocketGazePoint gazePoint = new RocketGazePoint();
         if (useMouseForTracker)
         {
             var mousePos = Input.mousePosition;
-            gazePoint.X = mousePos.x;
-            gazePoint.Y = mousePos.y;
-            gazePoint.TimeStampMicroSeconds = (long)(Time.timeSinceLevelLoad * 1000000);
+            gazePoint.gazePoint.X = mousePos.x;
+            gazePoint.gazePoint.Y = mousePos.y;
+            gazePoint.gazePoint.TimeStampMicroSeconds = (long)(Time.timeSinceLevelLoad * 1000000);
         }
         else
         {
-            gazePoint = tracker.getGazePoint();
-            Vector2 worldGaze = tracker.ConvertGazePointToWorldCoordinates(gazePoint);
-            gazePoint.X = worldGaze.x;
-            gazePoint.Y = worldGaze.y;
+            gazePoint.gazePoint = tracker.getGazePoint();
+            Vector2 worldGaze = tracker.ConvertGazePointToWorldCoordinates(gazePoint.gazePoint);
+            gazePoint.gazePoint.X = worldGaze.x;
+            gazePoint.gazePoint.Y = worldGaze.y;
         }
 
         gazeBuffer.addIfNew(gazePoint);
@@ -96,9 +96,9 @@ public class LaunchCode : MonoBehaviour
                 + targetPoint.Y
                 + "\n"
                 + "Looking here -> "
-                + gazePoint.X
+                + gazePoint.gazePoint.X
                 + ", "
-                + gazePoint.Y
+                + gazePoint.gazePoint.Y
                 + "\n"
                 + steadyText;
         }
