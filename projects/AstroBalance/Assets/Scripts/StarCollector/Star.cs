@@ -4,9 +4,10 @@ public class Star : MonoBehaviour
 {
     [SerializeField, Tooltip("Particle system to be shown on star collection")]
     private GameObject sparkleEffect;
+
     [SerializeField, Tooltip("Star generator script")]
     public StarGenerator starGenerator;
-   
+
     private StarCollectorManager gameManager;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -19,7 +20,11 @@ public class Star : MonoBehaviour
     void Update()
     {
         var pos = transform.position;
-        transform.position = new Vector3(pos.x, pos.y - starGenerator.baseStarSpeed * Time.deltaTime, pos.z);
+        transform.position = new Vector3(
+            pos.x,
+            pos.y - starGenerator.baseStarSpeed * Time.deltaTime,
+            pos.z
+        );
 
         if (pos.y < -10)
         {
@@ -34,7 +39,6 @@ public class Star : MonoBehaviour
             return;
         }
 
-        
         if (other.CompareTag("Player"))
         {
             // If the star had touched the player (i.e. the ship)
@@ -45,7 +49,7 @@ public class Star : MonoBehaviour
             Destroy(gameObject);
 
             gameManager.UpdateScore();
-        } 
+        }
         else
         {
             // If the star had touched the MissedStarDetector

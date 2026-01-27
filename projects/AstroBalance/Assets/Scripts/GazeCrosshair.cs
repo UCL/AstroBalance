@@ -13,7 +13,6 @@ public class GazeCrosshair : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         Vector3 worldPoint;
         if (Application.isEditor)
         {

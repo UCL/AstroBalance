@@ -6,12 +6,16 @@ public class StarMapManager : MonoBehaviour
 {
     [SerializeField, Tooltip("Text mesh pro object for score text")]
     private TextMeshProUGUI scoreText;
+
     [SerializeField, Tooltip("Text mesh pro object for order text i.e. same vs opposite")]
     private TextMeshProUGUI orderText;
+
     [SerializeField, Tooltip("Correct sequences required to win")]
     private int winningScore = 5;
+
     [SerializeField, Tooltip("Constellation of stars")]
     private Constellation constellation;
+
     [SerializeField, Tooltip("Screen shown upon winning the game")]
     private GameObject winScreen;
 
@@ -32,17 +36,15 @@ public class StarMapManager : MonoBehaviour
 
         // Randomly choose forward or reverse direction
         Array orders = Enum.GetValues(typeof(RepeatOrder));
-        RepeatOrder chosenOrder = (RepeatOrder) orders.GetValue(UnityEngine.Random.Range(0, orders.Length));
+        RepeatOrder chosenOrder = (RepeatOrder)
+            orders.GetValue(UnityEngine.Random.Range(0, orders.Length));
 
         orderText.text = "Repeat in " + chosenOrder.ToString().ToLower() + " order";
         constellation.ShowNewSequence(chosenOrder);
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    void Update() { }
 
     /// <summary>
     /// Increase score (successfully guessed sequences) by one.
@@ -52,7 +54,8 @@ public class StarMapManager : MonoBehaviour
         score += 1;
         scoreText.text = score.ToString();
 
-        if (score == winningScore) {
+        if (score == winningScore)
+        {
             EndGame();
         }
     }

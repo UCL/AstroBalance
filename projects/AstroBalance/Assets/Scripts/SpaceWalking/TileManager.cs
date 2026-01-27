@@ -3,21 +3,21 @@ using UnityEngine;
 
 public class TileManager : MonoBehaviour
 {
-
     [SerializeField, Tooltip("Number of mm of head movement to count as a step")]
     private int stepMm = 300;
+
     [SerializeField, Tooltip("stepMm +/- toleranceMm will still count as a step")]
     private int toleranceMm = 100;
+
     [SerializeField, Tooltip("Starting distance from screen in mm")]
-    private int startDistance = 800; 
+    private int startDistance = 800;
 
     private List<Tile> directionTiles = new List<Tile>();
     private List<Tile> directionTilesLeft = new List<Tile>();
     private Tile centreTile;
-    
+
     private Tile currentTile;
     private Vector3 centralHeadPosition; // expected head position at central tile (tobii mm units)
-
 
     void Awake()
     {
@@ -29,7 +29,8 @@ public class TileManager : MonoBehaviour
             if (tile.GetDirection() == Tile.Direction.None)
             {
                 centreTile = tile;
-            } else
+            }
+            else
             {
                 directionTiles.Add(tile);
             }
@@ -39,13 +40,9 @@ public class TileManager : MonoBehaviour
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-    }
+    void Start() { }
 
-    void Update()
-    {
-    }
+    void Update() { }
 
     /// <summary>
     /// Get the starting distance from the screen in mm.
@@ -65,7 +62,8 @@ public class TileManager : MonoBehaviour
     {
         Tile chosenTile = centreTile;
 
-        if (direction != Tile.Direction.None) {
+        if (direction != Tile.Direction.None)
+        {
             foreach (Tile tile in directionTiles)
             {
                 if (tile.GetDirection() == direction)
@@ -92,14 +90,14 @@ public class TileManager : MonoBehaviour
     {
         bool scored = true;
 
-        if(currentTile == null)
+        if (currentTile == null)
         {
-            // This is our first tile (we need to start at the centre). It shouldn't 
+            // This is our first tile (we need to start at the centre). It shouldn't
             // be scored, as it just ensures the player starts the game from the right
             // position.
             currentTile = centreTile;
             scored = false;
-        } 
+        }
         else if (currentTile.GetDirection() != Tile.Direction.None)
         {
             // The last tile was a directional step, and now we need to go back to the centre
@@ -112,13 +110,7 @@ public class TileManager : MonoBehaviour
         }
 
         var bounds = GetTileHeadBounds(currentTile.GetDirection());
-        currentTile.ActivateTile(
-            bounds.xMin, 
-            bounds.xMax, 
-            bounds.zMin, 
-            bounds.zMax,
-            scored
-        );
+        currentTile.ActivateTile(bounds.xMin, bounds.xMax, bounds.zMin, bounds.zMax, scored);
     }
 
     private void ChooseRandomDirection()
@@ -130,7 +122,7 @@ public class TileManager : MonoBehaviour
 
         // Choose a tile, then remove it from the list to select from.
         // This ensures we cover all directions in a random order, before
-        // starting again (using a truly random order can result in many 
+        // starting again (using a truly random order can result in many
         // repeats of the same few directions in a row)
         currentTile = directionTilesLeft[Random.Range(0, directionTilesLeft.Count)];
         directionTilesLeft.Remove(currentTile);
@@ -143,7 +135,9 @@ public class TileManager : MonoBehaviour
     /// </summary>
     /// <param name="direction">Tile direction</param>
     /// <returns>Bounds in mm as (xMin, xMax, zMin, zMax)</returns>
-    private (float xMin, float xMax, float zMin, float zMax) GetTileHeadBounds(Tile.Direction direction)
+    private (float xMin, float xMax, float zMin, float zMax) GetTileHeadBounds(
+        Tile.Direction direction
+    )
     {
         var bounds = (
             xMin: centralHeadPosition.x - toleranceMm,
@@ -177,5 +171,4 @@ public class TileManager : MonoBehaviour
 
         return bounds;
     }
-    
 }

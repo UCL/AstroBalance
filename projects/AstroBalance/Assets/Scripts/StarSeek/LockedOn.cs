@@ -6,12 +6,16 @@ public class LockedOn : MonoBehaviour
 {
     [SerializeField, Tooltip("Number of seconds required to collect star")]
     private float doubleLockTime = 2;
+
     [SerializeField, Tooltip("Particle system to be shown on star collection")]
     private GameObject collectEffect;
+
     [SerializeField, Tooltip("Particle system to be shown on star double lock")]
     private GameObject lockedEffect;
+
     [SerializeField, Tooltip("Bloom intensity for single lock")]
     private float singleLockBloom = 10f;
+
     [SerializeField, Tooltip("Bloom intensity for double lock")]
     private float doubleLockBloom = 20f;
 
@@ -22,11 +26,12 @@ public class LockedOn : MonoBehaviour
 
     private LockStatus lockStatus = LockStatus.None;
     private float doubleLockStart;
+
     private enum LockStatus
     {
         None,
         Single,
-        Double
+        Double,
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -52,7 +57,6 @@ public class LockedOn : MonoBehaviour
             // collect star
             Collect();
         }
-        
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -65,7 +69,7 @@ public class LockedOn : MonoBehaviour
         if (lockStatus == LockStatus.None)
         {
             SetLockStatus(LockStatus.Single);
-        } 
+        }
         else if (lockStatus == LockStatus.Single)
         {
             SetLockStatus(LockStatus.Double);
@@ -79,7 +83,7 @@ public class LockedOn : MonoBehaviour
             return;
         }
 
-        if (lockStatus == LockStatus.Double) 
+        if (lockStatus == LockStatus.Double)
         {
             SetLockStatus(LockStatus.Single);
         }
@@ -95,15 +99,21 @@ public class LockedOn : MonoBehaviour
         {
             bloom.intensity.value = 0f;
             Destroy(doubleLockSparkle);
-        } else if (status == LockStatus.Single)
+        }
+        else if (status == LockStatus.Single)
         {
             bloom.intensity.value = singleLockBloom;
             Destroy(doubleLockSparkle);
-        } else
+        }
+        else
         {
             doubleLockStart = Time.time;
             bloom.intensity.value = doubleLockBloom;
-            doubleLockSparkle = Instantiate<GameObject>(lockedEffect, transform.position, Quaternion.identity);
+            doubleLockSparkle = Instantiate<GameObject>(
+                lockedEffect,
+                transform.position,
+                Quaternion.identity
+            );
         }
 
         lockStatus = status;

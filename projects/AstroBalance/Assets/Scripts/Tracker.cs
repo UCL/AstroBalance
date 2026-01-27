@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using Tobii.GameIntegration.Net;
 using UnityEngine;
+
 public class Tracker : MonoBehaviour
 {
-
     private GazePoint gp;
     private HeadPose hp;
     private TobiiRectangle rect;
@@ -46,9 +46,7 @@ public class Tracker : MonoBehaviour
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-    }
+    void Start() { }
 
     private void OnDestroy()
     {
@@ -183,8 +181,8 @@ public class Tracker : MonoBehaviour
     /// <summary>
     /// Gets most recent head point information, in unity viewport
     /// coordinates. The 'head point' is the position on the screen based on head
-    /// pose alone i.e. assuming the user is looking straight ahead. 
-    /// 
+    /// pose alone i.e. assuming the user is looking straight ahead.
+    ///
     /// (0,0) is the bottom left and (1, 1) is the top right.
     /// Unity must be displayed full screen for coordinates to match.
     /// </summary>
@@ -199,12 +197,14 @@ public class Tracker : MonoBehaviour
         // compensating for the measured headPosition.x/y for higher accuracy.
 
         // Base x position on the yaw angle
-        float xPositionMillimetre = Mathf.Tan(hp.Rotation.YawDegrees * Mathf.Deg2Rad) * headPosition.Z;
+        float xPositionMillimetre =
+            Mathf.Tan(hp.Rotation.YawDegrees * Mathf.Deg2Rad) * headPosition.Z;
         // Unity viewport centre is at (0.5, 0.5)
         float xPositionViewport = 0.5f + (xPositionMillimetre / screenWidthMm);
 
         // Base y position on the pitch angle
-        float yPositionMillimetre = Mathf.Tan(hp.Rotation.PitchDegrees * Mathf.Deg2Rad) * headPosition.Z;
+        float yPositionMillimetre =
+            Mathf.Tan(hp.Rotation.PitchDegrees * Mathf.Deg2Rad) * headPosition.Z;
         float yPositionViewport = 0.5f + (yPositionMillimetre / screenHeightMm);
 
         Vector2 headPointViewport = new Vector2(xPositionViewport, yPositionViewport);
@@ -216,7 +216,7 @@ public class Tracker : MonoBehaviour
     /// <summary>
     /// Gets most recent head point information, in unity world
     /// coordinates. The 'head point' is the position on the screen based on head
-    /// pose alone i.e. assuming the user is looking straight ahead. 
+    /// pose alone i.e. assuming the user is looking straight ahead.
     /// Unity must be displayed full screen for coordinates to match.
     /// </summary>
     /// <returns>Head point as a Vector2 {X, Y}</returns>
@@ -231,10 +231,22 @@ public class Tracker : MonoBehaviour
     /// </summary>
     private Vector2 clipToRange(Vector2 vector, float min, float max)
     {
-        if (vector.x < min) { vector.x = min; }
-        if (vector.y < min) { vector.y = min; }
-        if (vector.x > max) { vector.x = max; }
-        if (vector.y > max) { vector.y = max; }
+        if (vector.x < min)
+        {
+            vector.x = min;
+        }
+        if (vector.y < min)
+        {
+            vector.y = min;
+        }
+        if (vector.x > max)
+        {
+            vector.x = max;
+        }
+        if (vector.y > max)
+        {
+            vector.y = max;
+        }
 
         return vector;
     }
