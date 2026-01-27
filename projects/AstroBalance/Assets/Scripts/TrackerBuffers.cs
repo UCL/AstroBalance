@@ -6,11 +6,112 @@ using UnityEngine;
 
 namespace TrackerBuffers
 {
-    public class TobiiBuffer<T> where T : struct
+    interface ITimeStampMicroSeconds
     {
-        protected int lastAdded = -1;
+        long TimeStampMicroSeconds();
     }
 
+    interface IBufferData
+    {
+        float[] GetData();
+    }
+
+    class RocketGazePoint : ITimeStampMicroSeconds, IBufferData
+    {
+        public GazePoint gazePoint;
+
+        public long TimeStampMicroSeconds() => gazePoint.TimeStampMicroSeconds;
+
+        public float[] GetData() => new float[] { gazePoint.X, gazePoint.Y };
+    }
+
+    class RocketHeadPitch : ITimeStampMicroSeconds, IBufferData
+    {
+        public HeadPose headPose;
+
+        public long TimeStampMicroSeconds() => headPose.TimeStampMicroSeconds;
+
+        public float[] GetData() =>
+            new float[] { headPose.TimeStampMicroSeconds, headPose.Rotation.PitchDegrees };
+    }
+
+    class TobiiBuffer<T>
+        where T : ITimeStampMicroSeconds, IBufferData
+    {
+        protected int lastAddedIndex;
+        private bool hasData; // a flag to indicate if the buffer has any data
+        protected T[] buffer;
+
+        public TobiiBuffer(int capacity)
+        {
+            buffer = new T[capacity];
+            lastAddedIndex = -1;
+            hasData = false;
+        }
+
+        /// <summary>
+        /// Adds a new gaze point to the buffer if it has a different timestamp to the last added gaze point.
+        /// returns true if the point was added, false otherwise.
+        /// </summary>
+        public bool addIfNew(T item)
+        {
+            if (
+                !hasData
+                || item.TimeStampMicroSeconds() != buffer[lastAddedIndex].TimeStampMicroSeconds()
+            )
+            {
+                int newIndex = lastAddedIndex + 1;
+                if (newIndex >= buffer.Length)
+                {
+                    newIndex = 0;
+                }
+                buffer[newIndex] = item;
+                lastAddedIndex = newIndex;
+                return true;
+            }
+            return false;
+        }
+
+        ///<summary>
+        ///Copies the contents of the Buffer to two arrays,
+        ///one for the x coordinates and one for the y, stopping
+        /// when the timestamps are older than <paramref name="timestamp"/>
+        ///</summary>
+        protected void CopyToTwoArrays(long gazeTime, out float[] x_array, out float[] y_array)
+        {
+            if (!hasData)
+            {
+                x_array = new float[0];
+                y_array = new float[0];
+                return;
+            }
+
+            int arrayIndex = 0;
+            int bufferIndex = lastAddedIndex;
+            x_array = new float[buffer.Length];
+            y_array = new float[buffer.Length];
+            x_array[arrayIndex] = buffer[bufferIndex].GetData()[0];
+            y_array[arrayIndex] = buffer[bufferIndex].GetData()[1];
+            long oldestAllowableTime = buffer[bufferIndex].TimeStampMicroSeconds() - gazeTime;
+
+            bufferIndex = bufferIndex > 0 ? bufferIndex - 1 : buffer.Length - 1;
+            arrayIndex++;
+
+            while (
+                bufferIndex != lastAddedIndex
+                && buffer[bufferIndex].TimeStampMicroSeconds() >= oldestAllowableTime
+            )
+            {
+                x_array[arrayIndex] = buffer[bufferIndex].GetData()[0];
+                y_array[arrayIndex] = buffer[bufferIndex].GetData()[1];
+                bufferIndex = bufferIndex > 0 ? bufferIndex - 1 : buffer.Length - 1;
+                arrayIndex++;
+            }
+
+            Array.Resize(ref x_array, arrayIndex);
+            Array.Resize(ref y_array, arrayIndex);
+        }
+    }
 
     /// <summary>
     /// Will hold the gazepoint buffer and provide methods to check gaze stability and direction.
