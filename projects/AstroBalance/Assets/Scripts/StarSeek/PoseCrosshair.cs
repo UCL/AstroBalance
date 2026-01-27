@@ -16,5 +16,4 @@ public class PoseCrosshair : MonoBehaviour
         Vector2 headPointWorld = tracker.getHeadWorldCoordinates();
         transform.position = new Vector3(headPointWorld.x, headPointWorld.y, transform.position.z);
     }
-
 }

@@ -5,17 +5,21 @@ public class StarMapStar : MonoBehaviour
 {
     [SerializeField, Tooltip("Number of seconds of held gaze required to select star")]
     private float selectionTime = 1f;
+
     [SerializeField, Tooltip("Particle system to highlight star")]
     private GameObject sparkleEffect;
+
     [SerializeField, Tooltip("Size increase for correctly selected star")]
     private float sizeIncrease = 1.3f;
+
     [SerializeField, Tooltip("Size decrease for incorrectly selected star")]
     private float sizeDecrease = 0.5f;
+
     [SerializeField, Tooltip("Color for correctly selected star")]
     private Color correctColor = new Color(1, 0.53f, 0.47f);
+
     [SerializeField, Tooltip("Color for incorrectly selected star")]
     private Color incorrectColor = Color.red;
-
 
     private Color defaultColor = Color.white;
     private SpriteRenderer spriteRenderer;
@@ -31,7 +35,7 @@ public class StarMapStar : MonoBehaviour
     {
         None,
         SelectionPending,
-        Selected
+        Selected,
     }
 
     void Awake()
@@ -41,14 +45,15 @@ public class StarMapStar : MonoBehaviour
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-    }
+    void Start() { }
 
     // Update is called once per frame
     void Update()
     {
-        if (selectionStatus == SelectionStatus.SelectionPending && (Time.time - selectionStartTime > selectionTime))
+        if (
+            selectionStatus == SelectionStatus.SelectionPending
+            && (Time.time - selectionStartTime > selectionTime)
+        )
         {
             SetSelectionStatus(SelectionStatus.Selected);
         }
@@ -88,7 +93,11 @@ public class StarMapStar : MonoBehaviour
     public void HighlightCorrectForSeconds(float seconds)
     {
         spriteRenderer.color = correctColor;
-        starSparkle = Instantiate<GameObject>(sparkleEffect, transform.position, Quaternion.identity);
+        starSparkle = Instantiate<GameObject>(
+            sparkleEffect,
+            transform.position,
+            Quaternion.identity
+        );
         transform.localScale = defaultScale * sizeIncrease;
 
         StartCoroutine(StopHighlight(seconds));
@@ -138,7 +147,8 @@ public class StarMapStar : MonoBehaviour
         }
     }
 
-    private void SetSelectionStatus(SelectionStatus status) {
+    private void SetSelectionStatus(SelectionStatus status)
+    {
         if (status == SelectionStatus.None)
         {
             spriteRenderer.color = defaultColor;
@@ -153,7 +163,7 @@ public class StarMapStar : MonoBehaviour
             Destroy(starSparkle);
             transform.localScale = defaultScale;
             selectionStatus = status;
-        } 
+        }
         else
         {
             // Star is selected

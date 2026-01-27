@@ -7,8 +7,8 @@ public class CountdownTimer : MonoBehaviour
     private TimeFormat timeFormat = TimeFormat.MinutesSeconds;
 
     private TextMeshProUGUI timerText;
-    private int timeLimit;  // total time limit in seconds
-    private float timerStart;  // time when timer was started
+    private int timeLimit; // total time limit in seconds
+    private float timerStart; // time when timer was started
     private float timeRemaining; // time remaining in seconds
     private bool timerRunning = false;
 
@@ -24,9 +24,7 @@ public class CountdownTimer : MonoBehaviour
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-    }
+    void Start() { }
 
     // Update is called once per frame
     void Update()
@@ -120,5 +118,4 @@ public class CountdownTimer : MonoBehaviour
 
         timerText.text = $"{minutes:00}:{seconds:00}";
     }
-
 }

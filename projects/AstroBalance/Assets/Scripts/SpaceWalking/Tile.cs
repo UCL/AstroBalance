@@ -6,10 +6,13 @@ public class Tile : MonoBehaviour
 {
     [SerializeField, Tooltip("The step direction of this tile. Use None for the centre tile.")]
     private Direction direction;
+
     [SerializeField, Tooltip("Particle system to show on tile selection.")]
     private GameObject sparkleEffect;
+
     [SerializeField, Tooltip("Number of seconds to show particle system.")]
     private int sparkleTime = 1;
+
     [SerializeField, Tooltip("Tile activation colour")]
     private Color activatedColor = Color.red;
 
@@ -35,7 +38,7 @@ public class Tile : MonoBehaviour
         Forward,
         Backward,
         Left,
-        Right
+        Right,
     }
 
     private void Awake()
@@ -47,9 +50,7 @@ public class Tile : MonoBehaviour
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-    }
+    void Start() { }
 
     // Update is called once per frame
     void Update()
@@ -61,11 +62,11 @@ public class Tile : MonoBehaviour
 
         Position headPosition = tracker.getHeadPosition();
         if (
-            headPosition.X >= headXMin && 
-            headPosition.X <= headXMax && 
-            headPosition.Z >= headZMin &&
-            headPosition.Z <= headZMax
-            )
+            headPosition.X >= headXMin
+            && headPosition.X <= headXMax
+            && headPosition.Z >= headZMin
+            && headPosition.Z <= headZMax
+        )
         {
             SelectTile();
         }
@@ -77,7 +78,7 @@ public class Tile : MonoBehaviour
     }
 
     /// <summary>
-    /// Activate the tile - allowing it to be selected via head movement 
+    /// Activate the tile - allowing it to be selected via head movement
     /// into a given x / z range.
     /// </summary>
     /// <param name="xMin">Minimum head x position (mm) for selection</param>
@@ -100,7 +101,11 @@ public class Tile : MonoBehaviour
     private void SelectTile()
     {
         tileActive = false;
-        selectedSparkle = Instantiate<GameObject>(sparkleEffect, transform.position, Quaternion.identity);
+        selectedSparkle = Instantiate<GameObject>(
+            sparkleEffect,
+            transform.position,
+            Quaternion.identity
+        );
         StartCoroutine(ResetTile());
     }
 
@@ -113,7 +118,7 @@ public class Tile : MonoBehaviour
 
         if (direction == Direction.None && allowScoring)
         {
-            // If the centre tile has been selected successfully, then we have completed a 
+            // If the centre tile has been selected successfully, then we have completed a
             // step in and out + the score must be updated
             gameManager.UpdateScore();
         }

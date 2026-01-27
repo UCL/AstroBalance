@@ -3,37 +3,49 @@ using UnityEngine;
 
 public class StarCollectorManager : MonoBehaviour
 {
-
     [SerializeField, Tooltip("Text mesh pro object for score text")]
     private TextMeshProUGUI scoreText;
+
     [SerializeField, Tooltip("Countdown timer prefab")]
     private CountdownTimer timer;
+
     [SerializeField, Tooltip("Screen shown upon winning the game")]
     private GameObject winScreen;
+
     [SerializeField, Tooltip("Star generator script")]
     private StarGenerator starGenerator;
 
     [SerializeField, Tooltip("Minimum game time limit in seconds")]
     private int minTimeLimit = 60;
+
     [SerializeField, Tooltip("Maximum game time limit in seconds")]
     private int maxTimeLimit = 180;
+
     [SerializeField, Tooltip("Length of time window (in seconds) to evaluate player perfomance")]
     private int difficultyWindowSeconds = 10;
-    [SerializeField, Tooltip("% of stars that must be collected in the time window to upgrade star speed")]
+
+    [
+        SerializeField,
+        Tooltip("% of stars that must be collected in the time window to upgrade star speed")
+    ]
     private int speedUpgradePercent = 60;
-    [SerializeField, Tooltip("% of stars that must be collected in the whole game to upgrade the time limit")]
+
+    [
+        SerializeField,
+        Tooltip("% of stars that must be collected in the whole game to upgrade the time limit")
+    ]
     private int timeLimitUpgradePercent = 60;
 
     private TextMeshProUGUI winText;
     private StarCollectorData starCollectorData;
     private int timeLimit;
-    private int score;  // stars collected over whole game
-    private int missed;  // stars missed over whole game
+    private int score; // stars collected over whole game
+    private int missed; // stars missed over whole game
     private bool gameActive = true;
 
     private float windowStart;
-    private int scoreInTimeWindow = 0;  // stars collected in time window
-    private int missedInTimeWindow = 0;  // stars missed in time window
+    private int scoreInTimeWindow = 0; // stars collected in time window
+    private int missedInTimeWindow = 0; // stars missed in time window
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -46,7 +58,7 @@ public class StarCollectorManager : MonoBehaviour
         if (lastGameData == null)
         {
             SetTimeLimit(minTimeLimit);
-        } 
+        }
         else if (lastGameData.percentCollected > timeLimitUpgradePercent)
         {
             // Increase time limit by 30 seconds vs last game
@@ -60,7 +72,7 @@ public class StarCollectorManager : MonoBehaviour
         score = 0;
         scoreText.text = score.ToString();
         timer.StartCountdown(timeLimit);
-       
+
         windowStart = Time.time;
     }
 
@@ -88,7 +100,7 @@ public class StarCollectorManager : MonoBehaviour
 
     /// <summary>
     /// Dynamically update the difficulty of the game based on player performance.
-    /// 
+    ///
     /// Star speed is increased when the player is doing well,
     /// and decreased when they aren't.
     /// </summary>

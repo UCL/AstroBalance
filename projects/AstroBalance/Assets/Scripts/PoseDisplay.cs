@@ -21,7 +21,15 @@ public class PoseDisplay : MonoBehaviour
         Position position = headPose.Position;
         Rotation rotation = headPose.Rotation;
 
-        poseText.text = "Head position: (" + position.X + ", " + position.Y + ", " + position.Z + ") \n";
-        poseText.text += "Head rotation: (" + rotation.RollDegrees + ", " + rotation.PitchDegrees + ", " + rotation.YawDegrees + ") \n";
+        poseText.text =
+            "Head position: (" + position.X + ", " + position.Y + ", " + position.Z + ") \n";
+        poseText.text +=
+            "Head rotation: ("
+            + rotation.RollDegrees
+            + ", "
+            + rotation.PitchDegrees
+            + ", "
+            + rotation.YawDegrees
+            + ") \n";
     }
 }

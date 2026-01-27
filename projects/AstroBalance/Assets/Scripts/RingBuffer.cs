@@ -1,7 +1,6 @@
-
 #region License
 /* Copyright 2015 Joe Osborne
- * 
+ *
  * This file is part of RingBuffer.
  *
  *  RingBuffer is free software: you can redistribute it and/or modify
@@ -22,14 +21,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace RingBuffer {
+namespace RingBuffer
+{
     /// <summary>
     /// A generic ring buffer with fixed capacity.
     /// </summary>
     /// <typeparam name="T">The type of data stored in the buffer</typeparam>
-    public class RingBuffer<T> : IEnumerable<T>, IEnumerable, ICollection<T>, 
-        ICollection {
-
+    public class RingBuffer<T> : IEnumerable<T>, IEnumerable, ICollection<T>, ICollection
+    {
         protected int head = 0;
         protected int tail = 0;
         protected int size = 0;
@@ -37,24 +36,35 @@ namespace RingBuffer {
         protected T[] buffer;
 
         private bool allowOverflow;
-        public bool AllowOverflow { get { return allowOverflow; } }
+        public bool AllowOverflow
+        {
+            get { return allowOverflow; }
+        }
 
         /// <summary>
         /// The total number of elements the buffer can store (grows).
         /// </summary>
-        public int Capacity { get { return buffer.Length; } }
+        public int Capacity
+        {
+            get { return buffer.Length; }
+        }
 
         /// <summary>
         /// The number of elements currently contained in the buffer.
         /// </summary>
-        public int Size { get { return size; } }
+        public int Size
+        {
+            get { return size; }
+        }
 
         /// <summary>
         /// Retrieve the next item from the buffer.
         /// </summary>
         /// <returns>The oldest item added to the buffer.</returns>
-        public T Get() {
-            if(size == 0) throw new System.InvalidOperationException("Buffer is empty.");
+        public T Get()
+        {
+            if (size == 0)
+                throw new System.InvalidOperationException("Buffer is empty.");
             T _item = buffer[head];
             head = (head + 1) % Capacity;
             size--;
@@ -65,28 +75,41 @@ namespace RingBuffer {
         /// Adds an item to the end of the buffer.
         /// </summary>
         /// <param name="item">The item to be added.</param>
-        public void Put(T item) {
+        public void Put(T item)
+        {
             // If tail & head are equal and the buffer is not empty, assume
             // that it will overflow and throw an exception.
-            if(tail == head && size != 0) {
-                if(allowOverflow) {
+            if (tail == head && size != 0)
+            {
+                if (allowOverflow)
+                {
                     addToBuffer(item, true);
                 }
-                else {
-                    throw new System.InvalidOperationException("The RingBuffer is full" + ((byte)head).ToString() + ", " + ((byte)tail).ToString());
+                else
+                {
+                    throw new System.InvalidOperationException(
+                        "The RingBuffer is full"
+                            + ((byte)head).ToString()
+                            + ", "
+                            + ((byte)tail).ToString()
+                    );
                 }
             }
             // If the buffer will not overflow, just add the item.
-            else {
+            else
+            {
                 addToBuffer(item, false);
             }
         }
 
-        protected void addToBuffer(T toAdd, bool overflow) {
-            if(overflow) {
+        protected void addToBuffer(T toAdd, bool overflow)
+        {
+            if (overflow)
+            {
                 head = (head + 1) % Capacity;
             }
-            else {
+            else
+            {
                 size++;
             }
             buffer[tail] = toAdd;
@@ -95,41 +118,55 @@ namespace RingBuffer {
 
         #region Constructors
         // Default capacity is 4, default overflow behavior is false.
-        public RingBuffer() : this(4) { }
+        public RingBuffer()
+            : this(4) { }
 
-        public RingBuffer(int capacity) : this(capacity, false) { }
+        public RingBuffer(int capacity)
+            : this(capacity, false) { }
 
-        public RingBuffer(int capacity, bool overflow) {
+        public RingBuffer(int capacity, bool overflow)
+        {
             buffer = new T[capacity];
             allowOverflow = overflow;
         }
         #endregion
 
         #region IEnumerable Members
-        public IEnumerator<T> GetEnumerator() {
+        public IEnumerator<T> GetEnumerator()
+        {
             int _index = head;
-            for(int i = 0; i < size; i++, _index = (_index + 1) % Capacity) {
+            for (int i = 0; i < size; i++, _index = (_index + 1) % Capacity)
+            {
                 yield return buffer[_index];
             }
         }
 
-        IEnumerator<T> IEnumerable<T>.GetEnumerator() {
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        {
             return GetEnumerator();
         }
 
-        IEnumerator IEnumerable.GetEnumerator() {
+        IEnumerator IEnumerable.GetEnumerator()
+        {
             return (IEnumerator)GetEnumerator();
         }
         #endregion
 
         #region ICollection<T> Members
-        public int Count { get { return size; } }
-        public bool IsReadOnly { get { return false; } }
+        public int Count
+        {
+            get { return size; }
+        }
+        public bool IsReadOnly
+        {
+            get { return false; }
+        }
 
-        public void Add(T item) {
+        public void Add(T item)
+        {
             Put(item);
         }
-        
+
         /// <summary>
         /// Determines whether the RingBuffer contains a specific value.
         /// </summary>
@@ -137,11 +174,14 @@ namespace RingBuffer {
         /// <returns>True if the RingBuffer contains <paramref name="item"/>
         /// , false if it does not.
         /// </returns>
-        public bool Contains(T item) {
+        public bool Contains(T item)
+        {
             EqualityComparer<T> comparer = EqualityComparer<T>.Default;
             int _index = head;
-            for(int i = 0; i < size; i++, _index = (_index + 1) % Capacity) {
-                if(comparer.Equals(item, buffer[_index])) return true;
+            for (int i = 0; i < size; i++, _index = (_index + 1) % Capacity)
+            {
+                if (comparer.Equals(item, buffer[_index]))
+                    return true;
             }
             return false;
         }
@@ -149,8 +189,10 @@ namespace RingBuffer {
         /// <summary>
         /// Removes all items from the RingBuffer.
         /// </summary>
-        public void Clear() {
-            for(int i = 0; i < Capacity; i++) {
+        public void Clear()
+        {
+            for (int i = 0; i < Capacity; i++)
+            {
                 buffer[i] = default(T);
             }
             head = 0;
@@ -165,10 +207,11 @@ namespace RingBuffer {
         /// <param name="array">The array to be copied to.</param>
         /// <param name="arrayIndex">The index of <paramref name="array"/>
         /// where the buffer should begin copying to.</param>
-        public void CopyTo(T[] array, int arrayIndex) {
+        public void CopyTo(T[] array, int arrayIndex)
+        {
             int _index = head;
-            for(int i = 0; i < size; i++, arrayIndex++, _index = (_index + 1) %
-                Capacity) {
+            for (int i = 0; i < size; i++, arrayIndex++, _index = (_index + 1) % Capacity)
+            {
                 array[arrayIndex] = buffer[_index];
             }
         }
@@ -177,34 +220,42 @@ namespace RingBuffer {
         /// Removes <paramref name="item"/> from the buffer.
         /// </summary>
         /// <param name="item"></param>
-        /// <returns>True if <paramref name="item"/> was found and 
+        /// <returns>True if <paramref name="item"/> was found and
         /// successfully removed. False if <paramref name="item"/> was not
         /// found or there was a problem removing it from the RingBuffer.
         /// </returns>
-        public bool Remove(T item) {
+        public bool Remove(T item)
+        {
             int _index = head;
             int _removeIndex = 0;
             bool _foundItem = false;
             EqualityComparer<T> _comparer = EqualityComparer<T>.Default;
-            for(int i = 0; i < size; i++, _index = (_index + 1) % Capacity) {
-                if(_comparer.Equals(item, buffer[_index])) {
+            for (int i = 0; i < size; i++, _index = (_index + 1) % Capacity)
+            {
+                if (_comparer.Equals(item, buffer[_index]))
+                {
                     _removeIndex = _index;
                     _foundItem = true;
                     break;
                 }
             }
-            if(_foundItem) {
+            if (_foundItem)
+            {
                 T[] _newBuffer = new T[size - 1];
                 _index = head;
                 bool _pastItem = false;
-                for(int i = 0; i < size - 1; i++, _index = (_index + 1) % Capacity) {
-                    if(_index == _removeIndex) {
+                for (int i = 0; i < size - 1; i++, _index = (_index + 1) % Capacity)
+                {
+                    if (_index == _removeIndex)
+                    {
                         _pastItem = true;
                     }
-                    if(_pastItem) {
+                    if (_pastItem)
+                    {
                         _newBuffer[_index] = buffer[(_index + 1) % Capacity];
                     }
-                    else {
+                    else
+                    {
                         _newBuffer[_index] = buffer[_index];
                     }
                 }
@@ -221,24 +272,31 @@ namespace RingBuffer {
         /// Gets an object that can be used to synchronize access to the
         /// RingBuffer.
         /// </summary>
-        public Object SyncRoot { get { return this; } }
+        public Object SyncRoot
+        {
+            get { return this; }
+        }
 
         /// <summary>
-        /// Gets a value indicating whether access to the RingBuffer is 
+        /// Gets a value indicating whether access to the RingBuffer is
         /// synchronized (thread safe).
         /// </summary>
-        public bool IsSynchronized { get { return false; } }
+        public bool IsSynchronized
+        {
+            get { return false; }
+        }
 
         /// <summary>
-        /// Copies the elements of the RingBuffer to <paramref name="array"/>, 
+        /// Copies the elements of the RingBuffer to <paramref name="array"/>,
         /// starting at a particular Array <paramref name="index"/>.
         /// </summary>
-        /// <param name="array">The one-dimensional Array that is the 
-        /// destination of the elements copied from RingBuffer. The Array must 
+        /// <param name="array">The one-dimensional Array that is the
+        /// destination of the elements copied from RingBuffer. The Array must
         /// have zero-based indexing.</param>
-        /// <param name="index">The zero-based index in 
+        /// <param name="index">The zero-based index in
         /// <paramref name="array"/> at which copying begins.</param>
-        void ICollection.CopyTo(Array array, int index) {
+        void ICollection.CopyTo(Array array, int index)
+        {
             CopyTo((T[])array, index);
         }
         #endregion

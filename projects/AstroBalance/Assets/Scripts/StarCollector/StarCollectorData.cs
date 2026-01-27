@@ -3,9 +3,11 @@ using UnityEngine;
 
 public class StarCollectorData
 {
-
     // currently defaults to "C:\Users\username\AppData\LocalLow\DefaultCompany\AstroBalance"
-    private string dataPath = Path.Combine(Application.persistentDataPath, "StarCollectorScores.json");
+    private string dataPath = Path.Combine(
+        Application.persistentDataPath,
+        "StarCollectorScores.json"
+    );
 
     [System.Serializable]
     public class SaveData
@@ -27,7 +29,7 @@ public class StarCollectorData
         {
             timeLimit = timeLimit,
             score = score,
-            percentCollected = percentCollected
+            percentCollected = percentCollected,
         };
 
         string json = JsonUtility.ToJson(data);
@@ -46,7 +48,8 @@ public class StarCollectorData
         {
             string json = File.ReadAllText(dataPath);
             data = JsonUtility.FromJson<SaveData>(json);
-        } else
+        }
+        else
         {
             data = null;
         }

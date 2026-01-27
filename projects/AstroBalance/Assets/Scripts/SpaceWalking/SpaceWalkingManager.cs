@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class SpaceWalkingManager : MonoBehaviour
 {
-
     [SerializeField, Tooltip("Text mesh pro object for score text")]
     private TextMeshProUGUI scoreText;
+
     [SerializeField, Tooltip("Complete steps required to win")]
     private int winningScore = 20;
+
     [SerializeField, Tooltip("Screen shown upon winning the game")]
     private GameObject winScreen;
+
     [SerializeField, Tooltip("Seconds until first tile activation")]
     private int activationDelay = 1;
+
     [SerializeField, Tooltip("Direction tile manager")]
     private TileManager tileManager;
 
@@ -28,10 +31,7 @@ public class SpaceWalkingManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-
-    }
+    void Update() { }
 
     private IEnumerator StartTileActivation()
     {
