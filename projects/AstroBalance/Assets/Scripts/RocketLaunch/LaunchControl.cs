@@ -3,7 +3,6 @@ using Tobii.GameIntegration.Net;
 using TrackerBuffers;
 using UnityEngine;
 
-
 /// <summary>
 /// Manages the size of a rocket flame based on head speed, and controls
 /// overall game time.
