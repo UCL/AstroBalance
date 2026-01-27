@@ -5,8 +5,7 @@ repos:
         name: Install .NET tools
         entry: dotnet tool restore
         # for pre-commit < 4.4.0 use language: system
-        # for pre-commit > 4.4.0 use language: unsupported
-        language: system
+        language: unsupported
         always_run: true
         pass_filenames: false
         stages:
