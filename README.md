@@ -16,6 +16,4 @@ Documentation for each mini-game is provided under [`docs/`](/docs/), focusing o
 
 ## Acknowledgements
 
-The Dionaea Fonts (DOTMATRIX) are made by Svein K�re Gunnarsoni. http://www.dionaea.com/information/fonts.html. The fonts are freeware
-
 Funded by [Ménière’s & Vestibular UK](https://www.meandve.org.uk/).
