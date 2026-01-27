@@ -6,24 +6,34 @@ public class ZeroGravityManager : MonoBehaviour
 {
     [SerializeField, Tooltip("Score game object")]
     private GameObject scoreDisplay;
+
     [SerializeField, Tooltip("Screen shown upon winning the game")]
     private GameObject winScreen;
+
     [SerializeField, Tooltip("Pose hold timer")]
     private CountdownTimer poseHoldTimer;
+
     [SerializeField, Tooltip("Pose countdown timer")]
     private CountdownTimer poseCountdownTimer;
+
     [SerializeField, Tooltip("Sway line game object")]
     private SwayLine swayLine;
+
     [SerializeField, Tooltip("Avatar showing poses for player to copy")]
     private PoseAvatar poseAvatar;
+
     [SerializeField, Tooltip("Number of seconds to demonstrate each pose")]
     private int poseDisplaySeconds = 2;
+
     [SerializeField, Tooltip("Number of seconds of countdown to copy pose")]
     private int poseCountdownSeconds = 3;
+
     [SerializeField, Tooltip("Number of seconds the player must hold each pose")]
     private int poseHoldSeconds = 20;
+
     [SerializeField, Tooltip("Score per time increment of holding the pose")]
     private int scorePerTime = 5;
+
     [SerializeField, Tooltip("Number of seconds the pose must be held for a score increase")]
     private int holdTimeIncrement = 1;
 
@@ -73,7 +83,7 @@ public class ZeroGravityManager : MonoBehaviour
     {
         swayLine.DeactivateScoring();
         activeTimer = ActiveTimer.None;
-        
+
         poseHoldTimer.gameObject.SetActive(false);
         poseCountdownTimer.gameObject.SetActive(false);
         scoreDisplay.SetActive(false);
@@ -89,7 +99,7 @@ public class ZeroGravityManager : MonoBehaviour
         poseCountdownTimer.StartCountdown(poseCountdownSeconds);
         activeTimer = ActiveTimer.PoseCountdown;
     }
-    
+
     /// <summary>
     /// Activate the hold pose timer and allow scoring when head is in range.
     /// </summary>
@@ -105,7 +115,6 @@ public class ZeroGravityManager : MonoBehaviour
         swayLine.ActivateScoring(poseHoldSeconds, holdTimeIncrement);
         activeTimer = ActiveTimer.PoseHold;
     }
-
 
     /// <summary>
     /// Increase score - the pose has been held for the time increment.

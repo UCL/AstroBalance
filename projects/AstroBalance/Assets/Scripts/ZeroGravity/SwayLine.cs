@@ -5,12 +5,16 @@ public class SwayLine : MonoBehaviour
 {
     [SerializeField, Tooltip("Pose hold timer")]
     private CountdownTimer poseHoldTimer;
+
     [SerializeField, Tooltip("Head x movement scaling (moving 1mm, moves this many unity units)")]
     private float headXScaling = 0.01f;
+
     [SerializeField, Tooltip("Head x movement tolerance (mm) - beyond this limit scoring stops")]
     private float headXTolerance = 100;
+
     [SerializeField, Tooltip("Inside x range colour")]
     private Color inRangeColor = Color.white;
+
     [SerializeField, Tooltip("Outside x range colour")]
     private Color outRangeColor = Color.black;
 
@@ -25,7 +29,7 @@ public class SwayLine : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        tracker = FindFirstObjectByType<Tracker>();   
+        tracker = FindFirstObjectByType<Tracker>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         gameManager = FindFirstObjectByType<ZeroGravityManager>();
     }
@@ -61,7 +65,6 @@ public class SwayLine : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         if (tracker.isPlayerDetected())
         {
             spriteRenderer.enabled = true;

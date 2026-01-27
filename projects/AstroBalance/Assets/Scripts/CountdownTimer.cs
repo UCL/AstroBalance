@@ -15,7 +15,7 @@ public class CountdownTimer : MonoBehaviour
     private enum TimeFormat
     {
         MinutesSeconds,
-        Seconds,    
+        Seconds,
     }
 
     private void Awake()

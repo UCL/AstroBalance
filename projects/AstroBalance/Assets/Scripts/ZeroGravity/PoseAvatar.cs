@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class PoseAvatar : MonoBehaviour
 {
-
     [SerializeField, Tooltip("List of pose sprites (in order of appearance in game)")]
     private Sprite[] sprites;
 
@@ -22,20 +21,15 @@ public class PoseAvatar : MonoBehaviour
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-    }
+    void Start() { }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    void Update() { }
 
     /// <summary>
     /// Show the next pose sprite + explanation text.
     /// </summary>
-    /// <returns>true, if next sprite was successfully shown. 
+    /// <returns>true, if next sprite was successfully shown.
     /// false, if there are no more sprites left.</returns>
     public bool ShowNextSprite()
     {
