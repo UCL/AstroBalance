@@ -18,10 +18,11 @@ Documentation for each mini-game is provided under [`docs/`](/docs/), focusing o
 
 We use [CSharpier](https://csharpier.com/) to enforce code style on pull requests. 
 To help with formatting we have added a pre-commit configuration in `.pre-commit-config.yaml`. 
-In order to use the pre-commit you first need to install `csharpier` and a `.NET SDK`.
+In order to use the pre-commit you first need to install `CSharpier` and a version of `.NET SDK` (We've tested with 10.0.102, but other 
+versions may work).
 
- - [Instructions for installing `.NET SDK`] (https://aka.ms/dotnet/download).
- - CSharpier can be installed with `dotnet tool install csharpier` or by following the 
+ - [Instructions for installing .NET SDK](https://aka.ms/dotnet/download).
+ - CSharpier can be installed with `dotnet tool restore` or by following the 
 [Instructions for installing CSharpier](https://csharpier.com/docs/About).
 
 We recommend using [prek](https://github.com/j178/prek) as an alternative to pre-commit. 
@@ -36,7 +37,7 @@ pre-commit                  # to reformat staged files, or
 pre-commit run --all-files  # at any time to fix all files.
 ```
 
-Optionally you can run `pre-commit install` / `prek install` to run these checks automatically on every commit.
+Optionally you can run `pre-commit install` or `prek install` to run these checks automatically on every commit.
 
 ## Acknowledgements
 
