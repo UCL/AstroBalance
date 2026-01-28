@@ -47,7 +47,7 @@ public class StarCollectorManager : MonoBehaviour
     private int scoreInTimeWindow = 0; // stars collected in time window
     private int missedInTimeWindow = 0; // stars missed in time window
     private string saveFilename = "StarCollectorScores";
-    private StarCollectorData currentGameData;
+    private StarCollectorData gameData;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -55,25 +55,24 @@ public class StarCollectorManager : MonoBehaviour
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
 
         // Load last game data (if any) from file + choose time limit for this game
-        SaveData<StarCollectorData> saveData = new SaveData<StarCollectorData>(saveFilename);
+        SaveData<StarCollectorData> saveData = new(saveFilename);
         StarCollectorData lastGameData = saveData.GetLastGameData();
       
         if (lastGameData == null)
         {
             SetTimeLimit(minTimeLimit);
         }
-        else if (lastGameData.percentCollected > timeLimitUpgradePercent)
+        else if (lastGameData.percentStarsCollected > timeLimitUpgradePercent)
         {
             // Increase time limit by 30 seconds vs last game
-            SetTimeLimit(lastGameData.timeLimit + 30);
+            SetTimeLimit(lastGameData.timeLimitSeconds + 30);
         }
         else
         {
-            SetTimeLimit(lastGameData.timeLimit);
+            SetTimeLimit(lastGameData.timeLimitSeconds);
         }
 
-        currentGameData = new StarCollectorData();
-
+        gameData = new StarCollectorData();
         score = 0;
         scoreText.text = score.ToString();
         timer.StartCountdown(timeLimit);
@@ -191,14 +190,13 @@ public class StarCollectorManager : MonoBehaviour
         float totalStars = score + missed;
         float percentCollected = ((float)score / totalStars) * 100;
 
-        currentGameData.gameCompleted = true;
-        currentGameData.timeLimit = timeLimit;
-        currentGameData.score = score;
-        currentGameData.percentCollected = percentCollected;
-        currentGameData.LogEndTime();
+        gameData.gameCompleted = true;
+        gameData.timeLimitSeconds = timeLimit;
+        gameData.nStarsCollected = score;
+        gameData.percentStarsCollected = percentCollected;
+        gameData.LogEndTime();
 
         SaveData<StarCollectorData> saveData = new(saveFilename);
-        saveData.AddGameData(currentGameData);
-        saveData.Save();
+        saveData.SaveGameData(gameData);
     }
 }

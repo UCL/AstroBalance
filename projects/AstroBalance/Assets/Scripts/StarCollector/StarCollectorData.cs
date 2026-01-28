@@ -5,7 +5,7 @@
 [System.Serializable]
 public class StarCollectorData : GameData
 {
-    public int timeLimit;
-    public int score;
-    public float percentCollected;
+    public int timeLimitSeconds;
+    public int nStarsCollected;
+    public float percentStarsCollected;
 }

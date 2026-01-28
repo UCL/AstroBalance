@@ -26,9 +26,10 @@ public class SaveData<T> where T : GameData
         Load();
     }
 
-    public void AddGameData(T gameData)
+    public void SaveGameData(T gameData)
     {
         savedGames.Add( gameData );
+        Save();
     }
 
     public T GetLastGameData()
