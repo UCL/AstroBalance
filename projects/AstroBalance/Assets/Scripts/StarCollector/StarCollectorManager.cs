@@ -37,7 +37,6 @@ public class StarCollectorManager : MonoBehaviour
     private int timeLimitUpgradePercent = 60;
 
     private TextMeshProUGUI winText;
-    private StarCollectorData starCollectorData;
     private int timeLimit;
     private int score; // stars collected over whole game
     private int missed; // stars missed over whole game
@@ -46,15 +45,17 @@ public class StarCollectorManager : MonoBehaviour
     private float windowStart;
     private int scoreInTimeWindow = 0; // stars collected in time window
     private int missedInTimeWindow = 0; // stars missed in time window
+    private string saveFilename = "StarCollectorScores";
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
-        starCollectorData = new StarCollectorData();
 
         // Load last game data (if any) from file + choose time limit for this game
-        StarCollectorData.SaveData lastGameData = starCollectorData.Load();
+        SaveData<StarCollectorData> saveData = new SaveData<StarCollectorData>(saveFilename);
+        StarCollectorData lastGameData = saveData.GetLastGameData();
+      
         if (lastGameData == null)
         {
             SetTimeLimit(minTimeLimit);
@@ -177,9 +178,24 @@ public class StarCollectorManager : MonoBehaviour
             winScreen.SetActive(true);
 
             // Save game details to file
-            float totalStars = score + missed;
-            float percentCollected = ((float)score / totalStars) * 100;
-            starCollectorData.Save(timeLimit, score, percentCollected);
+            SaveGameData();
         }
+    }
+
+    private void SaveGameData()
+    {
+        float totalStars = score + missed;
+        float percentCollected = ((float)score / totalStars) * 100;
+
+        StarCollectorData data = new StarCollectorData
+        {
+            timeLimit = timeLimit,
+            score = score,
+            percentCollected = percentCollected,
+        };
+
+        SaveData<StarCollectorData> saveData = new SaveData<StarCollectorData>(saveFilename);
+        saveData.AddGameData(data);
+        saveData.Save();
     }
 }
