@@ -9,6 +9,7 @@ The zero gravity mini-game asks the player to copy various poses, and awards poi
   - The number of seconds of countdown before pose hold begins
   - The number of seconds each pose must be held
   - The score awarded for a hold of a chosen number of seconds
+  - The number of seconds the pose must be held for a score increase
 
 - **SwayLine**: values related to movement of the sway line
   - The number of unity units moved per mm of head movement

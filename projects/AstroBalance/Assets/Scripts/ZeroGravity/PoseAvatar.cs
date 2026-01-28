@@ -20,12 +20,6 @@ public class PoseAvatar : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start() { }
-
-    // Update is called once per frame
-    void Update() { }
-
     /// <summary>
     /// Show the next pose sprite + explanation text.
     /// </summary>
