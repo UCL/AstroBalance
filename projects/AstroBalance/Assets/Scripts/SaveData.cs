@@ -38,7 +38,7 @@ public class SaveData<T> where T : GameData
 
     public void Save()
     {
-        string json = JsonUtility.ToJson(this);
+        string json = JsonUtility.ToJson(this, true);
         File.WriteAllText(dataPath, json);
     }
 

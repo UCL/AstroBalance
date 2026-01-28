@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -46,6 +47,7 @@ public class StarCollectorManager : MonoBehaviour
     private int scoreInTimeWindow = 0; // stars collected in time window
     private int missedInTimeWindow = 0; // stars missed in time window
     private string saveFilename = "StarCollectorScores";
+    private StarCollectorData currentGameData;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -69,6 +71,8 @@ public class StarCollectorManager : MonoBehaviour
         {
             SetTimeLimit(lastGameData.timeLimit);
         }
+
+        currentGameData = new StarCollectorData();
 
         score = 0;
         scoreText.text = score.ToString();
@@ -187,15 +191,14 @@ public class StarCollectorManager : MonoBehaviour
         float totalStars = score + missed;
         float percentCollected = ((float)score / totalStars) * 100;
 
-        StarCollectorData data = new StarCollectorData
-        {
-            timeLimit = timeLimit,
-            score = score,
-            percentCollected = percentCollected,
-        };
+        currentGameData.gameCompleted = true;
+        currentGameData.timeLimit = timeLimit;
+        currentGameData.score = score;
+        currentGameData.percentCollected = percentCollected;
+        currentGameData.LogEndTime();
 
-        SaveData<StarCollectorData> saveData = new SaveData<StarCollectorData>(saveFilename);
-        saveData.AddGameData(data);
+        SaveData<StarCollectorData> saveData = new(saveFilename);
+        saveData.AddGameData(currentGameData);
         saveData.Save();
     }
 }
