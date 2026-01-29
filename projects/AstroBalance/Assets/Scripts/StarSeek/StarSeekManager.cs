@@ -21,7 +21,6 @@ public class StarSeekManager : MonoBehaviour
     private StarSeekData gameData;
     private string saveFilename = "StarSeekScores";
 
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {

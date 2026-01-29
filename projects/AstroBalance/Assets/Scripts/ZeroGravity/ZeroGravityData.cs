@@ -4,5 +4,5 @@
 [System.Serializable]
 public class ZeroGravityData : GameData
 {
-    public int score;  // overall score for staying still in poses
+    public int score; // overall score for staying still in poses
 }

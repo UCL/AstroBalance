@@ -40,7 +40,7 @@ public class StarMapManager : MonoBehaviour
 
         // Randomly choose forward or reverse direction
         Array orders = Enum.GetValues(typeof(RepeatOrder));
-        chosenOrder = (RepeatOrder) orders.GetValue(UnityEngine.Random.Range(0, orders.Length));
+        chosenOrder = (RepeatOrder)orders.GetValue(UnityEngine.Random.Range(0, orders.Length));
 
         orderText.text = "Repeat in " + chosenOrder.ToString().ToLower() + " order";
 

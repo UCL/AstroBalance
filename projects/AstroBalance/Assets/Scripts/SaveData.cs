@@ -1,14 +1,15 @@
 using System.Collections.Generic;
 using System.IO;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 
 /// <summary>
 /// Class to save / load data from multiple game sessions.
 /// </summary>
 /// <typeparam name="T">The type of game data (specific to each mini-game)</typeparam>
 [System.Serializable]
-public class SaveData<T> where T : GameData
+public class SaveData<T>
+    where T : GameData
 {
     public List<T> savedGames = new List<T>();
     private string dataPath;
@@ -21,10 +22,7 @@ public class SaveData<T> where T : GameData
     public SaveData(string filename)
     {
         // currently defaults to "C:\Users\username\AppData\LocalLow\DefaultCompany\AstroBalance" on Windows
-        dataPath = Path.Combine(
-            Application.persistentDataPath,
-            filename + ".json"
-        );
+        dataPath = Path.Combine(Application.persistentDataPath, filename + ".json");
 
         Load();
     }
@@ -35,10 +33,10 @@ public class SaveData<T> where T : GameData
     /// <param name="gameData">Game data from this session</param>
     public void SaveGameData(T gameData)
     {
-        savedGames.Add( gameData );
+        savedGames.Add(gameData);
         Save();
     }
-    
+
     /// <summary>
     /// Get data from the last played game session.
     /// </summary>
@@ -69,5 +67,4 @@ public class SaveData<T> where T : GameData
             }
         }
     }
-
 }
