@@ -133,8 +133,9 @@ public class StarMapManager : MonoBehaviour
     /// <summary>
     /// Increase score (successfully guessed sequences) by one.
     /// </summary>
-    /// <param name="sequenceLength">length of this correctly guessed sequence</param>
-    public void UpdateScore(int sequenceLength)
+    /// <param name="sequenceLength">length of the guessed sequence</param>
+    /// <param name="afterDowngrade">whether this is after a downgrade in length due to incorrect guesses</param>
+    public void UpdateScore(int sequenceLength, bool afterDowngrade)
     {
         score += 1;
         scoreText.text = score.ToString();
@@ -144,7 +145,9 @@ public class StarMapManager : MonoBehaviour
             maxSequenceLength = sequenceLength;
         }
 
-        if (sequenceLength == chosenConstellation.GetNumberOfStars())
+        // game ends when we reach the max number of stars, or when we guess correctly
+        // after the sequence length having been reduced due to incorrect guesses
+        if (sequenceLength == chosenConstellation.GetNumberOfStars() || afterDowngrade)
         {
             EndGame();
         }

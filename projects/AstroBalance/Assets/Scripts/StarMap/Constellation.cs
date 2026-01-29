@@ -39,6 +39,7 @@ public class Constellation : MonoBehaviour
     private List<StarMapStar> selectedStars; // stars selected so far
     private int currentSequenceLength;
     private int incorrectSequences = 0; // Incorrect sequences at current length
+    private bool hasBeenDowngraded = false; // Whether the sequence length has been downgraded due to incorrect guesses
     private RepeatOrder order = RepeatOrder.Same;
 
     private void Awake()
@@ -174,7 +175,7 @@ public class Constellation : MonoBehaviour
             return;
 
         // whole sequence has been guessed correctly
-        gameManager.UpdateScore(currentSequenceLength);
+        gameManager.UpdateScore(currentSequenceLength, hasBeenDowngraded);
 
         if (gameManager.IsGameActive() && currentSequenceLength < GetNumberOfStars())
         {
@@ -200,6 +201,7 @@ public class Constellation : MonoBehaviour
         )
         {
             currentSequenceLength -= 1;
+            hasBeenDowngraded = true;
             incorrectSequences = 0;
         }
 
