@@ -13,8 +13,11 @@ public class StarMapManager : MonoBehaviour
     [SerializeField, Tooltip("Correct sequences required to win")]
     private int winningScore = 5;
 
-    [SerializeField, Tooltip("Constellation of stars")]
-    private Constellation constellation;
+    [SerializeField, Tooltip("Small constellation prefab")]
+    private GameObject smallConstellation;
+
+    [SerializeField, Tooltip("Large constellation prefab")]
+    private GameObject largeConstellation;
 
     [SerializeField, Tooltip("Screen shown upon winning the game")]
     private GameObject winScreen;
@@ -25,6 +28,7 @@ public class StarMapManager : MonoBehaviour
     private int maxSequenceLength = 0; // maximum length of sequence repeated correctly
     private string saveFilename = "StarMapScores";
     private RepeatOrder chosenOrder;
+    private Constellation constellation;
     private StarMapData gameData;
 
     public enum RepeatOrder
@@ -45,6 +49,9 @@ public class StarMapManager : MonoBehaviour
         orderText.text = "Repeat in " + chosenOrder.ToString().ToLower() + " order";
 
         gameData = new StarMapData();
+        GameObject constellationObject = Instantiate<GameObject>(smallConstellation);
+        constellation = constellationObject.GetComponent<Constellation>();
+
         constellation.ShowNewSequence(chosenOrder);
     }
 
