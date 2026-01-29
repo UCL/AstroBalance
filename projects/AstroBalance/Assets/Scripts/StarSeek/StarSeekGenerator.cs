@@ -10,8 +10,6 @@ public class StarSeekGenerator : MonoBehaviour
 
     private List<Vector2> spawnLocations = new List<Vector2>
     {
-        new Vector2(-8, 0), // left
-        new Vector2(8, 0), // right
         new Vector2(0, 4), // up
         new Vector2(0, -4), // down
     };
@@ -21,6 +19,16 @@ public class StarSeekGenerator : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        // Add left + right spawn locations for stars. These are calculated based on the
+        // camera extent, so the stars appear at the edge of the screen for all screen sizes and
+        // aspect ratios (using a fixed left / right location means stars will be cut-off for certain
+        // screens)
+        Vector3 starOffset = new Vector3(1, 0, 0); // How many unity units to offset the star from the edge of the screen
+        Vector2 leftSpawn = Camera.main.ViewportToWorldPoint(new Vector2(0, 0.5f)) + starOffset;
+        Vector2 rightSpawn = Camera.main.ViewportToWorldPoint(new Vector2(1, 0.5f)) - starOffset;
+        spawnLocations.Add(leftSpawn);
+        spawnLocations.Add(rightSpawn);
+
         spawnStar();
     }
 
