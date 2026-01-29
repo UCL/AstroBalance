@@ -170,22 +170,21 @@ public class Constellation : MonoBehaviour
     {
         // Remove star from the stars left to guess
         currentSequence.RemoveAt(0);
+        if (currentSequence.Count != 0)
+            return;
 
-        if (currentSequence.Count() == 0)
+        // whole sequence has been guessed correctly
+        gameManager.UpdateScore(currentSequenceLength);
+
+        if (gameManager.IsGameActive() && currentSequenceLength < GetNumberOfStars())
         {
-            // whole sequence has been guessed correctly
-            gameManager.UpdateScore(currentSequenceLength);
-
-            if (gameManager.IsGameActive())
-            {
-                currentSequenceLength += 1;
-                incorrectSequences = 0;
-                StartCoroutine(CompleteSequenceAndTriggerNext(true));
-            }
-            else
-            {
-                ResetStars();
-            }
+            currentSequenceLength += 1;
+            incorrectSequences = 0;
+            StartCoroutine(CompleteSequenceAndTriggerNext(true));
+        }
+        else
+        {
+            ResetStars();
         }
     }
 

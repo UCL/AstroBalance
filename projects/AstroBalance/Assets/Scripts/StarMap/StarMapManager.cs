@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 
@@ -12,9 +11,6 @@ public class StarMapManager : MonoBehaviour
 
     [SerializeField, Tooltip("Text mesh pro object for order text i.e. same vs opposite")]
     private TextMeshProUGUI orderText;
-
-    [SerializeField, Tooltip("Correct sequences required to win")]
-    private int winningScore = 5;
 
     [
         SerializeField,
@@ -148,7 +144,7 @@ public class StarMapManager : MonoBehaviour
             maxSequenceLength = sequenceLength;
         }
 
-        if (score == winningScore)
+        if (sequenceLength == chosenConstellation.GetNumberOfStars())
         {
             EndGame();
         }
