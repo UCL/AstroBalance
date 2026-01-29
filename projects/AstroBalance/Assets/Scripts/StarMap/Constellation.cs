@@ -61,6 +61,14 @@ public class Constellation : MonoBehaviour
 
     public int GetNumberOfStars()
     {
+        // Populate list of stars, if Awake() hasn't been called yet.
+        // When we're choosing a constellation to spawn, we need to know how many stars it
+        // contains before we instantiate it (i.e. before Awake is called)
+        if (stars == null || stars.Count() == 0)
+        {
+            stars = new List<StarMapStar>(gameObject.GetComponentsInChildren<StarMapStar>());
+        }
+
         return stars.Count();
     }
 
