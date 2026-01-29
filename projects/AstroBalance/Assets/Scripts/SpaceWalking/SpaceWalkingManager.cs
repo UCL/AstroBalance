@@ -22,11 +22,14 @@ public class SpaceWalkingManager : MonoBehaviour
     private TextMeshProUGUI winText;
     private bool gameActive = true;
     private int score = 0;
+    private SpaceWalkingData gameData;
+    private string saveFilename = "SpaceWalkingScores";
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
+        gameData = new SpaceWalkingData();
         StartCoroutine(StartTileActivation());
     }
 
@@ -66,6 +69,17 @@ public class SpaceWalkingManager : MonoBehaviour
 
             winText.text = "Congratulations! \n \n You completed " + score + " steps";
             winScreen.SetActive(true);
+            SaveGameData();
         }
+    }
+
+    private void SaveGameData()
+    {
+        gameData.gameCompleted = true;
+        gameData.nSteps = score;
+        gameData.LogEndTime();
+
+        SaveData<SpaceWalkingData> saveData = new(saveFilename);
+        saveData.SaveGameData(gameData);
     }
 }
