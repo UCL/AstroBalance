@@ -1,5 +1,3 @@
-
-
 /// <summary>
 /// Save data for a single star map session
 /// </summary>
