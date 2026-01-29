@@ -2,7 +2,6 @@ using TMPro;
 using Tobii.GameIntegration.Net;
 using TrackerBuffers;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
 
 /// <summary>
 /// Manages the size of a rocket flame based on head speed, and controls
