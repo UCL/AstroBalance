@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 
@@ -13,11 +16,19 @@ public class StarMapManager : MonoBehaviour
     [SerializeField, Tooltip("Correct sequences required to win")]
     private int winningScore = 5;
 
+    [
+        SerializeField,
+        Tooltip(
+            "Number of maximum score games (in a row) required to upgrade from small to large constellation"
+        )
+    ]
+    private int maxScoreGames = 2;
+
     [SerializeField, Tooltip("Small constellation prefab")]
-    private GameObject smallConstellation;
+    private Constellation smallConstellation;
 
     [SerializeField, Tooltip("Large constellation prefab")]
-    private GameObject largeConstellation;
+    private Constellation largeConstellation;
 
     [SerializeField, Tooltip("Screen shown upon winning the game")]
     private GameObject winScreen;
@@ -28,7 +39,8 @@ public class StarMapManager : MonoBehaviour
     private int maxSequenceLength = 0; // maximum length of sequence repeated correctly
     private string saveFilename = "StarMapScores";
     private RepeatOrder chosenOrder;
-    private Constellation constellation;
+    private Constellation chosenConstellation;
+    private ConstellationSize constellationSize;
     private StarMapData gameData;
 
     public enum RepeatOrder
@@ -37,10 +49,19 @@ public class StarMapManager : MonoBehaviour
         Opposite,
     }
 
+    public enum ConstellationSize
+    {
+        Small,
+        Large,
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
+
+        ChooseConstellationSize();
+        SpawnConstellation();
 
         // Randomly choose forward or reverse direction
         Array orders = Enum.GetValues(typeof(RepeatOrder));
@@ -49,10 +70,65 @@ public class StarMapManager : MonoBehaviour
         orderText.text = "Repeat in " + chosenOrder.ToString().ToLower() + " order";
 
         gameData = new StarMapData();
-        GameObject constellationObject = Instantiate<GameObject>(smallConstellation);
-        constellation = constellationObject.GetComponent<Constellation>();
+        chosenConstellation.ShowNewSequence(chosenOrder);
+    }
 
-        constellation.ShowNewSequence(chosenOrder);
+    /// <summary>
+    /// Load previous game data (if any), and choose constellation size based on previous
+    /// performance.
+    /// </summary>
+    private void ChooseConstellationSize()
+    {
+        SaveData<StarMapData> saveData = new(saveFilename);
+        IEnumerable<StarMapData> lastNGamesData = saveData.GetLastNGamesData(maxScoreGames);
+        int smallConstellationMaxLength = smallConstellation.GetNumberOfStars();
+
+        // We haven't played enough games, to get maxScoreGames in a row
+        if (lastNGamesData.Count() < maxScoreGames)
+        {
+            constellationSize = ConstellationSize.Small;
+        }
+        // Once upgraded to the large constellation, stay at the large constellation
+        else if (lastNGamesData.Last().constellationSize == ConstellationSize.Large.ToString())
+        {
+            constellationSize = ConstellationSize.Large;
+        }
+        // Otherwise upgrade if have enough maxScoreGames
+        else
+        {
+            int nMaxGames = 0;
+            foreach (StarMapData data in lastNGamesData)
+            {
+                if (data.maxSequenceLength == smallConstellationMaxLength)
+                {
+                    nMaxGames++;
+                }
+            }
+
+            if (nMaxGames >= maxScoreGames)
+            {
+                constellationSize = ConstellationSize.Large;
+            }
+            else
+            {
+                constellationSize = ConstellationSize.Small;
+            }
+        }
+    }
+
+    private void SpawnConstellation()
+    {
+        GameObject constellationToInstantiate;
+        if (constellationSize == ConstellationSize.Small)
+        {
+            constellationToInstantiate = smallConstellation.gameObject;
+        }
+        else
+        {
+            constellationToInstantiate = largeConstellation.gameObject;
+        }
+
+        chosenConstellation = Instantiate(constellationToInstantiate).GetComponent<Constellation>();
     }
 
     // Update is called once per frame
@@ -101,6 +177,7 @@ public class StarMapManager : MonoBehaviour
         gameData.nSequencesRepeated = score;
         gameData.maxSequenceLength = maxSequenceLength;
         gameData.repeatOrder = chosenOrder.ToString();
+        gameData.constellationSize = constellationSize.ToString();
         gameData.LogEndTime();
 
         SaveData<StarMapData> saveData = new(saveFilename);

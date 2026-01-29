@@ -59,6 +59,11 @@ public class Constellation : MonoBehaviour
     // Update is called once per frame
     void Update() { }
 
+    public int GetNumberOfStars()
+    {
+        return stars.Count();
+    }
+
     /// <summary>
     /// Choose a new random sequence of stars, and display it to the player.
     /// Once display completes, stars are enabled for selection.
