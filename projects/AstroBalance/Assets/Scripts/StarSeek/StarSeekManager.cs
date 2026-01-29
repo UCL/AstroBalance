@@ -12,10 +12,25 @@ public class StarSeekManager : MonoBehaviour
     [SerializeField, Tooltip("Screen shown upon winning the game")]
     private GameObject winScreen;
 
-    [SerializeField, Tooltip("Game time limit in seconds")]
-    private int timeLimit = 120;
+    [SerializeField, Tooltip("Minimum game time limit in seconds")]
+    private int minTimeLimit = 60;
+
+    [SerializeField, Tooltip("Maximum game time limit in seconds")]
+    private int maxTimeLimit = 180;
+
+    [SerializeField, Tooltip("Time limit increase if timeLimitUpgradeRate is met")]
+    private int timeLimitIncrement = 60;
+
+    [
+        SerializeField,
+        Tooltip(
+            "(number of stars collected / game time limit) i.e. average stars collected per second - must be above this value to increase the time limit of the next game."
+        )
+    ]
+    private float timeLimitUpgradeRate = 0.3f;
 
     private int score;
+    private int timeLimit;
     private TextMeshProUGUI winText;
     private bool gameActive = true;
     private StarSeekData gameData;
@@ -25,10 +40,40 @@ public class StarSeekManager : MonoBehaviour
     void Start()
     {
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
+        ChooseGameTimeLimit();
+
         score = 0;
         scoreText.text = score.ToString();
         gameData = new StarSeekData();
         timer.StartCountdown(timeLimit);
+    }
+
+    /// <summary>
+    /// Load last game data (if any), and choose time limit for this game based
+    /// on prior perfomance.
+    /// </summary>
+    private void ChooseGameTimeLimit()
+    {
+        SaveData<StarSeekData> saveData = new(saveFilename);
+        StarSeekData lastGameData = saveData.GetLastGameData();
+
+        if (lastGameData == null)
+        {
+            SetTimeLimit(minTimeLimit);
+            return;
+        }
+
+        float lastStarRate =
+            (float)lastGameData.nStarsCollected / (float)lastGameData.timeLimitSeconds;
+        if (lastStarRate >= timeLimitUpgradeRate)
+        {
+            // Increase time limit vs last game
+            SetTimeLimit(lastGameData.timeLimitSeconds + timeLimitIncrement);
+        }
+        else
+        {
+            SetTimeLimit(lastGameData.timeLimitSeconds);
+        }
     }
 
     // Update is called once per frame
@@ -76,5 +121,21 @@ public class StarSeekManager : MonoBehaviour
 
         SaveData<StarSeekData> saveData = new(saveFilename);
         saveData.SaveGameData(gameData);
+    }
+
+    private void SetTimeLimit(int limit)
+    {
+        if (limit > maxTimeLimit)
+        {
+            timeLimit = maxTimeLimit;
+        }
+        else if (limit < minTimeLimit)
+        {
+            timeLimit = minTimeLimit;
+        }
+        else
+        {
+            timeLimit = limit;
+        }
     }
 }
