@@ -368,7 +368,7 @@ MonoBehaviour:
   timer: {fileID: 1898818219}
   winScreen: {fileID: 1260672151}
   starGenerator: {fileID: 1755869804}
-  minTimeLimit: 5
+  minTimeLimit: 60
   maxTimeLimit: 180
   difficultyWindowSeconds: 10
   speedUpgradePercent: 60

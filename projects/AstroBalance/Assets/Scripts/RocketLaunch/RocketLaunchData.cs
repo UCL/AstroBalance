@@ -1,4 +1,3 @@
-
 /// <summary>
 /// Save data for a single rocket launch session
 /// </summary>

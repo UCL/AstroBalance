@@ -1,6 +1,4 @@
-
 using System;
-
 
 /// <summary>
 /// Base class for a single game's save data.
