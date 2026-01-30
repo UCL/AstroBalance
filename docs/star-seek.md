@@ -5,7 +5,10 @@ The star seek mini-game uses gaze + head position to collect stars that appear a
 ## Main objects / values to edit during play testing
 
 - **StarSeekManager**: values related to the overall win condition of the game
-  - Game time limit
+  - Minimum game time limit (seconds)
+  - Maximum game time limit (seconds)
+  - How many seconds to increase the time limit, if the upgrade rate is met
+  - Upgrade rate: (number of stars collected / game time limit) i.e. average stars collected per second, must be above this value to increase the time limit of the next game.
 
 - **Prefabs/StarSeekStar**: values related to 'locking on' to a star
   - Time required to collect a star (with both gaze + head pose crosshair aligned)
