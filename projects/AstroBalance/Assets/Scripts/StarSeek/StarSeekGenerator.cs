@@ -26,7 +26,7 @@ public class StarSeekGenerator : MonoBehaviour
     private List<Vector2> gridPositionsToExclude = new List<Vector2>();
 
     [SerializeField, Tooltip("Min distance between spawned stars")]
-    private int minDistance = 8;
+    private int minDistance = 7;
 
     private List<Vector2> spawnLocations = new List<Vector2>();
     private GameObject currentStar;
@@ -38,11 +38,6 @@ public class StarSeekGenerator : MonoBehaviour
     {
         FillSpawnLocations();
         SpawnStar();
-
-        //foreach (Vector2 location in spawnLocations)
-        //{
-        //    Instantiate(starPrefab, new Vector3(location.x, location.y, 0), Quaternion.identity);
-        //}
     }
 
     /// <summary>
