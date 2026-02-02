@@ -3,6 +3,7 @@ using System.Linq;
 using Tobii.GameIntegration.Net;
 using UnityEngine;
 
+/// define two interfaces for the buffer data to enable us to create templated buffers.
 public interface ITimeStampMicroSeconds
 {
     long TimeStampMicroSeconds();
@@ -13,6 +14,9 @@ public interface IBufferData
     float[] GetData();
 }
 
+/// <summary>
+/// Wrapper for Tobii gazepoint pitch data, implementing GetData and timestamp interfaces.
+/// </summary>
 public class RocketGazePoint : ITimeStampMicroSeconds, IBufferData
 {
     public GazePoint gazePoint;
@@ -22,9 +26,12 @@ public class RocketGazePoint : ITimeStampMicroSeconds, IBufferData
     public float[] GetData() => new float[] { gazePoint.X, gazePoint.Y };
 }
 
+/// <summary>
+/// Wrapper for Tobii head pose pitch data, implementing GetData and timestamp interfaces.
+/// </summary>
 public class RocketHeadPitch : ITimeStampMicroSeconds, IBufferData
 {
-    public HeadPose headPose;
+    private HeadPose headPose;
 
     public long TimeStampMicroSeconds() => headPose.TimeStampMicroSeconds;
 
@@ -37,9 +44,12 @@ public class RocketHeadPitch : ITimeStampMicroSeconds, IBufferData
     }
 }
 
+/// <summary>
+/// Wrapper for Tobii head pose yaw data, implementing GetData and timestamp interfaces.
+/// </summary>
 public class RocketHeadYaw : ITimeStampMicroSeconds, IBufferData
 {
-    public HeadPose headPose;
+    private HeadPose headPose;
 
     public long TimeStampMicroSeconds() => headPose.TimeStampMicroSeconds;
 
@@ -52,6 +62,11 @@ public class RocketHeadYaw : ITimeStampMicroSeconds, IBufferData
     }
 }
 
+/// <summary>
+/// Base class for the tracker buffers, provides functionality to add items in a continuous loop, overwriting
+/// old data when the buffer is full.
+/// Also provides functions to calculate speed for the pose data.
+/// </summary>
 public class TobiiBuffer<T>
     where T : ITimeStampMicroSeconds, IBufferData
 {
@@ -186,7 +201,7 @@ public class TobiiBuffer<T>
 }
 
 /// <summary>
-/// Holds the gazepoint buffer and provide a method to check gaze stability and direction.
+/// Holds the gazepoint buffer and provides a method to check gaze stability and direction.
 /// </summary>
 /// TODO Understand how to make this thread safe.
 public class GazeBuffer : TobiiBuffer<RocketGazePoint>
