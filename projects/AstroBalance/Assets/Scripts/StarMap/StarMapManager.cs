@@ -22,6 +22,10 @@ public class StarMapManager : MonoBehaviour
     private TextMeshProUGUI winText;
     private bool gameActive = true;
     private int score = 0;
+    private int maxSequenceLength = 0; // maximum length of sequence repeated correctly
+    private string saveFilename = "StarMapScores";
+    private RepeatOrder chosenOrder;
+    private StarMapData gameData;
 
     public enum RepeatOrder
     {
@@ -36,10 +40,11 @@ public class StarMapManager : MonoBehaviour
 
         // Randomly choose forward or reverse direction
         Array orders = Enum.GetValues(typeof(RepeatOrder));
-        RepeatOrder chosenOrder = (RepeatOrder)
-            orders.GetValue(UnityEngine.Random.Range(0, orders.Length));
+        chosenOrder = (RepeatOrder)orders.GetValue(UnityEngine.Random.Range(0, orders.Length));
 
         orderText.text = "Repeat in " + chosenOrder.ToString().ToLower() + " order";
+
+        gameData = new StarMapData();
         constellation.ShowNewSequence(chosenOrder);
     }
 
@@ -49,10 +54,16 @@ public class StarMapManager : MonoBehaviour
     /// <summary>
     /// Increase score (successfully guessed sequences) by one.
     /// </summary>
-    public void UpdateScore()
+    /// <param name="sequenceLength">length of this correctly guessed sequence</param>
+    public void UpdateScore(int sequenceLength)
     {
         score += 1;
         scoreText.text = score.ToString();
+
+        if (sequenceLength > maxSequenceLength)
+        {
+            maxSequenceLength = sequenceLength;
+        }
 
         if (score == winningScore)
         {
@@ -73,6 +84,19 @@ public class StarMapManager : MonoBehaviour
 
             winText.text = "Congratulations! \n \n You matched " + score + " sequences";
             winScreen.SetActive(true);
+            SaveGameData();
         }
+    }
+
+    private void SaveGameData()
+    {
+        gameData.gameCompleted = true;
+        gameData.nSequencesRepeated = score;
+        gameData.maxSequenceLength = maxSequenceLength;
+        gameData.repeatOrder = chosenOrder.ToString();
+        gameData.LogEndTime();
+
+        SaveData<StarMapData> saveData = new(saveFilename);
+        saveData.SaveGameData(gameData);
     }
 }

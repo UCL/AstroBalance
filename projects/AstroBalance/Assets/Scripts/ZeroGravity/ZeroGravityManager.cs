@@ -42,6 +42,8 @@ public class ZeroGravityManager : MonoBehaviour
     private int score = 0;
     private bool gameActive = true;
     private ActiveTimer activeTimer = ActiveTimer.None;
+    private ZeroGravityData gameData;
+    private string saveFilename = "ZeroGravityScores";
 
     /// <summary>
     /// Keep track of which timers are currently active, and
@@ -60,6 +62,7 @@ public class ZeroGravityManager : MonoBehaviour
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
         scoreText = scoreDisplay.GetComponentInChildren<TextMeshProUGUI>();
 
+        gameData = new ZeroGravityData();
         StartCoroutine(DisplayNextPose());
     }
 
@@ -138,6 +141,17 @@ public class ZeroGravityManager : MonoBehaviour
 
             winText.text = "Congratulations! \n \n You scored " + score + " points";
             winScreen.SetActive(true);
+            SaveGameData();
         }
+    }
+
+    private void SaveGameData()
+    {
+        gameData.gameCompleted = true;
+        gameData.score = score;
+        gameData.LogEndTime();
+
+        SaveData<ZeroGravityData> saveData = new(saveFilename);
+        saveData.SaveGameData(gameData);
     }
 }

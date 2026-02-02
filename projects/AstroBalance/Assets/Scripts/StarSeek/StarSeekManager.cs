@@ -18,6 +18,8 @@ public class StarSeekManager : MonoBehaviour
     private int score;
     private TextMeshProUGUI winText;
     private bool gameActive = true;
+    private StarSeekData gameData;
+    private string saveFilename = "StarSeekScores";
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -25,6 +27,7 @@ public class StarSeekManager : MonoBehaviour
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
         score = 0;
         scoreText.text = score.ToString();
+        gameData = new StarSeekData();
         timer.StartCountdown(timeLimit);
     }
 
@@ -60,6 +63,18 @@ public class StarSeekManager : MonoBehaviour
 
             winText.text = "Congratulations! \n \n You collected " + score + " stars";
             winScreen.SetActive(true);
+            SaveGameData();
         }
+    }
+
+    private void SaveGameData()
+    {
+        gameData.gameCompleted = true;
+        gameData.timeLimitSeconds = timeLimit;
+        gameData.nStarsCollected = score;
+        gameData.LogEndTime();
+
+        SaveData<StarSeekData> saveData = new(saveFilename);
+        saveData.SaveGameData(gameData);
     }
 }

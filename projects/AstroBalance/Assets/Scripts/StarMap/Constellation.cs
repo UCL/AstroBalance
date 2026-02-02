@@ -161,7 +161,7 @@ public class Constellation : MonoBehaviour
         if (currentSequence.Count() == 0)
         {
             // whole sequence has been guessed correctly
-            gameManager.UpdateScore();
+            gameManager.UpdateScore(currentSequenceLength);
 
             if (gameManager.IsGameActive())
             {
