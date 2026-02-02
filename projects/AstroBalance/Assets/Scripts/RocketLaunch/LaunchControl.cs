@@ -61,7 +61,7 @@ public class LaunchControl : MonoBehaviour
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
         winScreen.SetActive(false);
         tracker = FindFirstObjectByType<Tracker>();
-        
+
         SaveData<RocketLaunchData> saveData = new(saveFilename);
         RocketLaunchData lastGameData = saveData.GetLastGameData();
 
