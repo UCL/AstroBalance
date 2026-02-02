@@ -50,8 +50,9 @@ public class LaunchControl : MonoBehaviour
     private RocketHeadPitchSpeedBuffer headPitchBuffer;
     private RocketHeadYawSpeedBuffer headYawBuffer;
     private bool usePitch; //true if we're using pitch speed, false if we're using yaw speed.
-    private RocketLaunchData rocketLaunchData;
+    private RocketLaunchData gameData;
     private float rocketSpeed;
+    private string saveFilename = "RocketLaunchScores";
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -60,8 +61,10 @@ public class LaunchControl : MonoBehaviour
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
         winScreen.SetActive(false);
         tracker = FindFirstObjectByType<Tracker>();
-        rocketLaunchData = new RocketLaunchData();
-        RocketLaunchData.SaveData lastGameData = rocketLaunchData.Load();
+        
+        SaveData<RocketLaunchData> saveData = new(saveFilename);
+        RocketLaunchData lastGameData = saveData.GetLastGameData();
+
         if (lastGameData == null)
         {
             usePitch = true;
@@ -75,6 +78,7 @@ public class LaunchControl : MonoBehaviour
         instructionsText.text = usePitch
             ? "Nod your head and repeat the code to launch the rocket!"
             : "Shake your head and repeat the code to launch the rocket!";
+        gameData = new RocketLaunchData();
         timer.StartCountdown(launchTime);
     }
 
@@ -141,7 +145,18 @@ public class LaunchControl : MonoBehaviour
     {
         winText.text = "Blast Off! Well Done.";
         winScreen.SetActive(true);
-        rocketLaunchData.Save(usePitch);
+        SaveGameData();
         this.enabled = false;
+    }
+
+    private void SaveGameData()
+    {
+        gameData.gameCompleted = true;
+        gameData.pitch = usePitch;
+        gameData.launchTimeSeconds = launchTime;
+        gameData.LogEndTime();
+
+        SaveData<RocketLaunchData> saveData = new(saveFilename);
+        saveData.SaveGameData(gameData);
     }
 }
