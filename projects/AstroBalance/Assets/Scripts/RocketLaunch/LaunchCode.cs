@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
 using Tobii.GameIntegration.Net;
-using TrackerBuffers;
 using UnityEngine;
 
 /// <summary>
