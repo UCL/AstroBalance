@@ -418,6 +418,7 @@ MonoBehaviour:
   - {x: 0, y: 3}
   - {x: 5, y: 3}
   - {x: 5, y: 0}
+  minDistance: 8
 --- !u!4 &609642610
 Transform:
   m_ObjectHideFlags: 0

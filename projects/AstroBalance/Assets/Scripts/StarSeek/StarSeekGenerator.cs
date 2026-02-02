@@ -25,20 +25,24 @@ public class StarSeekGenerator : MonoBehaviour
     ]
     private List<Vector2> gridPositionsToExclude = new List<Vector2>();
 
+    [SerializeField, Tooltip("Min distance between spawned stars")]
+    private int minDistance = 8;
+
     private List<Vector2> spawnLocations = new List<Vector2>();
     private GameObject currentStar;
-    private int lastSpawnLocationIndex = -1;
+    private bool firstSpawn = true;
+    private Vector2 lastSpawnLocation;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         FillSpawnLocations();
-        //SpawnStar();
+        SpawnStar();
 
-        foreach (Vector2 location in spawnLocations)
-        {
-            Instantiate(starPrefab, new Vector3(location.x, location.y, 0), Quaternion.identity);
-        }
+        //foreach (Vector2 location in spawnLocations)
+        //{
+        //    Instantiate(starPrefab, new Vector3(location.x, location.y, 0), Quaternion.identity);
+        //}
     }
 
     /// <summary>
@@ -86,29 +90,38 @@ public class StarSeekGenerator : MonoBehaviour
 
     private void SpawnStar()
     {
-        int chosenIndex;
-        if (lastSpawnLocationIndex == -1)
+        List<Vector2> possibleLocations = new List<Vector2>();
+
+        if (firstSpawn)
         {
             // If this is our first time generating a star, choose from all locations
-            chosenIndex = Random.Range(0, spawnLocations.Count);
+            Debug.Log("FIRST");
+            possibleLocations = spawnLocations;
+            firstSpawn = false;
         }
         else
         {
-            // If we have spawned a star previously, make sure it moves to a new location
-            IEnumerable<int> indexes = Enumerable.Range(0, spawnLocations.Count);
-            indexes = indexes.Except(new int[] { lastSpawnLocationIndex });
-
-            chosenIndex = indexes.ElementAt(Random.Range(0, indexes.Count()));
+            // If we have spawned a star previously, choose a new location that is at
+            // least minDistance away
+            foreach (Vector2 spawnLocation in spawnLocations)
+            {
+                float distance = Vector2.Distance(spawnLocation, lastSpawnLocation);
+                if (distance >= minDistance)
+                {
+                    possibleLocations.Add(spawnLocation);
+                }
+            }
         }
 
-        // Spawn a star at the randomly chosen location
-        Vector2 chosenLocation = spawnLocations.ElementAt(chosenIndex);
+        // Spawn a star at a randomly chosen location
+        int chosenIndex = Random.Range(0, possibleLocations.Count);
+        Vector2 chosenLocation = possibleLocations.ElementAt(chosenIndex);
         currentStar = Instantiate(
             starPrefab,
             new Vector3(chosenLocation.x, chosenLocation.y, 0),
             Quaternion.identity
         );
-        lastSpawnLocationIndex = chosenIndex;
+        lastSpawnLocation = chosenLocation;
     }
 
     // Update is called once per frame
