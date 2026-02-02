@@ -8,26 +8,31 @@ public class StarSeekGenerator : MonoBehaviour
     [SerializeField, Tooltip("Star prefab to generate")]
     private GameObject starPrefab;
 
-    private List<Vector2> spawnLocations = new List<Vector2>
-    {
-        new Vector2(0, 4), // up
-        new Vector2(0, -4), // down
-    };
+    [SerializeField, Tooltip("Number of unity units to offset stars from the edge of the screen.")]
+    private int offset = 1;
+
+    private List<Vector2> spawnLocations = new List<Vector2>();
     private GameObject currentStar;
     private int lastSpawnLocationIndex = -1;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        // Add left + right spawn locations for stars. These are calculated based on the
-        // camera extent, so the stars appear at the edge of the screen for all screen sizes and
-        // aspect ratios (using a fixed left / right location means stars will be cut-off for certain
-        // screens)
-        Vector3 starOffset = new Vector3(1, 0, 0); // How many unity units to offset the star from the edge of the screen
-        Vector2 leftSpawn = Camera.main.ViewportToWorldPoint(new Vector2(0, 0.5f)) + starOffset;
-        Vector2 rightSpawn = Camera.main.ViewportToWorldPoint(new Vector2(1, 0.5f)) - starOffset;
-        spawnLocations.Add(leftSpawn);
-        spawnLocations.Add(rightSpawn);
+        // Calculate star spawn locations based on the camera extent. This ensures stars appear at the edge
+        // of the screen for all screen sizes and aspect ratios.
+        Vector2 leftPos =
+            Camera.main.ViewportToWorldPoint(new Vector2(0, 0.5f)) + new Vector3(offset, 0, 0);
+        Vector2 rightPos =
+            Camera.main.ViewportToWorldPoint(new Vector2(1, 0.5f)) - new Vector3(offset, 0, 0);
+        Vector2 topPos =
+            Camera.main.ViewportToWorldPoint(new Vector2(0.5f, 1)) - new Vector3(0, offset, 0);
+        Vector2 bottomPos =
+            Camera.main.ViewportToWorldPoint(new Vector2(0.5f, 0)) + new Vector3(0, offset, 0);
+
+        spawnLocations.Add(leftPos);
+        spawnLocations.Add(rightPos);
+        spawnLocations.Add(topPos);
+        spawnLocations.Add(bottomPos);
 
         spawnStar();
     }
