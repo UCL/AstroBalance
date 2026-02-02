@@ -17,6 +17,14 @@ public class StarSeekGenerator : MonoBehaviour
     [SerializeField, Tooltip("Number of columns in star spawn grid")]
     private int nColumns = 6;
 
+    [
+        SerializeField,
+        Tooltip(
+            "Positions in the spawn grid to exclude (e.g. overlapping with UI elements). (0, 0) is the bottom left star and (nColumns - 1, nRows - 1) is the top right star."
+        )
+    ]
+    private List<Vector2> gridPositionsToExclude = new List<Vector2>();
+
     private List<Vector2> spawnLocations = new List<Vector2>();
     private GameObject currentStar;
     private int lastSpawnLocationIndex = -1;
@@ -25,18 +33,17 @@ public class StarSeekGenerator : MonoBehaviour
     void Start()
     {
         FillSpawnLocations();
-        SpawnStar();
+        //SpawnStar();
 
-        //foreach (Vector2 location in spawnLocations)
-        //{
-        //    Instantiate(
-        //    starPrefab,
-        //    new Vector3(location.x, location.y, 0),
-        //    Quaternion.identity
-        //);
-        //}
+        foreach (Vector2 location in spawnLocations)
+        {
+            Instantiate(starPrefab, new Vector3(location.x, location.y, 0), Quaternion.identity);
+        }
     }
 
+    /// <summary>
+    /// Create a grid of spawn locations, excluding those in 'gridPositionsToExclude'
+    /// </summary>
     private void FillSpawnLocations()
     {
         Vector2 gridBottomLeft =
@@ -53,17 +60,28 @@ public class StarSeekGenerator : MonoBehaviour
         float yLocation = gridBottomLeft.y;
         for (int i = 0; i < nColumns; i++)
         {
-            spawnLocations.Add(new Vector2(xLocation, yLocation));
-
-            for (int j = 0; j < nRows - 1; j++)
+            for (int j = 0; j < nRows; j++)
             {
+                AddSpawnLocation(new Vector2(xLocation, yLocation), new Vector2(i, j));
                 yLocation += ySpacing;
-                spawnLocations.Add(new Vector2(xLocation, yLocation));
             }
 
             xLocation += xSpacing;
             yLocation = gridBottomLeft.y;
         }
+    }
+
+    private void AddSpawnLocation(Vector2 worldPosition, Vector2 gridPosition)
+    {
+        foreach (Vector2 excludeLocation in gridPositionsToExclude)
+        {
+            if (gridPosition == excludeLocation)
+            {
+                return;
+            }
+        }
+
+        spawnLocations.Add(worldPosition);
     }
 
     private void SpawnStar()
