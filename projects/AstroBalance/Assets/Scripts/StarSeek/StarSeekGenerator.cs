@@ -8,8 +8,14 @@ public class StarSeekGenerator : MonoBehaviour
     [SerializeField, Tooltip("Star prefab to generate")]
     private GameObject starPrefab;
 
-    [SerializeField, Tooltip("Number of unity units to offset stars from the edge of the screen.")]
-    private int offset = 1;
+    [SerializeField, Tooltip("Min distance between stars and the edge of the screen.")]
+    private int edgeOffset = 1;
+
+    [SerializeField, Tooltip("Number of rows in star spawn grid")]
+    private int nRows = 4;
+
+    [SerializeField, Tooltip("Number of columns in star spawn grid")]
+    private int nColumns = 6;
 
     private List<Vector2> spawnLocations = new List<Vector2>();
     private GameObject currentStar;
@@ -18,26 +24,49 @@ public class StarSeekGenerator : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        // Calculate star spawn locations based on the camera extent. This ensures stars appear at the edge
-        // of the screen for all screen sizes and aspect ratios.
-        Vector2 leftPos =
-            Camera.main.ViewportToWorldPoint(new Vector2(0, 0.5f)) + new Vector3(offset, 0, 0);
-        Vector2 rightPos =
-            Camera.main.ViewportToWorldPoint(new Vector2(1, 0.5f)) - new Vector3(offset, 0, 0);
-        Vector2 topPos =
-            Camera.main.ViewportToWorldPoint(new Vector2(0.5f, 1)) - new Vector3(0, offset, 0);
-        Vector2 bottomPos =
-            Camera.main.ViewportToWorldPoint(new Vector2(0.5f, 0)) + new Vector3(0, offset, 0);
+        FillSpawnLocations();
+        SpawnStar();
 
-        spawnLocations.Add(leftPos);
-        spawnLocations.Add(rightPos);
-        spawnLocations.Add(topPos);
-        spawnLocations.Add(bottomPos);
-
-        spawnStar();
+        //foreach (Vector2 location in spawnLocations)
+        //{
+        //    Instantiate(
+        //    starPrefab,
+        //    new Vector3(location.x, location.y, 0),
+        //    Quaternion.identity
+        //);
+        //}
     }
 
-    private void spawnStar()
+    private void FillSpawnLocations()
+    {
+        Vector2 gridBottomLeft =
+            Camera.main.ViewportToWorldPoint(new Vector2(0, 0))
+            + new Vector3(edgeOffset, edgeOffset, 0);
+        Vector2 gridTopRight =
+            Camera.main.ViewportToWorldPoint(new Vector2(1, 1))
+            - new Vector3(edgeOffset, edgeOffset, 0);
+
+        float xSpacing = (gridTopRight.x - gridBottomLeft.x) / (nColumns - 1);
+        float ySpacing = (gridTopRight.y - gridBottomLeft.y) / (nRows - 1);
+
+        float xLocation = gridBottomLeft.x;
+        float yLocation = gridBottomLeft.y;
+        for (int i = 0; i < nColumns; i++)
+        {
+            spawnLocations.Add(new Vector2(xLocation, yLocation));
+
+            for (int j = 0; j < nRows - 1; j++)
+            {
+                yLocation += ySpacing;
+                spawnLocations.Add(new Vector2(xLocation, yLocation));
+            }
+
+            xLocation += xSpacing;
+            yLocation = gridBottomLeft.y;
+        }
+    }
+
+    private void SpawnStar()
     {
         int chosenIndex;
         if (lastSpawnLocationIndex == -1)
@@ -69,7 +98,7 @@ public class StarSeekGenerator : MonoBehaviour
     {
         if (currentStar.IsDestroyed())
         {
-            spawnStar();
+            SpawnStar();
         }
     }
 }

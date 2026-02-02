@@ -411,7 +411,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   starPrefab: {fileID: 7594402928058972626, guid: 8a1f0e2645d064545887a1468814863e, type: 3}
-  offset: 1
+  edgeOffset: 1
+  nRows: 4
+  nColumns: 6
 --- !u!4 &609642610
 Transform:
   m_ObjectHideFlags: 0
