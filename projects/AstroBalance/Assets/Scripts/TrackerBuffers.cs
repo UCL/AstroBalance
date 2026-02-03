@@ -36,7 +36,7 @@ class GazeBuffer : TobiiBuffer<RocketGazePoint>
 }
 
 /// <summary>
-/// Holds the HeadPose pitch buffer, ad provides methods to calculate the average speed of the buffer over a given time period.
+/// Holds the HeadPose pitch buffer, and provides methods to calculate the average speed of the buffer over a given time period.
 /// </summary>
 class RocketHeadPitchSpeedBuffer : TobiiBuffer<RocketHeadPitch>
 {
