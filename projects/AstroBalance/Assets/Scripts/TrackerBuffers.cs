@@ -3,13 +3,85 @@ using System.Linq;
 using Tobii.GameIntegration.Net;
 using UnityEngine;
 
+/// <summary>
+/// Holds the gazepoint buffer and provides a method to check gaze stability and direction.
+/// </summary>
+class GazeBuffer : TobiiBuffer<RocketGazePoint>
+{
+    public GazeBuffer(int capacity)
+        : base(capacity, 2) { }
+
+    /// <summary>
+    /// returns true if the gaze points more recent than the time have a summed
+    /// square distance from the target point less than the tolerance.
+    /// </summary>
+    /// <param name="time">in seconds to sample over</param>
+    /// <param name="tolerance">the allowable range</param>
+    /// <param name="targetGazePoint">the target gaze point</param>
+    public bool gazeSteady(float time, float tolerance, GazePoint targetGazePoint)
+    {
+        return base.dataSteady(time, tolerance, targetGazePoint.X, targetGazePoint.Y);
+    }
+
+    /// <summary>
+    /// returns true if the gaze points more recent than the time have a standard deviation
+    /// less than the tolerance.
+    /// </summary>
+    /// <param name="time">in seconds to sample over</param>
+    /// <param name="tolerance">the allowable standard deviation</param>
+    public bool gazeSteady(float time, float tolerance)
+    {
+        return base.dataSteady(time, tolerance);
+    }
+}
+
+/// <summary>
+/// Holds the HeadPose pitch buffer, ad provides methods to calculate the average speed of the buffer over a given time period.
+/// </summary>
+class RocketHeadPitchSpeedBuffer : TobiiBuffer<RocketHeadPitch>
+{
+    public RocketHeadPitchSpeedBuffer(int capacity)
+        : base(capacity, 2) { }
+
+    /// <summary>
+    /// Calculates the average speed of the buffer over a given time period. Speed is
+    /// calculated to the average change in pitch the total change in time.
+    /// </summary>
+    /// <param name="speedTime">The time period in seconds over which to calculate the average speed.</param>
+    /// <returns>The average speed of the head pose buffer over the given time period.</returns>
+    public float getPitchSpeed(float speedTime)
+    {
+        return base.getSpeed(speedTime);
+    }
+}
+
+/// <summary>
+/// Holds the HeadPose yaw buffer, and provides methods to calculate the average speed of the buffer over a given time period.
+/// </summary>
+class RocketHeadYawSpeedBuffer : TobiiBuffer<RocketHeadYaw>
+{
+    public RocketHeadYawSpeedBuffer(int capacity)
+        : base(capacity, 2) { }
+
+    /// <summary>
+    /// Calculates the average speed of the buffer over a given time period. Speed is
+    /// calculated to the average change in yaw divided by the total change in time.
+    /// </summary>
+    /// <param name="speedTime">The time period in seconds over which to calculate the average speed.</param>
+    /// <returns>The average speed of the head pose buffer over the given time period.</returns>
+    public float getYawSpeed(float speedTime)
+    {
+        return base.getSpeed(speedTime);
+    }
+}
+
 /// define two interfaces for the buffer data to enable us to create templated buffers.
-public interface ITimeStampMicroSeconds
+interface ITimeStampMicroSeconds
 {
     long TimeStampMicroSeconds();
 }
 
-public interface IBufferData
+interface IBufferData
 {
     float[] GetData();
 }
@@ -17,7 +89,7 @@ public interface IBufferData
 /// <summary>
 /// Wrapper for Tobii gazepoint pitch data, implementing GetData and timestamp interfaces.
 /// </summary>
-public class RocketGazePoint : ITimeStampMicroSeconds, IBufferData
+class RocketGazePoint : ITimeStampMicroSeconds, IBufferData
 {
     public GazePoint gazePoint;
 
@@ -29,7 +101,7 @@ public class RocketGazePoint : ITimeStampMicroSeconds, IBufferData
 /// <summary>
 /// Wrapper for Tobii head pose pitch data, implementing GetData and timestamp interfaces.
 /// </summary>
-public class RocketHeadPitch : ITimeStampMicroSeconds, IBufferData
+class RocketHeadPitch : ITimeStampMicroSeconds, IBufferData
 {
     private HeadPose headPose;
 
@@ -47,7 +119,7 @@ public class RocketHeadPitch : ITimeStampMicroSeconds, IBufferData
 /// <summary>
 /// Wrapper for Tobii head pose yaw data, implementing GetData and timestamp interfaces.
 /// </summary>
-public class RocketHeadYaw : ITimeStampMicroSeconds, IBufferData
+class RocketHeadYaw : ITimeStampMicroSeconds, IBufferData
 {
     private HeadPose headPose;
 
@@ -67,7 +139,7 @@ public class RocketHeadYaw : ITimeStampMicroSeconds, IBufferData
 /// old data when the buffer is full.
 /// Also provides functions to calculate speed for the pose data.
 /// </summary>
-public class TobiiBuffer<T>
+class TobiiBuffer<T>
     where T : ITimeStampMicroSeconds, IBufferData
 {
     protected int lastAddedIndex;
@@ -114,13 +186,15 @@ public class TobiiBuffer<T>
     }
 
     /// <summary>
-    /// Calculates the average speed of the head pose buffer over a given time period.
+    /// Calculates the average speed of the buffer over a given time period. Speed is
+    /// calculated to the average change in position of the second array returned by GetData
+    /// Divided by the total change in the first array returned by GetData
     /// This presumes that the GetData interface of the templated object returns a
     /// float vector of the form [time, position].
     /// </summary>
     /// <param name="speedTime">The time period in seconds over which to calculate the average speed.</param>
     /// <returns>The average speed of the head pose buffer over the given time period.</returns>
-    public float getSpeed(float speedTime)
+    protected float getSpeed(float speedTime)
     {
         float averageSpeed = 0f;
         if (!hasEnoughData)
@@ -134,6 +208,65 @@ public class TobiiBuffer<T>
         );
 
         return calculateAverageSpeed(timeStampMicroSecondsArray, posArray);
+    }
+
+    /// <summary>
+    /// returns true if the data more recent than the time have a summed
+    /// square distance from the target point less than the tolerance.
+    /// </summary>
+    /// <param name="time">in seconds to sample over</param>
+    /// <param name="tolerance">the allowable range</param>
+    /// <param name="targetPoint_0">the target point for the first item returned by GetData</param>
+    /// <param name="targetPoint_1">the target point for the second item returned by GetData</param>
+    protected bool dataSteady(float time, float tolerance, float targetPoint_0, float targetPoint_1)
+    {
+        if (!hasEnoughData)
+            return false;
+        int timeInMicroseconds = (int)(time * 1e6);
+        CopyToTwoArrays(timeInMicroseconds, out float[] array_0, out float[] array_1);
+        return dataSteadyImpl(array_0, array_1, targetPoint_0, targetPoint_1, tolerance);
+    }
+
+    /// <summary>
+    /// returns true if the data more recent than the time have a standard deviation
+    /// less than the tolerance.
+    /// </summary>
+    /// <param name="time">in seconds to sample over</param>
+    /// <param name="tolerance">the allowable standard deviation</param>
+    protected bool dataSteady(float time, float tolerance)
+    {
+        if (!hasEnoughData)
+            return false;
+        int timeInMicroseconds = (int)(time * 1e6);
+        CopyToTwoArrays(timeInMicroseconds, out float[] array_0, out float[] array_1);
+        float targetPoint_0 = Queryable.Average(array_0.AsQueryable());
+        float targetPoint_1 = Queryable.Average(array_1.AsQueryable());
+
+        return dataSteadyImpl(array_0, array_1, targetPoint_0, targetPoint_1, tolerance);
+    }
+
+    private bool dataSteadyImpl(
+        float[] array_0,
+        float[] array_1,
+        float targetPoint_0,
+        float targetPoint_1,
+        float tolerance
+    )
+    {
+        bool steady = false;
+        float sumOfSquares_0 = array_0
+            .Select(val => (val - targetPoint_0) * (val - targetPoint_0))
+            .Sum();
+        float sumOfSquares_1 = array_1
+            .Select(val => (val - targetPoint_1) * (val - targetPoint_1))
+            .Sum();
+        float stddev_0 = (float)Math.Sqrt(sumOfSquares_0 / array_0.Length);
+        float stddev_1 = (float)Math.Sqrt(sumOfSquares_1 / array_1.Length);
+
+        if (stddev_0 < tolerance && stddev_1 < tolerance)
+            steady = true;
+
+        return steady;
     }
 
     private float calculateAverageSpeed(float[] timeStampMicroSecondsArray, float[] posArray)
@@ -164,7 +297,7 @@ public class TobiiBuffer<T>
     /// <param name="maximumAge">The maximum age (in microseconds) of the data to copy.</param>
     /// <param name="array_0">The first array to fill</param>
     /// <param name="array_1">The second array to fill</param>
-    protected void CopyToTwoArrays(long maximumAge, out float[] array_0, out float[] array_1)
+    private void CopyToTwoArrays(long maximumAge, out float[] array_0, out float[] array_1)
     {
         if (!hasData)
         {
@@ -198,106 +331,4 @@ public class TobiiBuffer<T>
         Array.Resize(ref array_0, arrayIndex);
         Array.Resize(ref array_1, arrayIndex);
     }
-}
-
-/// <summary>
-/// Holds the gazepoint buffer and provides a method to check gaze stability and direction.
-/// </summary>
-/// TODO Understand how to make this thread safe.
-public class GazeBuffer : TobiiBuffer<RocketGazePoint>
-{
-    public GazeBuffer(int capacity)
-        : base(capacity, 2) { }
-
-    /// <summary>
-    /// returns true if the gaze points more recent than the time have a summed
-    /// square distance from the target point less than the tolerance.
-    /// </summary>
-    /// <param name="time">in seconds to sample over</param>
-    /// <param name="tolerance">the allowable range</param>
-    /// <param name="targetGazePoint">the target gaze point</param>
-    public bool gazeSteady(float time, float tolerance, GazePoint targetGazePoint)
-    {
-        if (!hasEnoughData)
-            return false;
-        int timeInMicroseconds = (int)(time * 1e6);
-        CopyToTwoArrays(timeInMicroseconds, out float[] x_array, out float[] y_array);
-        return gazeSteadyImpl(x_array, y_array, targetGazePoint.X, targetGazePoint.Y, tolerance);
-    }
-
-    /// <summary>
-    /// returns true if the gaze points more recent than the time have a standard deviation
-    /// less than the tolerance.
-    /// </summary>
-    /// <param name="time">in seconds to sample over</param>
-    /// <param name="tolerance">the allowable standard deviation</param>
-    public bool gazeSteady(float time, float tolerance)
-    {
-        if (!hasEnoughData)
-            return false;
-        int timeInMicroseconds = (int)(time * 1e6);
-        CopyToTwoArrays(timeInMicroseconds, out float[] x_array, out float[] y_array);
-        float targetGazePointX = Queryable.Average(x_array.AsQueryable());
-        float targetGazePointY = Queryable.Average(y_array.AsQueryable());
-
-        return gazeSteadyImpl(x_array, y_array, targetGazePointX, targetGazePointY, tolerance);
-    }
-
-    private bool gazeSteadyImpl(
-        float[] x_array,
-        float[] y_array,
-        float targetGazePointX,
-        float targetGazePointY,
-        float tolerance
-    )
-    {
-        bool steady = false;
-        float sumOfSquaresX = x_array
-            .Select(val => (val - targetGazePointX) * (val - targetGazePointX))
-            .Sum();
-        float sumOfSquaresY = y_array
-            .Select(val => (val - targetGazePointY) * (val - targetGazePointY))
-            .Sum();
-        float stddevX = (float)Math.Sqrt(sumOfSquaresX / x_array.Length);
-        float stddevY = (float)Math.Sqrt(sumOfSquaresY / y_array.Length);
-
-        if (stddevX < tolerance && stddevY < tolerance)
-            steady = true;
-
-        Debug.Log(
-            "Gaze is "
-                + steady
-                + " at "
-                + targetGazePointX
-                + " "
-                + targetGazePointY
-                + "("
-                + stddevX
-                + ", "
-                + stddevY
-                + ")"
-                + " Based on "
-                + x_array.Length
-                + " samples"
-        );
-        return steady;
-    }
-}
-
-/// <summary>
-/// Holds the HeadPose pitch buffer.
-/// </summary>
-public class RocketHeadPitchSpeedBuffer : TobiiBuffer<RocketHeadPitch>
-{
-    public RocketHeadPitchSpeedBuffer(int capacity)
-        : base(capacity, 2) { }
-}
-
-/// <summary>
-/// Holds the HeadPose yaw buffer.
-/// </summary>
-public class RocketHeadYawSpeedBuffer : TobiiBuffer<RocketHeadYaw>
-{
-    public RocketHeadYawSpeedBuffer(int capacity)
-        : base(capacity, 2) { }
 }

@@ -123,11 +123,13 @@ public class LaunchControl : MonoBehaviour
             float headSpeed = 0f;
             if (usePitch)
             {
-                headSpeed = headPitchBuffer.getSpeed(speedTime) - headYawBuffer.getSpeed(speedTime);
+                headSpeed =
+                    headPitchBuffer.getPitchSpeed(speedTime) - headYawBuffer.getYawSpeed(speedTime);
             }
             else
             {
-                headSpeed = headYawBuffer.getSpeed(speedTime) - headPitchBuffer.getSpeed(speedTime);
+                headSpeed =
+                    headYawBuffer.getYawSpeed(speedTime) - headPitchBuffer.getPitchSpeed(speedTime);
             }
             headSpeed = Mathf.Max(0, headSpeed); // Clamp to zero to avoid negative speeds
 
