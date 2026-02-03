@@ -8,10 +8,14 @@ The star seek mini-game uses gaze + head position to collect stars that appear a
   - Minimum game time limit (seconds)
   - Maximum game time limit (seconds)
   - How many seconds to increase the time limit, if the upgrade rate is met
-  - Upgrade rate: (number of stars collected / game time limit) i.e. average stars collected per second, must be above this value to increase the time limit of the next game.
+  - Upgrade rate: (number of stars collected / game time limit) i.e. average stars collected per second, must be above this value to increase the time limit of future games.
+  - Number of games in a row that must meet the upgrade rate
 
-**StarGenerator**: values related to spawning stars
-  - The number of unity units to offset stars from the edge of the screen.
+- **StarGenerator**: values related to spawning stars
+  - Min distance between stars and the edge of the screen
+  - Number of rows + columns in star spawn grid
+  - Grid positions to exclude from star spawning (e.g. those that overlap with UI elements)
+  - Min distance between spawned stars
 
 - **Prefabs/StarSeekStar**: values related to 'locking on' to a star
   - Time required to collect a star (with both gaze + head pose crosshair aligned)

@@ -70,6 +70,11 @@ public class StarSeekGenerator : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Add spawn location, if it is not in 'gridPositionsToExclude'
+    /// </summary>
+    /// <param name="worldPosition">Unity world position to spawn</param>
+    /// <param name="gridPosition">Position in grid (column, row)</param>
     private void AddSpawnLocation(Vector2 worldPosition, Vector2 gridPosition)
     {
         foreach (Vector2 excludeLocation in gridPositionsToExclude)
@@ -90,7 +95,6 @@ public class StarSeekGenerator : MonoBehaviour
         if (firstSpawn)
         {
             // If this is our first time generating a star, choose from all locations
-            Debug.Log("FIRST");
             possibleLocations = spawnLocations;
             firstSpawn = false;
         }
