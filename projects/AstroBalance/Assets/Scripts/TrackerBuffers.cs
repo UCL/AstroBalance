@@ -139,7 +139,7 @@ class RocketHeadYaw : ITimeStampMicroSeconds, IBufferData
 /// old data when the buffer is full.
 /// Also provides functions to calculate speed for the pose data.
 /// </summary>
-class TobiiBuffer<T>
+internal class TobiiBuffer<T>
     where T : ITimeStampMicroSeconds, IBufferData
 {
     protected int lastAddedIndex;
