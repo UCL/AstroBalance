@@ -12,7 +12,7 @@ or opposite order.
   - Minimum number of stars in a sequence
   - Number of incorrect sequences before reducing length of the next
   - Length of time to highlight stars when showing a new sequence, or completing a correct / incorrect sequence
-  - Length of time to delay before highlighting stars
+  - Length of time to delay before and after highlighting stars
 
 - **StarMapStar prefab**: values related to selection of stars
   - Number of seconds of held gaze required to select a star

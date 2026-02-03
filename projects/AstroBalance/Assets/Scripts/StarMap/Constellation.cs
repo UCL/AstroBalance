@@ -19,7 +19,10 @@ public class Constellation : MonoBehaviour
     private int showSequenceHighlight = 1;
 
     [SerializeField, Tooltip("Number of seconds to delay before showing a new star sequence")]
-    private float showSequenceDelay = 1f;
+    private float beforeShowSequenceDelay = 1f;
+
+    [SerializeField, Tooltip("Number of seconds to delay after showing a new star sequence")]
+    private float afterShowSequenceDelay = 0.5f;
 
     [SerializeField, Tooltip("Number of seconds to highlight a correct sequence")]
     private float correctSequenceHighlight = 1.5f;
@@ -239,7 +242,7 @@ public class Constellation : MonoBehaviour
     {
         // wait for n seconds before highlighting the sequence, makes
         // it easier for the player to see the start
-        yield return new WaitForSeconds(showSequenceDelay);
+        yield return new WaitForSeconds(beforeShowSequenceDelay);
 
         foreach (StarMapStar star in starSequence)
         {
@@ -253,6 +256,10 @@ public class Constellation : MonoBehaviour
         {
             currentSequence.Reverse();
         }
+
+        // wait for n seconds afger highlighting the sequence, makes
+        // it easier for the player to see the end
+        yield return new WaitForSeconds(afterShowSequenceDelay);
 
         EnableStarSelection();
     }
