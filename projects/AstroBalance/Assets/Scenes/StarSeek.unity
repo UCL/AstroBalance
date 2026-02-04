@@ -151,7 +151,11 @@ MonoBehaviour:
   scoreText: {fileID: 730211112}
   timer: {fileID: 740804264}
   winScreen: {fileID: 159571674}
-  timeLimit: 120
+  minTimeLimit: 60
+  maxTimeLimit: 180
+  timeLimitIncrement: 60
+  timeLimitUpgradeRate: 0.3
+  nGamesToUpgrade: 3
 --- !u!4 &5281182
 Transform:
   m_ObjectHideFlags: 0
@@ -407,6 +411,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   starPrefab: {fileID: 7594402928058972626, guid: 8a1f0e2645d064545887a1468814863e, type: 3}
+  edgeOffset: 1
+  nRows: 4
+  nColumns: 6
+  gridPositionsToExclude:
+  - {x: 0, y: 3}
+  - {x: 5, y: 3}
+  - {x: 5, y: 0}
+  minDistance: 7
 --- !u!4 &609642610
 Transform:
   m_ObjectHideFlags: 0

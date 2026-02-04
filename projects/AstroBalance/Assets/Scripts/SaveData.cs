@@ -45,6 +45,15 @@ public class SaveData<T>
         return savedGames.LastOrDefault();
     }
 
+    /// <summary>
+    /// Get data from the last n played games.
+    /// </summary>
+    /// <param name="nGames">Number of games to retrieve</param>
+    public IEnumerable<T> GetLastNGamesData(int nGames)
+    {
+        return savedGames.TakeLast(nGames);
+    }
+
     public void Save()
     {
         string json = JsonUtility.ToJson(this, true);
