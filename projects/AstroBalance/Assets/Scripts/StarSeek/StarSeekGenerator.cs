@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -8,47 +9,126 @@ public class StarSeekGenerator : MonoBehaviour
     [SerializeField, Tooltip("Star prefab to generate")]
     private GameObject starPrefab;
 
-    private List<Vector2> spawnLocations = new List<Vector2>
-    {
-        new Vector2(-8, 0), // left
-        new Vector2(8, 0), // right
-        new Vector2(0, 4), // up
-        new Vector2(0, -4), // down
-    };
+    [SerializeField, Tooltip("Min distance between stars and the edge of the screen.")]
+    private int edgeOffset = 1;
+
+    [SerializeField, Tooltip("Number of rows in star spawn grid")]
+    private int nRows = 4;
+
+    [SerializeField, Tooltip("Number of columns in star spawn grid")]
+    private int nColumns = 6;
+
+    [
+        SerializeField,
+        Tooltip(
+            "Positions in the spawn grid to exclude (e.g. overlapping with UI elements). (0, 0) is the bottom left star and (nColumns - 1, nRows - 1) is the top right star."
+        )
+    ]
+    private List<Vector2> gridPositionsToExclude = new List<Vector2>();
+
+    [SerializeField, Tooltip("Min distance between spawned stars"), Range(0, 9)]
+    private int minDistance = 7;
+
+    private List<Vector2> spawnLocations = new List<Vector2>();
     private GameObject currentStar;
-    private int lastSpawnLocationIndex = -1;
+    private bool firstSpawn = true;
+    private Vector2 lastSpawnLocation;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        spawnStar();
+        FillSpawnLocations();
+        SpawnStar();
     }
 
-    private void spawnStar()
+    /// <summary>
+    /// Create a grid of spawn locations, excluding those in 'gridPositionsToExclude'
+    /// </summary>
+    private void FillSpawnLocations()
     {
-        int chosenIndex;
-        if (lastSpawnLocationIndex == -1)
+        Vector2 gridBottomLeft =
+            Camera.main.ViewportToWorldPoint(new Vector2(0, 0))
+            + new Vector3(edgeOffset, edgeOffset, 0);
+        Vector2 gridTopRight =
+            Camera.main.ViewportToWorldPoint(new Vector2(1, 1))
+            - new Vector3(edgeOffset, edgeOffset, 0);
+
+        float xSpacing = (gridTopRight.x - gridBottomLeft.x) / (nColumns - 1);
+        float ySpacing = (gridTopRight.y - gridBottomLeft.y) / (nRows - 1);
+
+        float xLocation = gridBottomLeft.x;
+        float yLocation = gridBottomLeft.y;
+        for (int i = 0; i < nColumns; i++)
+        {
+            for (int j = 0; j < nRows; j++)
+            {
+                AddSpawnLocation(new Vector2(xLocation, yLocation), new Vector2(i, j));
+                yLocation += ySpacing;
+            }
+
+            xLocation += xSpacing;
+            yLocation = gridBottomLeft.y;
+        }
+    }
+
+    /// <summary>
+    /// Add spawn location, if it is not in 'gridPositionsToExclude'
+    /// </summary>
+    /// <param name="worldPosition">Unity world position to spawn</param>
+    /// <param name="gridPosition">Position in grid (column, row)</param>
+    private void AddSpawnLocation(Vector2 worldPosition, Vector2 gridPosition)
+    {
+        foreach (Vector2 excludeLocation in gridPositionsToExclude)
+        {
+            if (gridPosition == excludeLocation)
+            {
+                return;
+            }
+        }
+
+        spawnLocations.Add(worldPosition);
+    }
+
+    private void SpawnStar()
+    {
+        List<Vector2> possibleLocations = new List<Vector2>();
+
+        if (firstSpawn)
         {
             // If this is our first time generating a star, choose from all locations
-            chosenIndex = Random.Range(0, spawnLocations.Count);
+            possibleLocations = spawnLocations;
+            firstSpawn = false;
         }
         else
         {
-            // If we have spawned a star previously, make sure it moves to a new location
-            IEnumerable<int> indexes = Enumerable.Range(0, spawnLocations.Count);
-            indexes = indexes.Except(new int[] { lastSpawnLocationIndex });
-
-            chosenIndex = indexes.ElementAt(Random.Range(0, indexes.Count()));
+            // If we have spawned a star previously, choose a new location that is at
+            // least minDistance away
+            foreach (Vector2 spawnLocation in spawnLocations)
+            {
+                float distance = Vector2.Distance(spawnLocation, lastSpawnLocation);
+                if (distance >= minDistance)
+                {
+                    possibleLocations.Add(spawnLocation);
+                }
+            }
         }
 
-        // Spawn a star at the randomly chosen location
-        Vector2 chosenLocation = spawnLocations.ElementAt(chosenIndex);
+        if (possibleLocations.Count() == 0)
+        {
+            throw new InvalidOperationException(
+                "No valid spawn locations available - try decreasing minDistance."
+            );
+        }
+
+        // Spawn a star at a randomly chosen location
+        int chosenIndex = UnityEngine.Random.Range(0, possibleLocations.Count);
+        Vector2 chosenLocation = possibleLocations.ElementAt(chosenIndex);
         currentStar = Instantiate(
             starPrefab,
             new Vector3(chosenLocation.x, chosenLocation.y, 0),
             Quaternion.identity
         );
-        lastSpawnLocationIndex = chosenIndex;
+        lastSpawnLocation = chosenLocation;
     }
 
     // Update is called once per frame
@@ -56,7 +136,7 @@ public class StarSeekGenerator : MonoBehaviour
     {
         if (currentStar.IsDestroyed())
         {
-            spawnStar();
+            SpawnStar();
         }
     }
 }
