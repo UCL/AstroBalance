@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -10,18 +12,45 @@ public class SpaceWalkingManager : MonoBehaviour
     [SerializeField, Tooltip("Complete steps required to win")]
     private int winningScore = 20;
 
+    [SerializeField, Tooltip("Direction tile manager")]
+    private TileManager tileManager;
+
     [SerializeField, Tooltip("Screen shown upon winning the game")]
     private GameObject winScreen;
+
+    [SerializeField, Tooltip("Countdown timer prefab")]
+    private CountdownTimer timer;
+
+    [SerializeField, Tooltip("Minimum game time limit in seconds")]
+    private int minTimeLimit = 60;
+
+    [SerializeField, Tooltip("Maximum game time limit in seconds")]
+    private int maxTimeLimit = 180;
+
+    [SerializeField, Tooltip("Time limit increase if upgradeRate is met")]
+    private int timeLimitIncrement = 60;
+
+    [
+        SerializeField,
+        Tooltip(
+            "(number of complete steps / game time limit) i.e. average complete steps per second - must be above this value to increase the difficulty of future games."
+        )
+    ]
+    private float upgradeRate = 0.35f; // default set so that e.g. 1 minute requires 21 complete steps (out and back to the centre)
+
+    [
+        SerializeField,
+        Tooltip("Number of games in a row that must meet upgradeRate to increase the difficulty")
+    ]
+    private int nGamesToUpgrade = 3;
 
     [SerializeField, Tooltip("Seconds until first tile activation")]
     private int activationDelay = 1;
 
-    [SerializeField, Tooltip("Direction tile manager")]
-    private TileManager tileManager;
-
     private TextMeshProUGUI winText;
     private bool gameActive = true;
     private int score = 0;
+    private int timeLimit;
     private SpaceWalkingData gameData;
     private string saveFilename = "SpaceWalkingScores";
 
@@ -29,12 +58,70 @@ public class SpaceWalkingManager : MonoBehaviour
     void Start()
     {
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
+        ChooseGameTimeLimit();
+
         gameData = new SpaceWalkingData();
+        timer.StartCountdown(timeLimit);
         StartCoroutine(StartTileActivation());
     }
 
+    /// <summary>
+    /// Load previous game data (if any), and choose time limit for this game based
+    /// on prior perfomance.
+    /// </summary>
+    private void ChooseGameTimeLimit()
+    {
+        SaveData<SpaceWalkingData> saveData = new(saveFilename);
+        IEnumerable<SpaceWalkingData> lastNGamesData = saveData.GetLastNGamesData(nGamesToUpgrade);
+
+        if (lastNGamesData.Count() < nGamesToUpgrade)
+        {
+            SetTimeLimit(minTimeLimit);
+            return;
+        }
+
+        // Upgrade if all the last n games have the same time limit + meet the upgrade
+        // rate. If it's a mix of time limits, then we haven't played enough games at
+        // this level yet to progress.
+        int nGamesAtUpgradeRate = 0;
+        bool allSameTimeLimit = true;
+        int lastTimeLimit = lastNGamesData.Last().timeLimitSeconds;
+
+        foreach (SpaceWalkingData data in lastNGamesData)
+        {
+            float stepRate = (float)data.nCompleteSteps / (float)data.timeLimitSeconds;
+
+            if (data.timeLimitSeconds != lastTimeLimit)
+            {
+                allSameTimeLimit = false;
+                break;
+            }
+
+            if (stepRate >= upgradeRate)
+            {
+                nGamesAtUpgradeRate++;
+            }
+        }
+
+        if (allSameTimeLimit && nGamesAtUpgradeRate >= nGamesToUpgrade)
+        {
+            SetTimeLimit(lastTimeLimit + timeLimitIncrement);
+        }
+        else
+        {
+            SetTimeLimit(lastTimeLimit);
+        }
+    }
+
     // Update is called once per frame
-    void Update() { }
+    void Update()
+    {
+        // If time limit reached, end game
+        if (timer.GetTimeRemaining() <= 0)
+        {
+            EndGame();
+        }
+    }
 
     private IEnumerator StartTileActivation()
     {
@@ -76,10 +163,27 @@ public class SpaceWalkingManager : MonoBehaviour
     private void SaveGameData()
     {
         gameData.gameCompleted = true;
-        gameData.nSteps = score;
+        gameData.timeLimitSeconds = timeLimit;
+        gameData.nCompleteSteps = score;
         gameData.LogEndTime();
 
         SaveData<SpaceWalkingData> saveData = new(saveFilename);
         saveData.SaveGameData(gameData);
+    }
+
+    private void SetTimeLimit(int limit)
+    {
+        if (limit > maxTimeLimit)
+        {
+            timeLimit = maxTimeLimit;
+        }
+        else if (limit < minTimeLimit)
+        {
+            timeLimit = minTimeLimit;
+        }
+        else
+        {
+            timeLimit = limit;
+        }
     }
 }

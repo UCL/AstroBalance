@@ -4,5 +4,6 @@
 [System.Serializable]
 public class SpaceWalkingData : GameData
 {
-    public int nSteps;
+    public int timeLimitSeconds;
+    public int nCompleteSteps; // one complete step = a step out + back to the centre
 }
