@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -112,8 +113,15 @@ public class StarSeekGenerator : MonoBehaviour
             }
         }
 
+        if (possibleLocations.Count() == 0)
+        {
+            throw new InvalidOperationException(
+                "No valid spawn locations available - try decreasing minDistance."
+            );
+        }
+
         // Spawn a star at a randomly chosen location
-        int chosenIndex = Random.Range(0, possibleLocations.Count);
+        int chosenIndex = UnityEngine.Random.Range(0, possibleLocations.Count);
         Vector2 chosenLocation = possibleLocations.ElementAt(chosenIndex);
         currentStar = Instantiate(
             starPrefab,
