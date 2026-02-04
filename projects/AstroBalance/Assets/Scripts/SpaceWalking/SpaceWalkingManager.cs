@@ -9,9 +9,6 @@ public class SpaceWalkingManager : MonoBehaviour
     [SerializeField, Tooltip("Text mesh pro object for score text")]
     private TextMeshProUGUI scoreText;
 
-    [SerializeField, Tooltip("Complete steps required to win")]
-    private int winningScore = 20;
-
     [SerializeField, Tooltip("Direction tile manager")]
     private TileManager tileManager;
 
@@ -36,7 +33,7 @@ public class SpaceWalkingManager : MonoBehaviour
             "(number of complete steps / game time limit) i.e. average complete steps per second - must be above this value to increase the difficulty of future games."
         )
     ]
-    private float upgradeRate = 0.35f; // default set so that e.g. 1 minute requires 21 complete steps (out and back to the centre)
+    private float upgradeRate = 0.23f; // default set so that e.g. 1 minute requires ~14 complete steps (out and back to the centre)
 
     [
         SerializeField,
@@ -136,11 +133,6 @@ public class SpaceWalkingManager : MonoBehaviour
     {
         score += 1;
         scoreText.text = score.ToString();
-
-        if (score == winningScore)
-        {
-            EndGame();
-        }
     }
 
     public bool IsGameActive()

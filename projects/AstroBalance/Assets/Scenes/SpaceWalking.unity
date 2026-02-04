@@ -368,11 +368,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scoreText: {fileID: 1023074205}
-  winningScore: 20
+  tileManager: {fileID: 803069668}
   winScreen: {fileID: 956792729}
   timer: {fileID: 257946082}
+  minTimeLimit: 60
+  maxTimeLimit: 180
+  timeLimitIncrement: 60
+  upgradeRate: 0.23
+  nGamesToUpgrade: 3
   activationDelay: 1
-  tileManager: {fileID: 803069668}
 --- !u!4 &277788980
 Transform:
   m_ObjectHideFlags: 0

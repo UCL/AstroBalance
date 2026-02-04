@@ -102,3 +102,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   direction: 3
   sparkleEffect: {fileID: 7527662519254007312, guid: ff9c245d1433378428b46b7d2095ab5d, type: 3}
+  sparkleTime: 0.5
+  activatedColor: {r: 1, g: 0, b: 0, a: 1}

@@ -11,7 +11,7 @@ public class Tile : MonoBehaviour
     private GameObject sparkleEffect;
 
     [SerializeField, Tooltip("Number of seconds to show particle system.")]
-    private int sparkleTime = 1;
+    private float sparkleTime = 0.5f;
 
     [SerializeField, Tooltip("Tile activation colour")]
     private Color activatedColor = Color.red;
