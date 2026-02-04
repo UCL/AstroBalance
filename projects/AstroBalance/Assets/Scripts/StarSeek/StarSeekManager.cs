@@ -67,14 +67,9 @@ public class StarSeekManager : MonoBehaviour
         SaveData<StarSeekData> saveData = new(saveFilename);
         IEnumerable<StarSeekData> lastNGamesData = saveData.GetLastNGamesData(nGamesToUpgrade);
 
-        if (lastNGamesData.Count() == 0)
+        if (lastNGamesData.Count() < nGamesToUpgrade)
         {
             SetTimeLimit(minTimeLimit);
-            return;
-        }
-        else if (lastNGamesData.Count() < nGamesToUpgrade)
-        {
-            SetTimeLimit(lastNGamesData.Last().timeLimitSeconds);
             return;
         }
 

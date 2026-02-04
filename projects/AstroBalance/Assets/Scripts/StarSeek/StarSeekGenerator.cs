@@ -25,7 +25,7 @@ public class StarSeekGenerator : MonoBehaviour
     ]
     private List<Vector2> gridPositionsToExclude = new List<Vector2>();
 
-    [SerializeField, Tooltip("Min distance between spawned stars")]
+    [SerializeField, Tooltip("Min distance between spawned stars"), Range(0, 9)]
     private int minDistance = 7;
 
     private List<Vector2> spawnLocations = new List<Vector2>();
