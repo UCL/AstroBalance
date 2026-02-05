@@ -13,7 +13,7 @@ public class HeadTurnArrow : MonoBehaviour
     private int startHeadAngle = 0;
 
     [SerializeField, Tooltip("Ending angle for head = maximum fill")]
-    private int endHeadAngle = -30;
+    private int endHeadAngle = -40;
 
     [
         SerializeField,
