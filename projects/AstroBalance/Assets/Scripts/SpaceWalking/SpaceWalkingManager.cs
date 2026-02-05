@@ -131,7 +131,6 @@ public class SpaceWalkingManager : MonoBehaviour
         // If time limit reached, end game
         if (timer.GetTimeRemaining() <= 0)
         {
-            headTurnScreen.gameObject.SetActive(false);
             EndGame();
         }
     }
@@ -173,6 +172,11 @@ public class SpaceWalkingManager : MonoBehaviour
     /// </summary>
     public void UpdateScore()
     {
+        if (!gameActive)
+        {
+            return;
+        }
+
         score += 1;
         scoreText.text = score.ToString();
         HeadTurn();
@@ -189,6 +193,7 @@ public class SpaceWalkingManager : MonoBehaviour
         {
             gameActive = false;
 
+            headTurnScreen.gameObject.SetActive(false);
             winText.text = "Congratulations! \n \n You completed " + score + " steps";
             winScreen.SetActive(true);
             SaveGameData();
