@@ -94,11 +94,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5082324298247099171, guid: ba07055cd3d54aa44939ca67004956c2, type: 3}
       propertyPath: endHeadAngle
-      value: 30
+      value: -20
       objectReference: {fileID: 0}
     - target: {fileID: 5082324298247099171, guid: ba07055cd3d54aa44939ca67004956c2, type: 3}
       propertyPath: rotationAxis
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5082324298247099171, guid: ba07055cd3d54aa44939ca67004956c2, type: 3}
+      propertyPath: startHeadAngle
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6542398785173842778, guid: ba07055cd3d54aa44939ca67004956c2, type: 3}
       propertyPath: m_AnchoredPosition.x

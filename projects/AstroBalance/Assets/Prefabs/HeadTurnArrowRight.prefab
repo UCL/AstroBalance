@@ -94,7 +94,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5082324298247099171, guid: ba07055cd3d54aa44939ca67004956c2, type: 3}
       propertyPath: endHeadAngle
-      value: 30
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 6598628085714345097, guid: ba07055cd3d54aa44939ca67004956c2, type: 3}
       propertyPath: m_LocalRotation.w
