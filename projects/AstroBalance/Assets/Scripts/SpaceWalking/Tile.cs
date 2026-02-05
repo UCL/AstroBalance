@@ -124,7 +124,7 @@ public class Tile : MonoBehaviour
         }
         else
         {
-            gameManager.NextAction(false);
+            gameManager.NextTile();
         }
     }
 }

@@ -15,11 +15,11 @@ public class HeadTurnArrow : MonoBehaviour
     [SerializeField, Tooltip("Ending angle for head = maximum fill")]
     private int endHeadAngle = -30;
 
-    [SerializeField, Tooltip("Particle system to show on full fill.")]
-    private GameObject sparkleEffect;
-
-    [SerializeField, Tooltip("Number of seconds to show particle system on full fill.")]
-    private float sparkleSeconds = 3;
+    [
+        SerializeField,
+        Tooltip("Number of seconds to delay after arrow is full, before switching arrow direction")
+    ]
+    private float delaySeconds = 0;
 
     [SerializeField, Tooltip("Number of arrows to fill, before it is destroyed.")]
     private float nArrowsToFill = 2;
@@ -37,7 +37,6 @@ public class HeadTurnArrow : MonoBehaviour
     private TextMeshProUGUI description;
     private Image[] arrowImages;
     private Image fillImage;
-    private GameObject filledSparkle;
     private int nArrowsFilled = 0; // Number of times the arrow has been filled
     private bool fillLevelLocked = false;
 
@@ -97,6 +96,11 @@ public class HeadTurnArrow : MonoBehaviour
         SetArrowFill(currentAngle);
     }
 
+    /// <summary>
+    /// Set extent of arrow fill, based on how far the current angle is between the
+    /// start and end angle.
+    /// </summary>
+    /// <param name="currentAngle">Current head angle in degrees</param>
     private void SetArrowFill(float currentAngle)
     {
         float fillFraction = (currentAngle - startHeadAngle) / (endHeadAngle - startHeadAngle);
@@ -121,10 +125,7 @@ public class HeadTurnArrow : MonoBehaviour
     private IEnumerator HandleFilledArrow()
     {
         nArrowsFilled++;
-        filledSparkle = Instantiate<GameObject>(sparkleEffect, transform);
-
-        yield return new WaitForSeconds(sparkleSeconds);
-        Destroy(filledSparkle);
+        yield return new WaitForSeconds(delaySeconds);
 
         if (nArrowsFilled >= nArrowsToFill)
         {
@@ -154,7 +155,6 @@ public class HeadTurnArrow : MonoBehaviour
         // head rotation
         int currentStartAngle = startHeadAngle;
         int currentEndAngle = endHeadAngle;
-
         startHeadAngle = currentEndAngle;
         endHeadAngle = currentStartAngle;
 

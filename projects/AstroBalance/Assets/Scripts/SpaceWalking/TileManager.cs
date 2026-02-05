@@ -12,14 +12,6 @@ public class TileManager : MonoBehaviour
     [SerializeField, Tooltip("Starting distance from screen in mm")]
     private int startDistance = 800;
 
-    [
-        SerializeField,
-        Tooltip(
-            "UI screen showing the head turn commands (only used at highest level of stepping difficulty)"
-        )
-    ]
-    private GameObject headTurnScreen;
-
     private List<Tile> directionTiles = new List<Tile>();
     private List<Tile> directionTilesLeft = new List<Tile>();
     private Tile centreTile;

@@ -139,30 +139,43 @@ public class SpaceWalkingManager : MonoBehaviour
     private IEnumerator StartTileActivation()
     {
         yield return new WaitForSeconds(activationDelay);
-        NextAction(false);
+        NextTile();
     }
 
-    public void NextAction(bool addHeadTurn)
+    /// <summary>
+    /// Initiate a head turn sequence.
+    /// If the correct difficulty level hasn't been reached yet,
+    /// this will activate the next tile instead.
+    /// </summary>
+    public void HeadTurn()
     {
-        if (addHeadTurn && headTurnsActive)
+        if (headTurnsActive)
         {
             headTurnScreen.SpawnRandomArrow();
         }
         else
         {
-            tileManager.ActivateNextTile();
+            NextTile();
         }
     }
 
     /// <summary>
+    /// Activate the next tile to step on.
+    /// </summary>
+    public void NextTile()
+    {
+        tileManager.ActivateNextTile();
+    }
+
+    /// <summary>
     /// Increase score (successfully completed steps) by one,
-    /// then activate next tile.
+    /// then try to start a head turn sequence.
     /// </summary>
     public void UpdateScore()
     {
         score += 1;
         scoreText.text = score.ToString();
-        NextAction(true);
+        HeadTurn();
     }
 
     public bool IsGameActive()

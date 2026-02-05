@@ -30,10 +30,13 @@ public class HeadTurnScreen : MonoBehaviour
         {
             arrowActive = false;
             gameObject.SetActive(false);
-            gameManager.NextAction(false);
+            gameManager.NextTile();
         }
     }
 
+    /// <summary>
+    /// Activate the screen, and spawn a random arrow pointing up / down / left or right.
+    /// </summary>
     public void SpawnRandomArrow()
     {
         gameObject.SetActive(true);
