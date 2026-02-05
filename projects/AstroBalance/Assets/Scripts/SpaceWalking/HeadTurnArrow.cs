@@ -1,12 +1,10 @@
+using TMPro;
 using Tobii.GameIntegration.Net;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class HeadTurnArrow : MonoBehaviour
 {
-    [SerializeField, Tooltip("Arrow fill image")]
-    private Image fillImage;
-
     [SerializeField, Tooltip("Which head rotation axis to use to fill the arrow")]
     private RotationAxis rotationAxis = RotationAxis.Yaw;
 
@@ -14,17 +12,26 @@ public class HeadTurnArrow : MonoBehaviour
     private int startHeadAngle = 0;
 
     [SerializeField, Tooltip("Ending angle for head = maximum fill")]
-    private int endHeadAngle = 30;
+    private int endHeadAngle = -30;
+
+    [SerializeField, Tooltip("Outward movement label")]
+    private string outLabel = "Turn head";
+
+    [SerializeField, Tooltip("Back to centre movement label")]
+    private string backLabel = "Back to centre";
 
     [SerializeField, Tooltip("Arrow fill colour")]
     private Color fillColor = Color.yellow;
 
     private Tracker tracker;
+    private TextMeshProUGUI description;
+    private Image[] arrowImages;
+    private Image fillImage;
 
     /// <summary>
     /// Head rotation axis to use to fill arrow.
     /// </summary>
-    public enum RotationAxis
+    private enum RotationAxis
     {
         Yaw,
         Pitch,
@@ -35,7 +42,20 @@ public class HeadTurnArrow : MonoBehaviour
     void Start()
     {
         tracker = FindFirstObjectByType<Tracker>();
+        description = GetComponentInChildren<TextMeshProUGUI>();
+        arrowImages = GetComponentsInChildren<Image>();
+
+        foreach (Image image in arrowImages)
+        {
+            if (image.type == Image.Type.Filled)
+            {
+                fillImage = image;
+                break;
+            }
+        }
+
         fillImage.color = fillColor;
+        description.text = outLabel;
     }
 
     // Update is called once per frame
@@ -72,5 +92,37 @@ public class HeadTurnArrow : MonoBehaviour
         }
 
         fillImage.fillAmount = fillFraction;
+    }
+
+    /// <summary>
+    /// Flip the direction of the arrow by 180 degrees, and swap the fill head angles.
+    /// E.g. if an arrow starts pointing left and fills from 0 to -30 degrees,
+    /// calling this function will make it point right and fill from -30 to 0 degreees.
+    /// </summary>
+    public void SwapDirection()
+    {
+        // Rotate arrow images 180 degrees
+        foreach (Image image in arrowImages)
+        {
+            image.transform.Rotate(new Vector3(0, 0, 180));
+        }
+
+        // Swap start / end angles, so arrow fills with opposite
+        // head rotation
+        int currentStartAngle = startHeadAngle;
+        int currentEndAngle = endHeadAngle;
+
+        startHeadAngle = currentEndAngle;
+        endHeadAngle = currentStartAngle;
+
+        // Swap description text
+        if (description.text == outLabel)
+        {
+            description.text = backLabel;
+        }
+        else
+        {
+            description.text = outLabel;
+        }
     }
 }
