@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using Tobii.GameIntegration.Net;
 using UnityEngine;
@@ -14,6 +15,15 @@ public class HeadTurnArrow : MonoBehaviour
     [SerializeField, Tooltip("Ending angle for head = maximum fill")]
     private int endHeadAngle = -30;
 
+    [SerializeField, Tooltip("Particle system to show on full fill.")]
+    private GameObject sparkleEffect;
+
+    [SerializeField, Tooltip("Number of seconds to show particle system on full fill.")]
+    private float sparkleSeconds = 3;
+
+    [SerializeField, Tooltip("Number of arrows to fill, before it is destroyed.")]
+    private float nArrowsToFill = 2;
+
     [SerializeField, Tooltip("Outward movement label")]
     private string outLabel = "Turn head";
 
@@ -27,6 +37,9 @@ public class HeadTurnArrow : MonoBehaviour
     private TextMeshProUGUI description;
     private Image[] arrowImages;
     private Image fillImage;
+    private GameObject filledSparkle;
+    private int nArrowsFilled = 0; // Number of times the arrow has been filled
+    private bool fillLevelLocked = false;
 
     /// <summary>
     /// Head rotation axis to use to fill arrow.
@@ -61,6 +74,11 @@ public class HeadTurnArrow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (fillLevelLocked)
+        {
+            return;
+        }
+
         Rotation headRotation = tracker.getHeadRotation();
         float currentAngle;
         if (rotationAxis == RotationAxis.Yaw)
@@ -92,6 +110,31 @@ public class HeadTurnArrow : MonoBehaviour
         }
 
         fillImage.fillAmount = fillFraction;
+
+        if (fillFraction == 1)
+        {
+            fillLevelLocked = true;
+            StartCoroutine(HandleFilledArrow());
+        }
+    }
+
+    private IEnumerator HandleFilledArrow()
+    {
+        nArrowsFilled++;
+        filledSparkle = Instantiate<GameObject>(sparkleEffect, transform);
+
+        yield return new WaitForSeconds(sparkleSeconds);
+        Destroy(filledSparkle);
+
+        if (nArrowsFilled >= nArrowsToFill)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            SwapDirection();
+            fillLevelLocked = false;
+        }
     }
 
     /// <summary>
@@ -99,7 +142,7 @@ public class HeadTurnArrow : MonoBehaviour
     /// E.g. if an arrow starts pointing left and fills from 0 to -30 degrees,
     /// calling this function will make it point right and fill from -30 to 0 degreees.
     /// </summary>
-    public void SwapDirection()
+    private void SwapDirection()
     {
         // Rotate arrow images 180 degrees
         foreach (Image image in arrowImages)

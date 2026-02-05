@@ -16,7 +16,7 @@ public class SpaceWalkingManager : MonoBehaviour
     private GameObject winScreen;
 
     [SerializeField, Tooltip("Screen showing head turn arrows (at highest difficulty level only)")]
-    private GameObject headTurnScreen;
+    private HeadTurnScreen headTurnScreen;
 
     [SerializeField, Tooltip("Countdown timer prefab")]
     private CountdownTimer timer;
@@ -131,6 +131,7 @@ public class SpaceWalkingManager : MonoBehaviour
         // If time limit reached, end game
         if (timer.GetTimeRemaining() <= 0)
         {
+            headTurnScreen.gameObject.SetActive(false);
             EndGame();
         }
     }
@@ -138,17 +139,19 @@ public class SpaceWalkingManager : MonoBehaviour
     private IEnumerator StartTileActivation()
     {
         yield return new WaitForSeconds(activationDelay);
-        tileManager.ActivateNextTile();
+        NextAction(false);
     }
 
-    public void NextTile(bool addHeadTurn)
+    public void NextAction(bool addHeadTurn)
     {
         if (addHeadTurn && headTurnsActive)
         {
-            headTurnScreen.SetActive(true);
+            headTurnScreen.SpawnRandomArrow();
         }
-
-        tileManager.ActivateNextTile();
+        else
+        {
+            tileManager.ActivateNextTile();
+        }
     }
 
     /// <summary>
@@ -159,7 +162,7 @@ public class SpaceWalkingManager : MonoBehaviour
     {
         score += 1;
         scoreText.text = score.ToString();
-        NextTile(true);
+        NextAction(true);
     }
 
     public bool IsGameActive()
