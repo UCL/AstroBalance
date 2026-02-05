@@ -15,6 +15,9 @@ public class SpaceWalkingManager : MonoBehaviour
     [SerializeField, Tooltip("Screen shown upon winning the game")]
     private GameObject winScreen;
 
+    [SerializeField, Tooltip("Screen showing head turn arrows (at highest difficulty level only)")]
+    private GameObject headTurnScreen;
+
     [SerializeField, Tooltip("Countdown timer prefab")]
     private CountdownTimer timer;
 
@@ -71,21 +74,18 @@ public class SpaceWalkingManager : MonoBehaviour
     {
         SaveData<SpaceWalkingData> saveData = new(saveFilename);
         IEnumerable<SpaceWalkingData> lastNGamesData = saveData.GetLastNGamesData(nGamesToUpgrade);
-
-        // Once head turns have been activated, they should remain active for all future games
-        if (lastNGamesData.Last().headTurnsActive)
-        {
-            headTurnsActive = true;
-        }
-        else
-        {
-            headTurnsActive = false;
-        }
+        headTurnsActive = false;
 
         if (lastNGamesData.Count() < nGamesToUpgrade)
         {
             SetTimeLimit(minTimeLimit);
             return;
+        }
+
+        // Once head turns have been activated, they should remain active for all future games
+        if (lastNGamesData.Last().headTurnsActive)
+        {
+            headTurnsActive = true;
         }
 
         // Upgrade if all the last n games have the same time limit + meet the upgrade
@@ -141,13 +141,25 @@ public class SpaceWalkingManager : MonoBehaviour
         tileManager.ActivateNextTile();
     }
 
+    public void NextTile(bool addHeadTurn)
+    {
+        if (addHeadTurn && headTurnsActive)
+        {
+            headTurnScreen.SetActive(true);
+        }
+
+        tileManager.ActivateNextTile();
+    }
+
     /// <summary>
-    /// Increase score (successfully completed steps) by one.
+    /// Increase score (successfully completed steps) by one,
+    /// then activate next tile.
     /// </summary>
     public void UpdateScore()
     {
         score += 1;
         scoreText.text = score.ToString();
+        NextTile(true);
     }
 
     public bool IsGameActive()
