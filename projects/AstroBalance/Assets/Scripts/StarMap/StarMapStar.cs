@@ -23,6 +23,7 @@ public class StarMapStar : MonoBehaviour
 
     private Color defaultColor = Color.white;
     private SpriteRenderer spriteRenderer;
+    private Collider2D starCollider;
     private Constellation constellation;
     private SelectionStatus selectionStatus;
     private GameObject starSparkle;
@@ -41,6 +42,7 @@ public class StarMapStar : MonoBehaviour
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        starCollider = GetComponent<Collider2D>();
         defaultScale = transform.localScale;
     }
 
@@ -83,6 +85,14 @@ public class StarMapStar : MonoBehaviour
 
     public void EnableSelection()
     {
+        // If the gaze point is already within the star's collider,
+        // set selection status as pending
+        bool gazeOnStar = starCollider.IsTouchingLayers();
+        if (gazeOnStar && selectionStatus != SelectionStatus.Selected)
+        {
+            SetSelectionStatus(SelectionStatus.SelectionPending);
+        }
+
         selectionEnabled = true;
     }
 
