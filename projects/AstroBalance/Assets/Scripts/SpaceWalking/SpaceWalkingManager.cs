@@ -50,12 +50,13 @@ public class SpaceWalkingManager : MonoBehaviour
     private int timeLimit;
     private SpaceWalkingData gameData;
     private string saveFilename = "SpaceWalkingScores";
+    private bool headTurnsActive = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
-        ChooseGameTimeLimit();
+        ChooseGameDifficulty();
 
         gameData = new SpaceWalkingData();
         timer.StartCountdown(timeLimit);
@@ -63,13 +64,23 @@ public class SpaceWalkingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Load previous game data (if any), and choose time limit for this game based
-    /// on prior perfomance.
+    /// Load previous game data (if any), and choose time limit + whether head turns are active
+    /// for this game based on prior perfomance.
     /// </summary>
-    private void ChooseGameTimeLimit()
+    private void ChooseGameDifficulty()
     {
         SaveData<SpaceWalkingData> saveData = new(saveFilename);
         IEnumerable<SpaceWalkingData> lastNGamesData = saveData.GetLastNGamesData(nGamesToUpgrade);
+
+        // Once head turns have been activated, they should remain active for all future games
+        if (lastNGamesData.Last().headTurnsActive)
+        {
+            headTurnsActive = true;
+        }
+        else
+        {
+            headTurnsActive = false;
+        }
 
         if (lastNGamesData.Count() < nGamesToUpgrade)
         {
@@ -102,6 +113,10 @@ public class SpaceWalkingManager : MonoBehaviour
 
         if (allSameTimeLimit && nGamesAtUpgradeRate >= nGamesToUpgrade)
         {
+            if (lastTimeLimit == maxTimeLimit)
+            {
+                headTurnsActive = true;
+            }
             SetTimeLimit(lastTimeLimit + timeLimitIncrement);
         }
         else
@@ -157,6 +172,7 @@ public class SpaceWalkingManager : MonoBehaviour
         gameData.gameCompleted = true;
         gameData.timeLimitSeconds = timeLimit;
         gameData.nCompleteSteps = score;
+        gameData.headTurnsActive = headTurnsActive;
         gameData.LogEndTime();
 
         SaveData<SpaceWalkingData> saveData = new(saveFilename);
