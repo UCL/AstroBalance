@@ -19,7 +19,10 @@ public class Constellation : MonoBehaviour
     private int showSequenceHighlight = 1;
 
     [SerializeField, Tooltip("Number of seconds to delay before showing a new star sequence")]
-    private float showSequenceDelay = 1f;
+    private float beforeShowSequenceDelay = 1f;
+
+    [SerializeField, Tooltip("Number of seconds to delay after showing a new star sequence")]
+    private float afterShowSequenceDelay = 0.5f;
 
     [SerializeField, Tooltip("Number of seconds to highlight a correct sequence")]
     private float correctSequenceHighlight = 1.5f;
@@ -39,6 +42,7 @@ public class Constellation : MonoBehaviour
     private List<StarMapStar> selectedStars; // stars selected so far
     private int currentSequenceLength;
     private int incorrectSequences = 0; // Incorrect sequences at current length
+    private bool hasBeenDowngraded = false; // Whether the sequence length has been downgraded due to incorrect guesses
     private RepeatOrder order = RepeatOrder.Same;
 
     private void Awake()
@@ -58,6 +62,19 @@ public class Constellation : MonoBehaviour
 
     // Update is called once per frame
     void Update() { }
+
+    public int GetNumberOfStars()
+    {
+        // Populate list of stars, if Awake() hasn't been called yet.
+        // When we're choosing a constellation to spawn, we need to know how many stars it
+        // contains before we instantiate it (i.e. before Awake is called)
+        if (stars == null || stars.Count() == 0)
+        {
+            stars = new List<StarMapStar>(gameObject.GetComponentsInChildren<StarMapStar>());
+        }
+
+        return stars.Count();
+    }
 
     /// <summary>
     /// Choose a new random sequence of stars, and display it to the player.
@@ -157,22 +174,21 @@ public class Constellation : MonoBehaviour
     {
         // Remove star from the stars left to guess
         currentSequence.RemoveAt(0);
+        if (currentSequence.Count != 0)
+            return;
 
-        if (currentSequence.Count() == 0)
+        // whole sequence has been guessed correctly
+        gameManager.UpdateScore(currentSequenceLength, hasBeenDowngraded);
+
+        if (gameManager.IsGameActive() && currentSequenceLength < GetNumberOfStars())
         {
-            // whole sequence has been guessed correctly
-            gameManager.UpdateScore(currentSequenceLength);
-
-            if (gameManager.IsGameActive())
-            {
-                currentSequenceLength += 1;
-                incorrectSequences = 0;
-                StartCoroutine(CompleteSequenceAndTriggerNext(true));
-            }
-            else
-            {
-                ResetStars();
-            }
+            currentSequenceLength += 1;
+            incorrectSequences = 0;
+            StartCoroutine(CompleteSequenceAndTriggerNext(true));
+        }
+        else
+        {
+            ResetStars();
         }
     }
 
@@ -188,6 +204,7 @@ public class Constellation : MonoBehaviour
         )
         {
             currentSequenceLength -= 1;
+            hasBeenDowngraded = true;
             incorrectSequences = 0;
         }
 
@@ -225,7 +242,7 @@ public class Constellation : MonoBehaviour
     {
         // wait for n seconds before highlighting the sequence, makes
         // it easier for the player to see the start
-        yield return new WaitForSeconds(showSequenceDelay);
+        yield return new WaitForSeconds(beforeShowSequenceDelay);
 
         foreach (StarMapStar star in starSequence)
         {
@@ -239,6 +256,10 @@ public class Constellation : MonoBehaviour
         {
             currentSequence.Reverse();
         }
+
+        // wait for n seconds afger highlighting the sequence, makes
+        // it easier for the player to see the end
+        yield return new WaitForSeconds(afterShowSequenceDelay);
 
         EnableStarSelection();
     }
