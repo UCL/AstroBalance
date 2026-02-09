@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using NUnit.Framework.Constraints;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 /// <summary>
@@ -11,6 +13,7 @@ using UnityEngine;
 public class SaveData<T>
     where T : GameData
 {
+    public bool saveFileExists = false;
     public List<T> savedGames = new List<T>();
     private string dataPath;
 
@@ -22,9 +25,8 @@ public class SaveData<T>
     public SaveData(string filename)
     {
         // currently defaults to "C:\Users\username\AppData\LocalLow\DefaultCompany\AstroBalance" on Windows
-        dataPath = Path.Combine(Application.persistentDataPath, filename + ".json");
-
-        Load();
+        dataPath = Path.Combine(Application.persistentDataPath, filename + ".csv");
+        CheckSaveFileExists();
     }
 
     /// <summary>
@@ -33,8 +35,27 @@ public class SaveData<T>
     /// <param name="gameData">Game data from this session</param>
     public void SaveGameData(T gameData)
     {
-        savedGames.Add(gameData);
-        Save();
+        using (StreamWriter sw = new StreamWriter(dataPath, true))
+        {
+            if (!saveFileExists)
+            {
+                sw.WriteLine(gameData.ToCsvHeader());
+                saveFileExists = true;
+            }
+
+            sw.WriteLine(gameData.ToCsvRow());
+        }
+
+        //if (File.Exists(dataPath))
+        //{
+
+        //}
+        //else
+        //{
+
+        //}
+        //    savedGames.Add(gameData);
+        //Save();
     }
 
     /// <summary>
@@ -58,6 +79,18 @@ public class SaveData<T>
     {
         string json = JsonUtility.ToJson(this, true);
         File.WriteAllText(dataPath, json);
+    }
+
+    private void CheckSaveFileExists()
+    {
+        if (File.Exists(dataPath))
+        {
+            saveFileExists = true;
+        }
+        else
+        {
+            saveFileExists = false;
+        }
     }
 
     /// <summary>
