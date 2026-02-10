@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using UnityEditor.PackageManager.UI;
+using static UnityEngine.Rendering.DebugUI;
 
 /// <summary>
 /// Base class for a single game's save data.
@@ -20,6 +23,27 @@ public abstract class GameData
         date = DateTime.Now.ToString("yyyy-MM-dd");
         startTime = DateTime.Now.ToString("HH:mm:ss");
     }
+
+    public GameData(Dictionary<string, string> headerToValue)
+    {
+        date = headerToValue["date"];
+        startTime = headerToValue["startTime"];
+        endTime = headerToValue["endTime"];
+        gameCompleted = bool.Parse(headerToValue["gameCompleted"]);
+    }
+
+    //public GameData(string csvHeader, string csvRow)
+    //{
+    //    string[] fieldNames = csvHeader.Split(',');
+    //    string[] csvValues = csvRow.Split(",");
+
+    //    Type type = this.GetType();
+    //    for (int i = 0; i < fieldNames.Length; i++)
+    //    {
+    //        FieldInfo field = type.GetField(fieldNames[i]);
+    //        field.SetValue(this, (field.GetType()) csvValues[i]);
+    //    }
+    //}
 
     public void LogEndTime()
     {
@@ -61,6 +85,21 @@ public abstract class GameData
         }
 
         return sortedFields;
+    }
+
+    private string ToCsvString<T>(T[] values)
+    {
+        StringBuilder csvString = new StringBuilder();
+
+        for (int i = 0; i < values.Count(); i++)
+        {
+            csvString.Append(values[i]);
+            if (i < values.Length - 1)
+            {
+                csvString.Append(",");
+            }
+        }
+        return csvString.ToString();
     }
 
     public virtual string ToCsvHeader()
