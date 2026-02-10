@@ -47,8 +47,8 @@ public class LaunchControl : MonoBehaviour
     private GameObject winScreen;
 
     private TextMeshProUGUI winText;
-    private RocketHeadPitchSpeedBuffer headPitchBuffer;
-    private RocketHeadYawSpeedBuffer headYawBuffer;
+    private HeadAngleBuffer headPitchBuffer;
+    private HeadAngleBuffer headYawBuffer;
     private bool usePitch; //true if we're using pitch speed, false if we're using yaw speed.
     private RocketLaunchData gameData;
     private float rocketSpeed;
@@ -73,8 +73,8 @@ public class LaunchControl : MonoBehaviour
         {
             usePitch = !lastGameData.pitch;
         }
-        headPitchBuffer = new RocketHeadPitchSpeedBuffer(headPoseBufferCapacity);
-        headYawBuffer = new RocketHeadYawSpeedBuffer(headPoseBufferCapacity);
+        headPitchBuffer = new HeadAngleBuffer(headPoseBufferCapacity);
+        headYawBuffer = new HeadAngleBuffer(headPoseBufferCapacity);
         instructionsText.text = usePitch
             ? "Nod your head and repeat the code to launch the rocket!"
             : "Shake your head and repeat the code to launch the rocket!";
@@ -116,20 +116,18 @@ public class LaunchControl : MonoBehaviour
             {
                 headPose = tracker.getHeadPose();
             }
-            RocketHeadPitch headPitch = new RocketHeadPitch(headPose);
-            RocketHeadYaw headYaw = new RocketHeadYaw(headPose);
+            HeadPitchItem headPitch = new HeadPitchItem(headPose);
+            HeadYawItem headYaw = new HeadYawItem(headPose);
             headPitchBuffer.addIfNew(headPitch);
             headYawBuffer.addIfNew(headYaw);
             float headSpeed = 0f;
             if (usePitch)
             {
-                headSpeed =
-                    headPitchBuffer.getPitchSpeed(speedTime) - headYawBuffer.getYawSpeed(speedTime);
+                headSpeed = headPitchBuffer.getSpeed(speedTime) - headYawBuffer.getSpeed(speedTime);
             }
             else
             {
-                headSpeed =
-                    headYawBuffer.getYawSpeed(speedTime) - headPitchBuffer.getPitchSpeed(speedTime);
+                headSpeed = headYawBuffer.getSpeed(speedTime) - headPitchBuffer.getSpeed(speedTime);
             }
             headSpeed = Mathf.Max(0, headSpeed); // Clamp to zero to avoid negative speeds
 

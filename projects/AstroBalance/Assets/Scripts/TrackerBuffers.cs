@@ -20,7 +20,7 @@ class HeadAngleBuffer : TobiiBuffer<HeadAngleItem>
     /// </summary>
     /// <param name="speedTime">The time period in seconds over which to calculate the average speed.</param>
     /// <returns>The average speed of the head pose buffer over the given time period.</returns>
-    protected float getSpeed(float speedTime)
+    public float getSpeed(float speedTime)
     {
         float averageSpeed = 0f;
         if (!hasEnoughData)
@@ -71,7 +71,7 @@ class GazeBuffer : TobiiBuffer<GazeItem>
     /// <param name="tolerance">the allowable range</param>
     /// <param name="targetPoint_x">x coordinate of the target point</param>
     /// <param name="targetPoint_y">y coordinate of the target point</param>
-    protected bool dataSteady(float time, float tolerance, float targetPoint_x, float targetPoint_y)
+    public bool gazeSteady(float time, float tolerance, float targetPoint_x, float targetPoint_y)
     {
         if (!hasEnoughData)
             return false;
@@ -87,7 +87,7 @@ class GazeBuffer : TobiiBuffer<GazeItem>
     /// </summary>
     /// <param name="time">in seconds to sample over</param>
     /// <param name="tolerance">the allowable standard deviation</param>
-    protected bool dataSteady(float time, float tolerance)
+    public bool gazeSteady(float time, float tolerance)
     {
         if (!hasEnoughData)
             return false;
