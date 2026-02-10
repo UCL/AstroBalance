@@ -12,14 +12,13 @@ class HeadAngleBuffer : TobiiBuffer<HeadAngleItem>
         : base(capacity, 2) { }
 
     /// <summary>
-    /// Calculates the average speed of the buffer over a given time period. Speed is
-    /// calculated to the average change in position of the second array returned by GetData
-    /// Divided by the total change in the first array returned by GetData
-    /// This presumes that the GetData interface of the templated object returns a
-    /// float vector of the form [time, position].
+    /// Calculates the average speed of the buffer over a given time period.
+    /// Speed is
+    /// calculated as the average change in angle returned by GetAngle
+    /// Divided by the total change in time returned by TimeStampMicroSeconds
     /// </summary>
     /// <param name="speedTime">The time period in seconds over which to calculate the average speed.</param>
-    /// <returns>The average speed of the head pose buffer over the given time period.</returns>
+    /// <returns>The average speed of the buffer over the given time period.</returns>
     public float getSpeed(float speedTime)
     {
         float averageSpeed = 0f;
