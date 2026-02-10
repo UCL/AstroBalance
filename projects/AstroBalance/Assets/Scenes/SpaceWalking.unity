@@ -378,6 +378,7 @@ MonoBehaviour:
   upgradeRate: 0.23
   nGamesToUpgrade: 3
   activationDelay: 1
+  debugHeadTurns: 0
 --- !u!4 &277788980
 Transform:
   m_ObjectHideFlags: 0

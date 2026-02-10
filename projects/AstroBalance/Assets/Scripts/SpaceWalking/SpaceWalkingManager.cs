@@ -15,7 +15,12 @@ public class SpaceWalkingManager : MonoBehaviour
     [SerializeField, Tooltip("Screen shown upon winning the game")]
     private GameObject winScreen;
 
-    [SerializeField, Tooltip("Screen showing head turn arrows (at highest difficulty level only)")]
+    [
+        SerializeField,
+        Tooltip(
+            "Screen showing head turn arrows (only at highest difficulty level or when debugHeadTurns is enabled)"
+        )
+    ]
     private HeadTurnScreen headTurnScreen;
 
     [SerializeField, Tooltip("Countdown timer prefab")]
@@ -47,6 +52,14 @@ public class SpaceWalkingManager : MonoBehaviour
     [SerializeField, Tooltip("Seconds until first tile activation")]
     private int activationDelay = 1;
 
+    [
+        SerializeField,
+        Tooltip(
+            "When enabled, head turns will be activated even if the required difficulty level hasn't been reached (useful for debugging purposes)"
+        )
+    ]
+    private bool debugHeadTurns = false;
+
     private TextMeshProUGUI winText;
     private bool gameActive = true;
     private int score = 0;
@@ -74,7 +87,15 @@ public class SpaceWalkingManager : MonoBehaviour
     {
         SaveData<SpaceWalkingData> saveData = new(saveFilename);
         IEnumerable<SpaceWalkingData> lastNGamesData = saveData.GetLastNGamesData(nGamesToUpgrade);
-        headTurnsActive = false;
+
+        if (debugHeadTurns)
+        {
+            headTurnsActive = true;
+        }
+        else
+        {
+            headTurnsActive = false;
+        }
 
         if (lastNGamesData.Count() < nGamesToUpgrade)
         {
