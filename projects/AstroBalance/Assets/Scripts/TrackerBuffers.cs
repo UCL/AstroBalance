@@ -221,6 +221,12 @@ class TobiiBuffer<T>
 
     public TobiiBuffer(int capacity, int minDataRequired)
     {
+        if (capacity <= 0 || minDataRequired <= 0 || minDataRequired > capacity)
+        {
+            throw new ArgumentException(
+                "Capacity and minDataRequired must be positive and minDataRequired must be less than or equal to capacity."
+            );
+        }
         buffer = new T[capacity];
         lastAddedIndex = -1;
         hasData = false;
@@ -241,7 +247,7 @@ class TobiiBuffer<T>
         {
             hasData = true;
             int newIndex = lastAddedIndex + 1;
-            if (newIndex >= minDataRequired)
+            if (newIndex + 1 >= minDataRequired) // index starts at 0, so items added = newIndex + 1
             {
                 hasEnoughData = true;
             }
