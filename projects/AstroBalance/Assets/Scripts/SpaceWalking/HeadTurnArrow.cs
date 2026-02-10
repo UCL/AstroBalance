@@ -47,7 +47,6 @@ public class HeadTurnArrow : MonoBehaviour
     {
         Yaw,
         Pitch,
-        Roll,
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -84,13 +83,9 @@ public class HeadTurnArrow : MonoBehaviour
         {
             currentAngle = headRotation.YawDegrees;
         }
-        else if (rotationAxis == RotationAxis.Pitch)
-        {
-            currentAngle = headRotation.PitchDegrees;
-        }
         else
         {
-            currentAngle = headRotation.RollDegrees;
+            currentAngle = headRotation.PitchDegrees;
         }
 
         SetArrowFill(currentAngle);
