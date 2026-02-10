@@ -55,7 +55,7 @@ public class StarCollectorManager : MonoBehaviour
 
         // Load last game data (if any) from file + choose time limit for this game
         SaveData<StarCollectorData> saveData = new(saveFilename);
-        StarCollectorData lastGameData = saveData.GetLastGameData();
+        StarCollectorData lastGameData = saveData.GetLastCompleteGameData();
 
         if (lastGameData == null)
         {

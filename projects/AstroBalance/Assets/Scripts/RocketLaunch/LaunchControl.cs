@@ -64,7 +64,7 @@ public class LaunchControl : MonoBehaviour
         headPoseBuffer = new HeadPoseBuffer(headPoseBufferCapacity);
 
         SaveData<RocketLaunchData> saveData = new(saveFilename);
-        RocketLaunchData lastGameData = saveData.GetLastGameData();
+        RocketLaunchData lastGameData = saveData.GetLastCompleteGameData();
 
         if (lastGameData == null)
         {

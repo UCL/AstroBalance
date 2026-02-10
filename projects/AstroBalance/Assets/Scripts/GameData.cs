@@ -26,6 +26,11 @@ public abstract class GameData
         endTime = DateTime.Now.ToString("HH:mm:ss");
     }
 
+    /// <summary>
+    /// Return info on all public fields.
+    /// Order is: date, startTime, endTime, gameCompleted, then any
+    /// other fields in alphabetical order.
+    /// </summary>
     private FieldInfo[] GetFields()
     {
         Type type = this.GetType();
@@ -34,17 +39,28 @@ public abstract class GameData
 
         // To ensure they are always returned in the same order,
         // let's sort the fields.
+
         // We return date, startTime, endTime, gameCompleted first (as this is general data
         // for all games, and useful to have at the start of the csv)
-        // then any other fields in alphabetical order
         sortedFields[0] = type.GetField("date");
         sortedFields[1] = type.GetField("startTime");
         sortedFields[2] = type.GetField("endTime");
         sortedFields[3] = type.GetField("gameCompleted");
 
+        // Then, all other fields sorted in alphabetical order
         Array.Sort(fields, (x, y) => String.Compare(x.Name, y.Name));
 
-        return fields;
+        int nextIndex = 4;
+        foreach (FieldInfo field in fields)
+        {
+            if (!sortedFields.Contains(field))
+            {
+                sortedFields[nextIndex] = field;
+                nextIndex++;
+            }
+        }
+
+        return sortedFields;
     }
 
     public virtual string ToCsvHeader()
@@ -61,8 +77,6 @@ public abstract class GameData
             }
         }
         return header.ToString();
-
-        return "date,startTime,endTime,gameCompleted";
     }
 
     public virtual string ToCsvRow()
@@ -79,7 +93,5 @@ public abstract class GameData
             }
         }
         return row.ToString();
-
-        return $"{date},{startTime},{endTime},{gameCompleted}";
     }
 }

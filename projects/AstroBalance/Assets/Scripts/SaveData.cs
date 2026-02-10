@@ -45,41 +45,35 @@ public class SaveData<T>
 
             sw.WriteLine(gameData.ToCsvRow());
         }
-
-        //if (File.Exists(dataPath))
-        //{
-
-        //}
-        //else
-        //{
-
-        //}
-        //    savedGames.Add(gameData);
-        //Save();
     }
 
     /// <summary>
-    /// Get data from the last played game session.
+    /// Get data from the last complete played game session.
     /// </summary>
-    public T GetLastGameData()
+    public T GetLastCompleteGameData()
     {
+        if (!saveFileExists)
+        {
+            return null;
+        }
+
         return savedGames.LastOrDefault();
     }
 
     /// <summary>
-    /// Get data from the last n played games.
+    /// Get data from the last n complete played games.
     /// </summary>
     /// <param name="nGames">Number of games to retrieve</param>
-    public IEnumerable<T> GetLastNGamesData(int nGames)
+    public IEnumerable<T> GetLastNCompleteGamesData(int nGames)
     {
         return savedGames.TakeLast(nGames);
     }
 
-    public void Save()
-    {
-        string json = JsonUtility.ToJson(this, true);
-        File.WriteAllText(dataPath, json);
-    }
+    //public void Save()
+    //{
+    //    string json = JsonUtility.ToJson(this, true);
+    //    File.WriteAllText(dataPath, json);
+    //}
 
     private void CheckSaveFileExists()
     {
