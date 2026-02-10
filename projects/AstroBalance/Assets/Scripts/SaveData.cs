@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using NUnit.Framework.Constraints;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 /// <summary>
@@ -20,7 +18,7 @@ public class SaveData<T>
 
     /// <summary>
     /// Create a new Save Data collection. If available, this will
-    /// be populated with previous save data from filename.json
+    /// be build on previous save data from filename.csv
     /// </summary>
     /// <param name="filename">The filename of the save file</param>
     public SaveData(string filename)
@@ -113,12 +111,6 @@ public class SaveData<T>
         return headerToValue;
     }
 
-    //public void Save()
-    //{
-    //    string json = JsonUtility.ToJson(this, true);
-    //    File.WriteAllText(dataPath, json);
-    //}
-
     private void CheckSaveFileExists()
     {
         if (File.Exists(dataPath))
@@ -128,23 +120,6 @@ public class SaveData<T>
         else
         {
             saveFileExists = false;
-        }
-    }
-
-    /// <summary>
-    /// Load data about previous games from file (if any).
-    /// </summary>
-    private void Load()
-    {
-        if (File.Exists(dataPath))
-        {
-            string json = File.ReadAllText(dataPath);
-            SaveData<T> loadedData = JsonUtility.FromJson<SaveData<T>>(json);
-
-            if (loadedData.savedGames != null)
-            {
-                this.savedGames = loadedData.savedGames;
-            }
         }
     }
 }
