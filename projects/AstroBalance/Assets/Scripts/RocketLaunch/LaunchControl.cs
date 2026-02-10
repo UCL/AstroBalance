@@ -52,6 +52,7 @@ public class LaunchControl : MonoBehaviour
     private bool usePitch; //true if we're using pitch speed, false if we're using yaw speed.
     private RocketLaunchData gameData;
     private float rocketSpeed;
+    private int minDataRequired = 2; // we need at least 2 data points to calculate a speed.
     private string saveFilename = "RocketLaunchScores";
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -73,8 +74,8 @@ public class LaunchControl : MonoBehaviour
         {
             usePitch = !lastGameData.pitch;
         }
-        headPitchBuffer = new HeadAngleBuffer(headPoseBufferCapacity);
-        headYawBuffer = new HeadAngleBuffer(headPoseBufferCapacity);
+        headPitchBuffer = new HeadAngleBuffer(headPoseBufferCapacity, minDataRequired);
+        headYawBuffer = new HeadAngleBuffer(headPoseBufferCapacity, minDataRequired);
         instructionsText.text = usePitch
             ? "Nod your head and repeat the code to launch the rocket!"
             : "Shake your head and repeat the code to launch the rocket!";

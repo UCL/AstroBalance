@@ -40,6 +40,7 @@ public class LaunchCode : MonoBehaviour
     private float timeToSpriteChange;
     private Sprite countDownSprite;
     private GazeBuffer gazeBuffer;
+    private int minDataRequired = 2; // we need at least 2 data points to calculate steadiness.
 
     void Start()
     {
@@ -49,7 +50,7 @@ public class LaunchCode : MonoBehaviour
         countDownSprites.Remove(countDownSprite);
         gameObject.GetComponent<SpriteRenderer>().sprite = countDownSprite;
         timeToSpriteChange = timerDuration;
-        gazeBuffer = new GazeBuffer(gazeBufferCapacity);
+        gazeBuffer = new GazeBuffer(gazeBufferCapacity, minDataRequired);
     }
 
     void Update()

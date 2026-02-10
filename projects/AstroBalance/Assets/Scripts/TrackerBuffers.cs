@@ -8,13 +8,17 @@ using Tobii.GameIntegration.Net;
 /// </summary>
 class HeadAngleBuffer : TobiiBuffer<HeadAngleItem>
 {
-    public HeadAngleBuffer(int capacity)
-        : base(capacity, 2) { }
+    /// <summary>
+    /// Initializes a new instance of the HeadAngleBuffer class.
+    /// </summary>
+    /// <param name="capacity">The maximum number of items that can be stored in the buffer.</param>
+    /// <param name="minDataRequired">The minimum number of data points required to calculate a speed.</param>
+    public HeadAngleBuffer(int capacity, int minDataRequired)
+        : base(capacity, minDataRequired) { }
 
     /// <summary>
     /// Calculates the average speed of the buffer over a given time period.
-    /// Speed is
-    /// calculated as the average change in angle returned by GetAngle
+    /// Speed is calculated as the average change in angle returned by GetAngle
     /// Divided by the total change in time returned by TimeStampMicroSeconds
     /// </summary>
     /// <param name="speedTime">The time period in seconds over which to calculate the average speed.</param>
@@ -59,8 +63,13 @@ class HeadAngleBuffer : TobiiBuffer<HeadAngleItem>
 /// </summary>
 class GazeBuffer : TobiiBuffer<GazeItem>
 {
-    public GazeBuffer(int capacity)
-        : base(capacity, 2) { }
+    /// <summary>
+    /// Initializes a new instance of the GazeBuffer class.
+    /// </summary>
+    /// <param name="capacity">The maximum number of items that can be stored in the buffer.</param>
+    /// <param name="minDataRequired">The minimum number of data points required to calculate steadiness.</param>
+    public GazeBuffer(int capacity, int minDataRequired)
+        : base(capacity, minDataRequired) { }
 
     /// <summary>
     /// returns true if the data more recent than the time have a summed
@@ -140,14 +149,14 @@ class GazeBuffer : TobiiBuffer<GazeItem>
     }
 }
 
-/// define two interfaces for the buffer data to enable us to create templated buffers.
+/// define an interface for the buffer data to enable us to create templated buffers.
 interface ITimeStampMicroSeconds
 {
     long TimeStampMicroSeconds();
 }
 
 /// <summary>
-/// Wrapper for Tobii gazepoint pitch data, implementing GetData and timestamp interfaces.
+/// Wrapper for Tobii gazepoint data, implementing timestamp interface.
 /// </summary>
 class GazeItem : ITimeStampMicroSeconds
 {
@@ -161,7 +170,7 @@ class GazeItem : ITimeStampMicroSeconds
 }
 
 /// <summary>
-/// Wrapper for Tobii gazepoint pitch data, implementing GetData and timestamp interfaces.
+/// Wrapper for Tobii headpose data, implementing timestamp interface.
 /// </summary>
 abstract class HeadAngleItem : ITimeStampMicroSeconds
 {
@@ -178,7 +187,7 @@ abstract class HeadAngleItem : ITimeStampMicroSeconds
 }
 
 /// <summary>
-/// Wrapper for Tobii head pose pitch data, implementing GetData and timestamp interfaces.
+/// Wrapper for Tobii head pose pitch data, returning pitch angle.
 /// </summary>
 class HeadPitchItem : HeadAngleItem
 {
@@ -192,7 +201,7 @@ class HeadPitchItem : HeadAngleItem
 }
 
 /// <summary>
-/// Wrapper for Tobii head pose yaw data, implementing GetData and timestamp interfaces.
+/// Wrapper for Tobii head pose yaw data, returning yaw angle.
 /// </summary>
 class HeadYawItem : HeadAngleItem
 {
@@ -208,7 +217,6 @@ class HeadYawItem : HeadAngleItem
 /// <summary>
 /// Base class for the tracker buffers, provides functionality to add items in a continuous loop, overwriting
 /// old data when the buffer is full.
-/// Also provides functions to calculate speed for the pose data.
 /// </summary>
 class TobiiBuffer<T>
     where T : ITimeStampMicroSeconds
@@ -219,6 +227,11 @@ class TobiiBuffer<T>
     private int minDataRequired;
     protected T[] buffer;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TobiiBuffer{T}"/> class.
+    /// </summary>
+    /// <param name="capacity">The capacity of the buffer.</param>
+    /// <param name="minDataRequired">The minimum number of data points required for calculations to be meaningful.</param>
     public TobiiBuffer(int capacity, int minDataRequired)
     {
         if (capacity <= 0 || minDataRequired <= 0 || minDataRequired > capacity)
@@ -267,7 +280,7 @@ class TobiiBuffer<T>
     /// Items will be returned in order from newest to oldest.
     /// </summary>
     /// <param name="maximumAge">The maximum age (in microseconds) of the data to return.</param>
-    public List<T> GetItems(long maximumAge)
+    protected List<T> GetItems(long maximumAge)
     {
         List<T> bufferItems = new List<T>();
 
