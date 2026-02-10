@@ -20,10 +20,15 @@ public class StarSeekData : GameData
         nStarsCollected = Int32.Parse(headerToValue["nStarsCollected"]);
     }
 
-    //public override string ToCsvHeader()
-    //{
-    //    string csvHeader = base.ToCsvHeader();
-    //    csvHeader += "timeLimitSeconds,nStarsCollected";
-    //    return csvHeader;
-    //}
+    public override string ToCsvHeader()
+    {
+        string header = base.ToCsvHeader();
+        return ToCsvString(new object[] { header, "timeLimitSeconds", "nStarsCollected" });
+    }
+
+    public override string ToCsvRow()
+    {
+        string row = base.ToCsvRow();
+        return ToCsvString(new object[] { row, timeLimitSeconds, nStarsCollected });
+    }
 }
