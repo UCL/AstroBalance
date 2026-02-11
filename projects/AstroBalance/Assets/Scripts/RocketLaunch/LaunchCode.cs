@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
 using Tobii.GameIntegration.Net;
-using TrackerBuffers;
 using UnityEngine;
 
 /// <summary>
@@ -41,6 +40,7 @@ public class LaunchCode : MonoBehaviour
     private float timeToSpriteChange;
     private Sprite countDownSprite;
     private GazeBuffer gazeBuffer;
+    private int minDataRequired = 2; // we need at least 2 data points to calculate steadiness.
 
     void Start()
     {
@@ -50,36 +50,37 @@ public class LaunchCode : MonoBehaviour
         countDownSprites.Remove(countDownSprite);
         gameObject.GetComponent<SpriteRenderer>().sprite = countDownSprite;
         timeToSpriteChange = timerDuration;
-        gazeBuffer = new GazeBuffer(gazeBufferCapacity);
+        gazeBuffer = new GazeBuffer(gazeBufferCapacity, minDataRequired);
     }
 
     void Update()
     {
-        GazePoint gazePoint = new GazePoint();
+        GazeItem gazeItem = new GazeItem();
         if (useMouseForTracker)
         {
             var mousePos = Input.mousePosition;
-            gazePoint.X = mousePos.x;
-            gazePoint.Y = mousePos.y;
-            gazePoint.TimeStampMicroSeconds = (long)(Time.timeSinceLevelLoad * 1000000);
+            gazeItem.gazePoint.X = mousePos.x;
+            gazeItem.gazePoint.Y = mousePos.y;
+            gazeItem.gazePoint.TimeStampMicroSeconds = (long)(Time.timeSinceLevelLoad * 1000000);
         }
         else
         {
-            gazePoint = tracker.getGazePoint();
-            Vector2 worldGaze = tracker.ConvertGazePointToWorldCoordinates(gazePoint);
-            gazePoint.X = worldGaze.x;
-            gazePoint.Y = worldGaze.y;
+            gazeItem.gazePoint = tracker.getGazePoint();
+            Vector2 worldGaze = tracker.ConvertGazePointToWorldCoordinates(gazeItem.gazePoint);
+            gazeItem.gazePoint.X = worldGaze.x;
+            gazeItem.gazePoint.Y = worldGaze.y;
         }
 
-        gazeBuffer.addIfNew(gazePoint);
+        gazeBuffer.addIfNew(gazeItem);
 
         bool gazeIsSteady = false;
-        GazePoint targetPoint = new GazePoint();
+        float targetX = 0f;
+        float targetY = 0f;
         if (targetObject != null)
         {
-            targetPoint.X = targetObject.transform.position.x;
-            targetPoint.Y = targetObject.transform.position.y;
-            gazeIsSteady = gazeBuffer.gazeSteady(gazeTime, gazeTolerance, targetPoint);
+            targetX = targetObject.transform.position.x;
+            targetY = targetObject.transform.position.y;
+            gazeIsSteady = gazeBuffer.gazeSteady(gazeTime, gazeTolerance, targetX, targetY);
         }
         else
         {
@@ -91,14 +92,14 @@ public class LaunchCode : MonoBehaviour
             string steadyText = gazeIsSteady ? "Gaze is steady" : "Gaze is not steady";
             statusText.text =
                 "Look here -> "
-                + targetPoint.X
+                + targetX
                 + ", "
-                + targetPoint.Y
+                + targetY
                 + "\n"
                 + "Looking here -> "
-                + gazePoint.X
+                + gazeItem.gazePoint.X
                 + ", "
-                + gazePoint.Y
+                + gazeItem.gazePoint.Y
                 + "\n"
                 + steadyText;
         }
