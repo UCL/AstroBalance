@@ -11,6 +11,7 @@ The space walking mini-game scores the player on completed steps (up / down / le
   - Upgrade rate: (number of complete steps / game time limit) i.e. average complete steps per second. A 'complete' step is a step out + a step back to the centre. The rate must be above this value to increase the time limit of future games.
   - Number of games in a row that must meet the upgrade rate
   - Seconds to first tile activation
+  - Whether to force enabling of head turns (this is useful for testing, when you don't want to play through the games required to reach this difficulty level)
 
 - **DirectionTiles**: values related to measured steps
   - Number of mm of head movement to count as a step
