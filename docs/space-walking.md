@@ -23,6 +23,6 @@ The space walking mini-game scores the player on completed steps (up / down / le
 
 - **HeadTurnArrowLeft / Right / Up / Down prefabs**: values related to head turn sequence (only at highest difficulty level)
   - Start / end head angle in degrees (start = 0 arrow fill; end = full arrow fill)
-  - Number of seconds to delay before switching arrow direction, after the arrow has been filled
-  - Label text for out and back to centre head movements
+  - Number of seconds to delay before destroying the arrow on full fill
+  - Label text for the arrow
   - Colour of arrow fill
