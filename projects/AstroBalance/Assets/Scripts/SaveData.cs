@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 using UnityEngine;
 
 /// <summary>
@@ -38,11 +40,11 @@ public class SaveData<T>
         {
             if (!saveFileExists)
             {
-                sw.WriteLine(gameData.ToCsvHeader());
+                sw.WriteLine(GameDataToCsv(gameData, true));
                 saveFileExists = true;
             }
 
-            sw.WriteLine(gameData.ToCsvRow());
+            sw.WriteLine(GameDataToCsv(gameData, false));
         }
     }
 
@@ -84,10 +86,11 @@ public class SaveData<T>
         int lineNo = csvLines.Count() - 1;
 
         // Start from end of file, and find n complete games
-        while (lineNo > 0 && csvLines.Count() < nGames)
+        while (lineNo > 0 && lastCompleteGames.Count() < nGames)
         {
             string line = File.ReadLines(dataPath).ElementAt(lineNo);
-            T gameData = Activator.CreateInstance(typeof(T), CreateCsvLineDict(header, line)) as T;
+
+            T gameData = CsvToGameData(header, line);
             if (gameData.gameCompleted)
             {
                 lastCompleteGames.Append(gameData);
@@ -98,17 +101,77 @@ public class SaveData<T>
         return lastCompleteGames;
     }
 
-    private Dictionary<string, string> CreateCsvLineDict(string csvHeader, string csvRow)
+    private T CsvToGameData(string csvHeader, string csvRow)
     {
         string[] headerNames = csvHeader.Split(',');
         string[] values = csvRow.Split(",");
-        Dictionary<string, string> headerToValue = new();
 
+        T gameData = new();
         for (int i = 0; i < headerNames.Length; i++)
         {
-            headerToValue.Add(headerNames[i], values[i]);
+            FieldInfo field = typeof(T).GetField(headerNames[i]);
+            field.SetValue(gameData, Convert.ChangeType(values[i], field.FieldType));
         }
-        return headerToValue;
+
+        return gameData;
+    }
+
+    private string GameDataToCsv(T gameData, bool header)
+    {
+        StringBuilder csvString = new StringBuilder();
+        FieldInfo[] fields = GetFields(gameData);
+
+        for (int i = 0; i < fields.Length; i++)
+        {
+            if (header)
+            {
+                csvString.Append(fields[i].Name);
+            }
+            else
+            {
+                csvString.Append(fields[i].GetValue(gameData));
+            }
+            if (i < fields.Length - 1)
+            {
+                csvString.Append(",");
+            }
+        }
+
+        return csvString.ToString();
+    }
+
+    /// <summary>
+    /// Return info on all public fields.
+    /// Order is: date, startTime, endTime, gameCompleted, then any
+    /// other fields in alphabetical order.
+    /// </summary>
+    private FieldInfo[] GetFields(T gameData)
+    {
+        Type type = gameData.GetType();
+        FieldInfo[] fields = type.GetFields();
+        FieldInfo[] sortedFields = new FieldInfo[fields.Length];
+
+        // We return date, startTime, endTime, gameCompleted first (as this is general data
+        // for all games, and useful to have at the start of the csv)
+        sortedFields[0] = type.GetField("date");
+        sortedFields[1] = type.GetField("startTime");
+        sortedFields[2] = type.GetField("endTime");
+        sortedFields[3] = type.GetField("gameCompleted");
+
+        // Then, all other fields sorted in alphabetical order
+        Array.Sort(fields, (x, y) => String.Compare(x.Name, y.Name));
+
+        int nextIndex = 4;
+        foreach (FieldInfo field in fields)
+        {
+            if (!sortedFields.Contains(field))
+            {
+                sortedFields[nextIndex] = field;
+                nextIndex++;
+            }
+        }
+
+        return sortedFields;
     }
 
     private void CheckSaveFileExists()
