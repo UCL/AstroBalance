@@ -93,7 +93,7 @@ public class SaveData<T>
             T gameData = CsvToGameData(header, line);
             if (gameData.gameCompleted)
             {
-                lastCompleteGames.Append(gameData);
+                lastCompleteGames.Add(gameData);
             }
             lineNo--;
         }
