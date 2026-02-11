@@ -105,7 +105,7 @@ class GazeBuffer : TobiiBuffer<GazeItem>
         float targetPoint_x = Queryable.Average(array_x.AsQueryable());
         float targetPoint_y = Queryable.Average(array_y.AsQueryable());
 
-        return dataSteadyImpl(array_x, array_y, targetPoint_0, targetPoint_1, tolerance);
+        return dataSteadyImpl(array_x, array_y, targetPoint_x, targetPoint_y, tolerance);
     }
 
     ///<summary>
@@ -139,10 +139,10 @@ class GazeBuffer : TobiiBuffer<GazeItem>
         float sumOfSquares_y = yPositions
             .Select(val => (val - targetPointY) * (val - targetPointY))
             .Sum();
-        float stddev_x = (float)Math.Sqrt(sumOfSquares_0 / xPositions.Length);
-        float stddev_y = (float)Math.Sqrt(sumOfSquares_1 / yPositions.Length);
+        float stddev_x = (float)Math.Sqrt(sumOfSquares_x / xPositions.Length);
+        float stddev_y = (float)Math.Sqrt(sumOfSquares_y / yPositions.Length);
 
-        if (stddev_0 < tolerance && stddev_1 < tolerance)
+        if (stddev_x < tolerance && stddev_y < tolerance)
             steady = true;
 
         return steady;
