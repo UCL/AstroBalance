@@ -102,8 +102,8 @@ class GazeBuffer : TobiiBuffer<GazeItem>
         int timeInMicroseconds = (int)(time * 1e6);
         List<GazeItem> gazePoints = GetItems(timeInMicroseconds);
         GetXYArrays(gazePoints, out float[] array_x, out float[] array_y);
-        float targetPoint_0 = Queryable.Average(array_x.AsQueryable());
-        float targetPoint_1 = Queryable.Average(array_y.AsQueryable());
+        float targetPoint_x = Queryable.Average(array_x.AsQueryable());
+        float targetPoint_y = Queryable.Average(array_y.AsQueryable());
 
         return dataSteadyImpl(array_x, array_y, targetPoint_0, targetPoint_1, tolerance);
     }
