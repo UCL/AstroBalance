@@ -523,7 +523,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scoreText: {fileID: 1059668820}
   orderText: {fileID: 131478791}
-  maxScoreGames: 2
+  maxScoreGames: 3
   smallConstellation: {fileID: 9203798164173761817, guid: 9625cb065f60ca645bf5c238fcb93d8b, type: 3}
   largeConstellation: {fileID: 8704810960959391910, guid: 7185bc0d9558ff44b82425a007034412, type: 3}
   winScreen: {fileID: 274217756}
