@@ -133,10 +133,10 @@ class GazeBuffer : TobiiBuffer<GazeItem>
     )
     {
         bool steady = false;
-        float sumOfSquares_0 = xPositions
+        float sumOfSquares_x = xPositions
             .Select(val => (val - targetPointX) * (val - targetPointX))
             .Sum();
-        float sumOfSquares_1 = yPositions
+        float sumOfSquares_y = yPositions
             .Select(val => (val - targetPointY) * (val - targetPointY))
             .Sum();
         float stddev_0 = (float)Math.Sqrt(sumOfSquares_0 / xPositions.Length);
