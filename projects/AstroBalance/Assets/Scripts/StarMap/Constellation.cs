@@ -22,13 +22,13 @@ public class Constellation : MonoBehaviour
     private float beforeShowSequenceDelay = 1f;
 
     [SerializeField, Tooltip("Number of seconds to delay after showing a new star sequence")]
-    private float afterShowSequenceDelay = 0.5f;
+    private float afterShowSequenceDelay = 0f;
 
     [SerializeField, Tooltip("Number of seconds to highlight a correct sequence")]
     private float correctSequenceHighlight = 1.5f;
 
     [SerializeField, Tooltip("Number of seconds to highlight an incorrect sequence")]
-    private float incorrectSequenceHighlight = 1f;
+    private float incorrectSequenceHighlight = 1.5f;
 
     [
         SerializeField,
