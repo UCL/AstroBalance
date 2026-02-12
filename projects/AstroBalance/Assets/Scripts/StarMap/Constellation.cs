@@ -36,6 +36,12 @@ public class Constellation : MonoBehaviour
     ]
     private float completeSequenceDelay = 0.5f;
 
+    [SerializeField, Tooltip("Prefab of icon to show for a correct guess")]
+    private GameObject correctGuessPrefab;
+
+    [SerializeField, Tooltip("Prefab of icon to show for an incorrect guess")]
+    private GameObject incorrectGuessPrefab;
+
     private List<StarMapStar> stars;
     private StarMapManager gameManager;
     private List<StarMapStar> currentSequence; // stars left to guess
@@ -102,11 +108,11 @@ public class Constellation : MonoBehaviour
 
         if (currentSequence[0] == star)
         {
-            HandleCorrectGuess();
+            StartCoroutine(HandleCorrectGuess());
         }
         else
         {
-            HandleIncorrectGuess();
+            StartCoroutine(HandleIncorrectGuess());
         }
     }
 
@@ -134,7 +140,7 @@ public class Constellation : MonoBehaviour
         }
     }
 
-    private IEnumerator CompleteSequenceAndTriggerNext(bool correctGuess)
+    private IEnumerator CompleteSequence(bool correctGuess)
     {
         DisableStarSelection();
 
@@ -142,17 +148,22 @@ public class Constellation : MonoBehaviour
         // makes it easier for the player to see the start
         yield return new WaitForSeconds(completeSequenceDelay);
 
-        // highlight completed sequence, in different ways
-        // depending on correct vs incorrect guess
+        // highlight completed sequence and show correct icon for
+        // correct vs incorrect guess
         float highlightTime;
+        GameObject iconPrefab;
         if (correctGuess)
         {
             highlightTime = correctSequenceHighlight;
+            iconPrefab = correctGuessPrefab;
         }
         else
         {
             highlightTime = incorrectSequenceHighlight;
+            iconPrefab = incorrectGuessPrefab;
         }
+
+        GameObject icon = Instantiate<GameObject>(iconPrefab.gameObject, transform);
 
         foreach (StarMapStar star in selectedStars)
         {
@@ -167,24 +178,25 @@ public class Constellation : MonoBehaviour
         }
         yield return new WaitForSeconds(highlightTime);
 
-        ShowNewSequence(order);
+        Destroy(icon);
     }
 
-    private void HandleCorrectGuess()
+    private IEnumerator HandleCorrectGuess()
     {
         // Remove star from the stars left to guess
         currentSequence.RemoveAt(0);
         if (currentSequence.Count != 0)
-            return;
+            yield break;
 
         // whole sequence has been guessed correctly
+        yield return StartCoroutine(CompleteSequence(true));
         gameManager.UpdateScore(currentSequenceLength, hasBeenDowngraded);
 
         if (gameManager.IsGameActive() && currentSequenceLength < GetNumberOfStars())
         {
             currentSequenceLength += 1;
             incorrectSequences = 0;
-            StartCoroutine(CompleteSequenceAndTriggerNext(true));
+            ShowNewSequence(order);
         }
         else
         {
@@ -192,7 +204,7 @@ public class Constellation : MonoBehaviour
         }
     }
 
-    private void HandleIncorrectGuess()
+    private IEnumerator HandleIncorrectGuess()
     {
         incorrectSequences += 1;
 
@@ -208,7 +220,8 @@ public class Constellation : MonoBehaviour
             incorrectSequences = 0;
         }
 
-        StartCoroutine(CompleteSequenceAndTriggerNext(false));
+        yield return StartCoroutine(CompleteSequence(false));
+        ShowNewSequence(order);
     }
 
     /// <summary>
