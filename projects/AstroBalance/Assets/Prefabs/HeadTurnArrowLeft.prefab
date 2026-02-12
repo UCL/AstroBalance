@@ -54,11 +54,8 @@ MonoBehaviour:
   rotationAxis: 0
   startHeadAngle: 0
   endHeadAngle: -40
-  sparkleEffect: {fileID: 7527662519254007312, guid: ff9c245d1433378428b46b7d2095ab5d, type: 3}
-  sparkleSeconds: 0
-  nArrowsToFill: 2
-  outLabel: Turn head
-  backLabel: Back to centre
+  delaySeconds: 0
+  arrowLabel: Turn head left
   fillColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!1 &2235134874558213204
 GameObject:
