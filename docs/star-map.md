@@ -15,7 +15,6 @@ or opposite order.
   - Length of time to delay before and after highlighting stars
 
 - **StarMapStar prefab**: values related to selection of stars
-  - Number of seconds of held gaze required to select a star
   - Amount of size increase on correct selection
   - Amount of size decrease on incorrect selection
   - Colour for correct selection
