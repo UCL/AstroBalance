@@ -297,6 +297,7 @@ class TobiiBuffer<T>
 
         while (
             bufferIndex != lastAddedIndex
+            && buffer[bufferIndex] != null
             && buffer[bufferIndex].TimeStampMicroSeconds() >= oldestAllowableTime
         )
         {
