@@ -93,6 +93,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5082324298247099171, guid: ba07055cd3d54aa44939ca67004956c2, type: 3}
+      propertyPath: arrowLabel
+      value: Move head up
+      objectReference: {fileID: 0}
+    - target: {fileID: 5082324298247099171, guid: ba07055cd3d54aa44939ca67004956c2, type: 3}
       propertyPath: endHeadAngle
       value: 30
       objectReference: {fileID: 0}

@@ -362,10 +362,13 @@ MonoBehaviour:
   minSequenceLength: 2
   maxIncorrectSequences: 2
   showSequenceHighlight: 1
-  showSequenceDelay: 1
+  beforeShowSequenceDelay: 1
+  afterShowSequenceDelay: 0
   correctSequenceHighlight: 1.5
-  incorrectSequenceHighlight: 1
+  incorrectSequenceHighlight: 1.5
   completeSequenceDelay: 0.5
+  correctGuessPrefab: {fileID: 2090193833735295312, guid: a06516039fbb51d4899c9841fcde2257, type: 3}
+  incorrectGuessPrefab: {fileID: 6257541068399296387, guid: eaa6515c490cb27498bfccd6789c361a, type: 3}
 --- !u!1 &4523125074469562903
 GameObject:
   m_ObjectHideFlags: 0

@@ -31,7 +31,7 @@ public class StarMapManager : MonoBehaviour
 
     private TextMeshProUGUI winText;
     private bool gameActive = true;
-    private int score = 0;
+    private int nSequencesRepeated = 0;
     private int maxSequenceLength = 0; // maximum length of sequence repeated correctly
     private string saveFilename = "StarMapScores";
     private RepeatOrder chosenOrder;
@@ -137,13 +137,13 @@ public class StarMapManager : MonoBehaviour
     /// <param name="afterDowngrade">whether this is after a downgrade in length due to incorrect guesses</param>
     public void UpdateScore(int sequenceLength, bool afterDowngrade)
     {
-        score += 1;
-        scoreText.text = score.ToString();
-
+        nSequencesRepeated += 1;
         if (sequenceLength > maxSequenceLength)
         {
             maxSequenceLength = sequenceLength;
         }
+
+        scoreText.text = maxSequenceLength.ToString();
 
         // game ends when we reach the max number of stars, or when we guess correctly
         // after the sequence length having been reduced due to incorrect guesses
@@ -164,7 +164,7 @@ public class StarMapManager : MonoBehaviour
         {
             gameActive = false;
 
-            winText.text = "Congratulations! \n \n You matched " + score + " sequences";
+            winText.text = "Congratulations! \n \n You matched " + maxSequenceLength + " stars";
             winScreen.SetActive(true);
             SaveGameData();
         }
@@ -173,7 +173,7 @@ public class StarMapManager : MonoBehaviour
     private void SaveGameData()
     {
         gameData.gameCompleted = true;
-        gameData.nSequencesRepeated = score;
+        gameData.nSequencesRepeated = nSequencesRepeated;
         gameData.maxSequenceLength = maxSequenceLength;
         gameData.repeatOrder = chosenOrder.ToString();
         gameData.constellationSize = constellationSize.ToString();

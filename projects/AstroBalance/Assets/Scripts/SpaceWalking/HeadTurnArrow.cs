@@ -15,29 +15,18 @@ public class HeadTurnArrow : MonoBehaviour
     [SerializeField, Tooltip("Ending angle for head = maximum fill")]
     private int endHeadAngle = -40;
 
-    [
-        SerializeField,
-        Tooltip("Number of seconds to delay after arrow is full, before switching arrow direction")
-    ]
+    [SerializeField, Tooltip("Number of seconds to delay before destroying the arrow on full fill")]
     private float delaySeconds = 0;
 
-    [SerializeField, Tooltip("Number of arrows to fill, before it is destroyed.")]
-    private float nArrowsToFill = 2;
-
-    [SerializeField, Tooltip("Outward movement label")]
-    private string outLabel = "Turn head";
-
-    [SerializeField, Tooltip("Back to centre movement label")]
-    private string backLabel = "Back to centre";
+    [SerializeField, Tooltip("Arrow label")]
+    private string arrowLabel = "Turn head";
 
     [SerializeField, Tooltip("Arrow fill colour")]
     private Color fillColor = Color.yellow;
 
     private Tracker tracker;
     private TextMeshProUGUI description;
-    private Image[] arrowImages;
     private Image fillImage;
-    private int nArrowsFilled = 0; // Number of times the arrow has been filled
     private bool fillLevelLocked = false;
 
     /// <summary>
@@ -54,7 +43,7 @@ public class HeadTurnArrow : MonoBehaviour
     {
         tracker = FindFirstObjectByType<Tracker>();
         description = GetComponentInChildren<TextMeshProUGUI>();
-        arrowImages = GetComponentsInChildren<Image>();
+        Image[] arrowImages = GetComponentsInChildren<Image>();
 
         foreach (Image image in arrowImages)
         {
@@ -66,7 +55,7 @@ public class HeadTurnArrow : MonoBehaviour
         }
 
         fillImage.color = fillColor;
-        description.text = outLabel;
+        description.text = arrowLabel;
     }
 
     // Update is called once per frame
@@ -119,48 +108,7 @@ public class HeadTurnArrow : MonoBehaviour
 
     private IEnumerator HandleFilledArrow()
     {
-        nArrowsFilled++;
         yield return new WaitForSeconds(delaySeconds);
-
-        if (nArrowsFilled >= nArrowsToFill)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            SwapDirection();
-            fillLevelLocked = false;
-        }
-    }
-
-    /// <summary>
-    /// Flip the direction of the arrow by 180 degrees, and swap the fill head angles.
-    /// E.g. if an arrow starts pointing left and fills from 0 to -30 degrees,
-    /// calling this function will make it point right and fill from -30 to 0 degreees.
-    /// </summary>
-    private void SwapDirection()
-    {
-        // Rotate arrow images 180 degrees
-        foreach (Image image in arrowImages)
-        {
-            image.transform.Rotate(new Vector3(0, 0, 180));
-        }
-
-        // Swap start / end angles, so arrow fills with opposite
-        // head rotation
-        int currentStartAngle = startHeadAngle;
-        int currentEndAngle = endHeadAngle;
-        startHeadAngle = currentEndAngle;
-        endHeadAngle = currentStartAngle;
-
-        // Swap description text
-        if (description.text == outLabel)
-        {
-            description.text = backLabel;
-        }
-        else
-        {
-            description.text = outLabel;
-        }
+        Destroy(gameObject);
     }
 }

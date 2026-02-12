@@ -41,6 +41,11 @@ public class SceneSelector : MonoBehaviour
         SceneManager.LoadScene("Scenes/ZeroGravity");
     }
 
+    public void LoadCurrentScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
     public void QuitGame()
     {
         Application.Quit();
