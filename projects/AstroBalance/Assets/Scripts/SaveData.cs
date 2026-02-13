@@ -101,6 +101,12 @@ public class SaveData<T>
         return lastCompleteGames;
     }
 
+    /// <summary>
+    /// Convert csv header / row into a GameData object.
+    /// </summary>
+    /// <param name="csvHeader">Csv header as string (first line of csv file)</param>
+    /// <param name="csvRow">Csv row as string</param>
+    /// <returns>GameData object with fields populated by row values</returns>
     private T CsvToGameData(string csvHeader, string csvRow)
     {
         string[] headerNames = csvHeader.Split(',');
@@ -116,6 +122,13 @@ public class SaveData<T>
         return gameData;
     }
 
+    /// <summary>
+    /// Convert GameData object to a csv string.
+    /// </summary>
+    /// <param name="gameData">GameData to convert</param>
+    /// <param name="header">When true, returns a csv header string (names of fields),
+    /// otherwise returns a csv row string (values of fields)</param>
+    /// <returns>Csv string</returns>
     private string GameDataToCsv(T gameData, bool header)
     {
         StringBuilder csvString = new StringBuilder();
