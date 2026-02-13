@@ -370,7 +370,7 @@ MonoBehaviour:
   starGenerator: {fileID: 1755869804}
   minTimeLimit: 60
   maxTimeLimit: 180
-  timeLimitIncrement: 30
+  timeLimitIncrement: 60
   nGamesToUpgrade: 3
   difficultyWindowSeconds: 10
   speedUpgradePercent: 60

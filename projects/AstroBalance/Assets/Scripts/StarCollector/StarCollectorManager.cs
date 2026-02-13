@@ -24,7 +24,7 @@ public class StarCollectorManager : MonoBehaviour
     private int maxTimeLimit = 180;
 
     [SerializeField, Tooltip("Time limit increase if timeLimitUpgradePercent is met")]
-    private int timeLimitIncrement = 30;
+    private int timeLimitIncrement = 60;
 
     [
         SerializeField,
