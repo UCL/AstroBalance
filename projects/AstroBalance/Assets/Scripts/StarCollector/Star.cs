@@ -22,7 +22,7 @@ public class Star : MonoBehaviour
         var pos = transform.position;
         transform.position = new Vector3(
             pos.x,
-            pos.y - starGenerator.baseStarSpeed * Time.deltaTime,
+            pos.y - starGenerator.GetStarSpeed() * Time.deltaTime,
             pos.z
         );
 
