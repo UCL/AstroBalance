@@ -20,7 +20,7 @@ public class SaveData<T>
 
     /// <summary>
     /// Create a new Save Data collection. If available, this will
-    /// be build on previous save data from filename.csv
+    /// build on previous save data from filename.csv
     /// </summary>
     /// <param name="filename">The filename of the save file</param>
     public SaveData(string filename)
