@@ -2,29 +2,31 @@ using UnityEngine;
 
 public class StarGenerator : MonoBehaviour
 {
-    [SerializeField, Tooltip("Default speed of generated stars")]
-    public float baseStarSpeed = 3f;
+    [SerializeField, Tooltip("Default speed of generated stars (unity units / second)")]
+    public float baseStarSpeed = 4f;
 
-    [SerializeField, Tooltip("Maximum speed of generated stars")]
+    [SerializeField, Tooltip("Maximum speed of generated stars (unity units / second)")]
     private float maxStarSpeed = 10f;
 
-    [SerializeField, Tooltip("Minimum speed of generated stars")]
+    [SerializeField, Tooltip("Minimum speed of generated stars (unity units / second)")]
     private float minStarSpeed = 2f;
 
     [
         SerializeField,
-        Tooltip("Speed increment used when dynamically increasing or decreasing star speed")
+        Tooltip(
+            "Speed increment used when dynamically increasing or decreasing star speed (unity units / second)"
+        )
     ]
-    private float speedIncrement = 1f;
+    private float speedIncrement = 0.5f;
 
-    [SerializeField, Tooltip("Distance between generated stars on the y axis")]
-    private float starCreationDistance = 2.5f;
+    [SerializeField, Tooltip("Number of stars to spawn per cycle of the wave")]
+    private float starSampling = 8f;
 
     [
         SerializeField,
         Tooltip("Higher swerve generates a wave that oscillates from left to right more often")
     ]
-    private float swerve = 0.1f;
+    private float swerve = 0.8f;
 
     [SerializeField, Tooltip("Width of the generated wave of stars on the x axis")]
     private float waveWidth = 3f;
@@ -35,11 +37,16 @@ public class StarGenerator : MonoBehaviour
     private float pathDistance = 15f;
     private float frontier = 0;
     private float d_eff;
+    private float starCreationDistance; // y distance between spawned stars
     private bool isGenerating = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        // Calculate y distance between stars so there are 'starSampling' stars per cycle
+        float yWavelength = (2 * Mathf.PI) / swerve;
+        starCreationDistance = yWavelength / starSampling;
+
         InitStars();
     }
 
@@ -75,6 +82,11 @@ public class StarGenerator : MonoBehaviour
         UpdateSpeed(-speedIncrement);
     }
 
+    public float GetStarSpeed()
+    {
+        return baseStarSpeed;
+    }
+
     private void UpdateSpeed(float increment)
     {
         float nextSpeed = baseStarSpeed + increment;
@@ -90,6 +102,8 @@ public class StarGenerator : MonoBehaviour
         {
             baseStarSpeed = nextSpeed;
         }
+
+        Debug.Log($"Updated star speed to {nextSpeed}");
     }
 
     public void StopGeneration()
