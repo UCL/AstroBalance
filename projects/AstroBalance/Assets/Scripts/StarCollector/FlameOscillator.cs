@@ -21,7 +21,11 @@ public class FlameOscillator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 new_scale = new Vector3(original_scale.x, original_scale.y + A * Mathf.Sin(Mathf.PI * f * Time.time), original_scale.z);
+        Vector3 new_scale = new Vector3(
+            original_scale.x,
+            original_scale.y + A * Mathf.Sin(Mathf.PI * f * Time.time),
+            original_scale.z
+        );
         Renderer.transform.localScale = new_scale;
     }
 }
