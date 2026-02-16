@@ -11,7 +11,7 @@ public class Tile : MonoBehaviour
     private GameObject sparkleEffect;
 
     [SerializeField, Tooltip("Number of seconds to show particle system.")]
-    private int sparkleTime = 1;
+    private float sparkleTime = 0.5f;
 
     [SerializeField, Tooltip("Tile activation colour")]
     private Color activatedColor = Color.red;
@@ -55,7 +55,7 @@ public class Tile : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!tileActive)
+        if (!tileActive || !gameManager.IsGameActive())
         {
             return;
         }
@@ -122,10 +122,9 @@ public class Tile : MonoBehaviour
             // step in and out + the score must be updated
             gameManager.UpdateScore();
         }
-
-        if (gameManager.IsGameActive())
+        else
         {
-            tileManager.ActivateNextTile();
+            gameManager.NextTile();
         }
     }
 }

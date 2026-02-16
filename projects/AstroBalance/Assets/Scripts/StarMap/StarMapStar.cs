@@ -3,9 +3,6 @@ using UnityEngine;
 
 public class StarMapStar : MonoBehaviour
 {
-    [SerializeField, Tooltip("Number of seconds of held gaze required to select star")]
-    private float selectionTime = 1f;
-
     [SerializeField, Tooltip("Particle system to highlight star")]
     private GameObject sparkleEffect;
 
@@ -23,24 +20,24 @@ public class StarMapStar : MonoBehaviour
 
     private Color defaultColor = Color.white;
     private SpriteRenderer spriteRenderer;
+    private Collider2D starCollider;
     private Constellation constellation;
     private SelectionStatus selectionStatus;
     private GameObject starSparkle;
 
-    private float selectionStartTime;
     private Vector3 defaultScale;
     private bool selectionEnabled = false;
 
     private enum SelectionStatus
     {
         None,
-        SelectionPending,
         Selected,
     }
 
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        starCollider = GetComponent<Collider2D>();
         defaultScale = transform.localScale;
     }
 
@@ -50,12 +47,20 @@ public class StarMapStar : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (
-            selectionStatus == SelectionStatus.SelectionPending
-            && (Time.time - selectionStartTime > selectionTime)
-        )
+        if (!selectionEnabled || selectionStatus == SelectionStatus.Selected)
         {
-            SetSelectionStatus(SelectionStatus.Selected);
+            return;
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
+
+            if (hit.collider == starCollider)
+            {
+                SetSelectionStatus(SelectionStatus.Selected);
+            }
         }
     }
 
@@ -121,32 +126,6 @@ public class StarMapStar : MonoBehaviour
         ResetStar();
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (!selectionEnabled)
-        {
-            return;
-        }
-
-        if (selectionStatus != SelectionStatus.Selected)
-        {
-            SetSelectionStatus(SelectionStatus.SelectionPending);
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (!selectionEnabled)
-        {
-            return;
-        }
-
-        if (selectionStatus != SelectionStatus.Selected)
-        {
-            SetSelectionStatus(SelectionStatus.None);
-        }
-    }
-
     private void SetSelectionStatus(SelectionStatus status)
     {
         if (status == SelectionStatus.None)
@@ -156,17 +135,10 @@ public class StarMapStar : MonoBehaviour
             transform.localScale = defaultScale;
             selectionStatus = status;
         }
-        else if (status == SelectionStatus.SelectionPending)
-        {
-            spriteRenderer.color = correctColor;
-            selectionStartTime = Time.time;
-            Destroy(starSparkle);
-            transform.localScale = defaultScale;
-            selectionStatus = status;
-        }
         else
         {
             // Star is selected
+            spriteRenderer.color = correctColor;
             transform.localScale = defaultScale * sizeIncrease;
             selectionStatus = status;
 

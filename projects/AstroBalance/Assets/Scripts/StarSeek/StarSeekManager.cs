@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -24,10 +26,18 @@ public class StarSeekManager : MonoBehaviour
     [
         SerializeField,
         Tooltip(
-            "(number of stars collected / game time limit) i.e. average stars collected per second - must be above this value to increase the time limit of the next game."
+            "(number of stars collected / game time limit) i.e. average stars collected per second - must be above this value to increase the time limit of future games."
         )
     ]
     private float timeLimitUpgradeRate = 0.3f;
+
+    [
+        SerializeField,
+        Tooltip(
+            "Number of games in a row that must meet timeLimitUpgradeRate to increase the time limit"
+        )
+    ]
+    private int nGamesToUpgrade = 3;
 
     private int score;
     private int timeLimit;
@@ -49,30 +59,50 @@ public class StarSeekManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Load last game data (if any), and choose time limit for this game based
+    /// Load previous game data (if any), and choose time limit for this game based
     /// on prior perfomance.
     /// </summary>
     private void ChooseGameTimeLimit()
     {
         SaveData<StarSeekData> saveData = new(saveFilename);
-        StarSeekData lastGameData = saveData.GetLastGameData();
+        IEnumerable<StarSeekData> lastNGamesData = saveData.GetLastNGamesData(nGamesToUpgrade);
 
-        if (lastGameData == null)
+        if (lastNGamesData.Count() < nGamesToUpgrade)
         {
             SetTimeLimit(minTimeLimit);
             return;
         }
 
-        float lastStarRate =
-            (float)lastGameData.nStarsCollected / (float)lastGameData.timeLimitSeconds;
-        if (lastStarRate >= timeLimitUpgradeRate)
+        // Upgrade if all the last n games have the same time limit + meet the upgrade
+        // rate. If it's a mix of time limits, then we haven't played enough games at
+        // this level yet to progress.
+        int nGamesAtUpgradeRate = 0;
+        bool allSameTimeLimit = true;
+        int lastTimeLimit = lastNGamesData.Last().timeLimitSeconds;
+
+        foreach (StarSeekData data in lastNGamesData)
         {
-            // Increase time limit vs last game
-            SetTimeLimit(lastGameData.timeLimitSeconds + timeLimitIncrement);
+            float starRate = (float)data.nStarsCollected / (float)data.timeLimitSeconds;
+
+            if (data.timeLimitSeconds != lastTimeLimit)
+            {
+                allSameTimeLimit = false;
+                break;
+            }
+
+            if (starRate >= timeLimitUpgradeRate)
+            {
+                nGamesAtUpgradeRate++;
+            }
+        }
+
+        if (allSameTimeLimit && nGamesAtUpgradeRate >= nGamesToUpgrade)
+        {
+            SetTimeLimit(lastTimeLimit + timeLimitIncrement);
         }
         else
         {
-            SetTimeLimit(lastGameData.timeLimitSeconds);
+            SetTimeLimit(lastTimeLimit);
         }
     }
 

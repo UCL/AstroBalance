@@ -7,4 +7,5 @@ public class StarMapData : GameData
     public int nSequencesRepeated;
     public int maxSequenceLength;
     public string repeatOrder; // string representation of StarMapManager.RepeatOrder enum
+    public string constellationSize; // string representation of StarMapManager.ConstellationSize enum
 }
