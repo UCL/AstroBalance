@@ -2,8 +2,10 @@ using UnityEngine;
 
 public class FlameOscillator : MonoBehaviour
 {
-    [SerializeField, Tooltip("Magnitude of flame wobble effect")] private float A;
-    [SerializeField, Tooltip("Frequency of flame wobble effect")] private float f;
+    [SerializeField, Tooltip("Magnitude of flame wobble effect")]
+    private float A;
+    [SerializeField, Tooltip("Frequency of flame wobble effect")]
+    private float f;
 
     private SpriteRenderer Renderer;
     private Vector3 original_scale;

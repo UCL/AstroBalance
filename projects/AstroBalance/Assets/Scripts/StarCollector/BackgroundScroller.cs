@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class BackgroundScroller : MonoBehaviour
 {
-    [SerializeField, Tooltip("Background Scrolling Rate")] private float speed = 1.0f;
+    [SerializeField, Tooltip("Background Scrolling Rate")]
+    private float speed = 1.0f;
 
     private Material mat;
 
