@@ -79,7 +79,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 4815476061570213978, guid: 7a7e55f31c866e14aadceda18e9df07c, type: 3}
+  m_Sprite: {fileID: 4505218705784879992, guid: 52fb4c26d451fe144b850d7a02a6a246, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -166,7 +166,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   doubleLockTime: 0.5
-  collectEffect: {fileID: 7476070591815049992, guid: 467c2cb60677ef34287d5075bea13970, type: 3}
+  collectEffect: {fileID: 7476070591815049992, guid: 6f15f5d4343582a41809f26c731375d6, type: 3}
   lockedEffect: {fileID: 7527662519254007312, guid: ff9c245d1433378428b46b7d2095ab5d, type: 3}
   singleLockBloom: 10
   doubleLockBloom: 20

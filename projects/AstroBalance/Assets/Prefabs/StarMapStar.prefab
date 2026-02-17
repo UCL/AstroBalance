@@ -79,7 +79,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 4815476061570213978, guid: 7a7e55f31c866e14aadceda18e9df07c, type: 3}
+  m_Sprite: {fileID: 4505218705784879992, guid: 52fb4c26d451fe144b850d7a02a6a246, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -165,7 +165,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3326e8d004da65a4d87b2f667575a350, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectionTime: 1
   sparkleEffect: {fileID: 7527662519254007312, guid: ff9c245d1433378428b46b7d2095ab5d, type: 3}
   sizeIncrease: 1.3
   sizeDecrease: 0.5
