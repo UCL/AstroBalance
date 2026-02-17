@@ -258,7 +258,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3326591926285465213, guid: dbfea37c5d6b9da4bad33ede036b5331, type: 3}
+      - m_Target: {fileID: 3326591926285465213, guid: ab7c1e556f5a3ca478b4c4dd2b8a2c6a, type: 3}
         m_TargetAssemblyTypeName: SceneSelector, Assembly-CSharp
         m_MethodName: LoadCurrentScene
         m_Mode: 1
