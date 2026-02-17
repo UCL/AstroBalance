@@ -626,6 +626,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Scrolling Background
       objectReference: {fileID: 0}
+    - target: {fileID: 5503287136658889633, guid: 9f78e68da1e6db444b2621ec08d86528, type: 3}
+      propertyPath: speed
+      value: 0.05
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -733,7 +737,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6820695125143651699, guid: 04afceec44965f543ae4826c1a3773bc, type: 3}
       propertyPath: m_Name
-      value: YawControlledShip 2
+      value: YawControlledShip
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
