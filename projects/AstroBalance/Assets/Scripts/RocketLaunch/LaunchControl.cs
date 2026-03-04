@@ -64,7 +64,7 @@ public class LaunchControl : MonoBehaviour
         tracker = FindFirstObjectByType<Tracker>();
 
         SaveData<RocketLaunchData> saveData = new(saveFilename);
-        RocketLaunchData lastGameData = saveData.GetLastGameData();
+        RocketLaunchData lastGameData = saveData.GetLastCompleteGameData();
 
         if (lastGameData == null)
         {

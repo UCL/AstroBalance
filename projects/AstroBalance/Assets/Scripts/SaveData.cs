@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 using UnityEngine;
 
 /// <summary>
@@ -9,22 +12,22 @@ using UnityEngine;
 /// <typeparam name="T">The type of game data (specific to each mini-game)</typeparam>
 [System.Serializable]
 public class SaveData<T>
-    where T : GameData
+    where T : GameData, new()
 {
+    public bool saveFileExists = false;
     public List<T> savedGames = new List<T>();
     private string dataPath;
 
     /// <summary>
     /// Create a new Save Data collection. If available, this will
-    /// be populated with previous save data from filename.json
+    /// build on previous save data from filename.csv
     /// </summary>
     /// <param name="filename">The filename of the save file</param>
     public SaveData(string filename)
     {
         // currently defaults to "C:\Users\username\AppData\LocalLow\DefaultCompany\AstroBalance" on Windows
-        dataPath = Path.Combine(Application.persistentDataPath, filename + ".json");
-
-        Load();
+        dataPath = Path.Combine(Application.persistentDataPath, filename + ".csv");
+        CheckSaveFileExists();
     }
 
     /// <summary>
@@ -33,47 +36,166 @@ public class SaveData<T>
     /// <param name="gameData">Game data from this session</param>
     public void SaveGameData(T gameData)
     {
-        savedGames.Add(gameData);
-        Save();
+        using (StreamWriter sw = new StreamWriter(dataPath, true))
+        {
+            if (!saveFileExists)
+            {
+                sw.WriteLine(GameDataToCsv(gameData, true));
+                saveFileExists = true;
+            }
+
+            sw.WriteLine(GameDataToCsv(gameData, false));
+        }
     }
 
     /// <summary>
-    /// Get data from the last played game session.
+    /// Get data from the last complete played game session.
     /// </summary>
-    public T GetLastGameData()
+    public T GetLastCompleteGameData()
     {
-        return savedGames.LastOrDefault();
+        if (!saveFileExists)
+        {
+            return null;
+        }
+
+        IEnumerable<T> lastGameData = GetLastNCompleteGamesData(1);
+        if (lastGameData.Count() != 1)
+        {
+            return null;
+        }
+        else
+        {
+            return lastGameData.ElementAt(0);
+        }
     }
 
     /// <summary>
-    /// Get data from the last n played games.
+    /// Get data from the last n complete played games.
     /// </summary>
     /// <param name="nGames">Number of games to retrieve</param>
-    public IEnumerable<T> GetLastNGamesData(int nGames)
+    public IEnumerable<T> GetLastNCompleteGamesData(int nGames)
     {
-        return savedGames.TakeLast(nGames);
-    }
+        List<T> lastCompleteGames = new List<T>();
+        if (!saveFileExists)
+        {
+            return lastCompleteGames;
+        }
 
-    public void Save()
-    {
-        string json = JsonUtility.ToJson(this, true);
-        File.WriteAllText(dataPath, json);
+        IEnumerable<string> csvLines = File.ReadLines(dataPath);
+        string header = csvLines.First();
+        int lineNo = csvLines.Count() - 1;
+
+        // Start from end of file, and find n complete games
+        while (lineNo > 0 && lastCompleteGames.Count() < nGames)
+        {
+            string line = File.ReadLines(dataPath).ElementAt(lineNo);
+
+            T gameData = CsvToGameData(header, line);
+            if (gameData.gameCompleted)
+            {
+                lastCompleteGames.Add(gameData);
+            }
+            lineNo--;
+        }
+
+        return lastCompleteGames;
     }
 
     /// <summary>
-    /// Load data about previous games from file (if any).
+    /// Convert csv header / row into a GameData object.
     /// </summary>
-    private void Load()
+    /// <param name="csvHeader">Csv header as string (first line of csv file)</param>
+    /// <param name="csvRow">Csv row as string</param>
+    /// <returns>GameData object with fields populated by row values</returns>
+    private T CsvToGameData(string csvHeader, string csvRow)
+    {
+        string[] headerNames = csvHeader.Split(',');
+        string[] values = csvRow.Split(",");
+
+        T gameData = new();
+        for (int i = 0; i < headerNames.Length; i++)
+        {
+            FieldInfo field = typeof(T).GetField(headerNames[i]);
+            field.SetValue(gameData, Convert.ChangeType(values[i], field.FieldType));
+        }
+
+        return gameData;
+    }
+
+    /// <summary>
+    /// Convert GameData object to a csv string.
+    /// </summary>
+    /// <param name="gameData">GameData to convert</param>
+    /// <param name="header">When true, returns a csv header string (names of fields),
+    /// otherwise returns a csv row string (values of fields)</param>
+    /// <returns>Csv string</returns>
+    private string GameDataToCsv(T gameData, bool header)
+    {
+        StringBuilder csvString = new StringBuilder();
+        FieldInfo[] fields = GetFields(gameData);
+
+        for (int i = 0; i < fields.Length; i++)
+        {
+            if (header)
+            {
+                csvString.Append(fields[i].Name);
+            }
+            else
+            {
+                csvString.Append(fields[i].GetValue(gameData));
+            }
+            if (i < fields.Length - 1)
+            {
+                csvString.Append(",");
+            }
+        }
+
+        return csvString.ToString();
+    }
+
+    /// <summary>
+    /// Return info on all public fields.
+    /// Order is: date, startTime, endTime, gameCompleted, then any
+    /// other fields in alphabetical order.
+    /// </summary>
+    private FieldInfo[] GetFields(T gameData)
+    {
+        Type type = gameData.GetType();
+        FieldInfo[] fields = type.GetFields();
+        FieldInfo[] sortedFields = new FieldInfo[fields.Length];
+
+        // We return date, startTime, endTime, gameCompleted first (as this is general data
+        // for all games, and useful to have at the start of the csv)
+        sortedFields[0] = type.GetField("date");
+        sortedFields[1] = type.GetField("startTime");
+        sortedFields[2] = type.GetField("endTime");
+        sortedFields[3] = type.GetField("gameCompleted");
+
+        // Then, all other fields sorted in alphabetical order
+        Array.Sort(fields, (x, y) => String.Compare(x.Name, y.Name));
+
+        int nextIndex = 4;
+        foreach (FieldInfo field in fields)
+        {
+            if (!sortedFields.Contains(field))
+            {
+                sortedFields[nextIndex] = field;
+                nextIndex++;
+            }
+        }
+
+        return sortedFields;
+    }
+
+    private void CheckSaveFileExists()
     {
         if (File.Exists(dataPath))
         {
-            string json = File.ReadAllText(dataPath);
-            SaveData<T> loadedData = JsonUtility.FromJson<SaveData<T>>(json);
-
-            if (loadedData.savedGames != null)
-            {
-                this.savedGames = loadedData.savedGames;
-            }
+            saveFileExists = true;
+        }
+        else
+        {
+            saveFileExists = false;
         }
     }
 }
