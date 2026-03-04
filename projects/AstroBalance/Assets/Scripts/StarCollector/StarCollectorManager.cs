@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -20,6 +22,17 @@ public class StarCollectorManager : MonoBehaviour
 
     [SerializeField, Tooltip("Maximum game time limit in seconds")]
     private int maxTimeLimit = 180;
+
+    [SerializeField, Tooltip("Time limit increase if timeLimitUpgradePercent is met")]
+    private int timeLimitIncrement = 60;
+
+    [
+        SerializeField,
+        Tooltip(
+            "Number of games in a row that must meet timeLimitUpgradePercent to increase the time limit"
+        )
+    ]
+    private int nGamesToUpgrade = 3;
 
     [SerializeField, Tooltip("Length of time window (in seconds) to evaluate player perfomance")]
     private int difficultyWindowSeconds = 10;
@@ -51,32 +64,61 @@ public class StarCollectorManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        ChooseGameTimeLimit();
+
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
-
-        // Load last game data (if any) from file + choose time limit for this game
-        SaveData<StarCollectorData> saveData = new(saveFilename);
-        StarCollectorData lastGameData = saveData.GetLastGameData();
-
-        if (lastGameData == null)
-        {
-            SetTimeLimit(minTimeLimit);
-        }
-        else if (lastGameData.percentStarsCollected > timeLimitUpgradePercent)
-        {
-            // Increase time limit by 30 seconds vs last game
-            SetTimeLimit(lastGameData.timeLimitSeconds + 30);
-        }
-        else
-        {
-            SetTimeLimit(lastGameData.timeLimitSeconds);
-        }
-
         gameData = new StarCollectorData();
         score = 0;
         scoreText.text = score.ToString();
         timer.StartCountdown(timeLimit);
 
         windowStart = Time.time;
+    }
+
+    /// <summary>
+    /// Load previous game data (if any), and choose time limit for this game based
+    /// on prior perfomance.
+    /// </summary>
+    private void ChooseGameTimeLimit()
+    {
+        SaveData<StarCollectorData> saveData = new(saveFilename);
+        IEnumerable<StarCollectorData> lastNGamesData = saveData.GetLastNGamesData(nGamesToUpgrade);
+
+        if (lastNGamesData.Count() < nGamesToUpgrade)
+        {
+            SetTimeLimit(minTimeLimit);
+            return;
+        }
+
+        // Upgrade if all the last n games have the same time limit + meet the upgrade
+        // percent. If it's a mix of time limits, then we haven't played enough games at
+        // this level yet to progress.
+        int nGamesAtUpgradePercent = 0;
+        bool allSameTimeLimit = true;
+        int lastTimeLimit = lastNGamesData.Last().timeLimitSeconds;
+
+        foreach (StarCollectorData data in lastNGamesData)
+        {
+            if (data.timeLimitSeconds != lastTimeLimit)
+            {
+                allSameTimeLimit = false;
+                break;
+            }
+
+            if (data.percentStarsCollected > timeLimitUpgradePercent)
+            {
+                nGamesAtUpgradePercent++;
+            }
+        }
+
+        if (allSameTimeLimit && nGamesAtUpgradePercent >= nGamesToUpgrade)
+        {
+            SetTimeLimit(lastTimeLimit + timeLimitIncrement);
+        }
+        else
+        {
+            SetTimeLimit(lastTimeLimit);
+        }
     }
 
     // Update is called once per frame
@@ -115,12 +157,10 @@ public class StarCollectorManager : MonoBehaviour
 
         if (percentCollected > speedUpgradePercent)
         {
-            Debug.Log("Increasing difficulty");
             starGenerator.IncreaseSpeed();
         }
         else
         {
-            Debug.Log("Decreasing difficulty");
             starGenerator.DecreaseSpeed();
         }
 
