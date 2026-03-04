@@ -106,6 +106,7 @@ Assembly-CSharp.csproj
 .vscode
 projects/AstroBalance/UserSettings/
 projects/AstroBalance/obj/
+projects/AstroBalance/build
 Search.index
 Search.settings
 *.sln
