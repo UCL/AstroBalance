@@ -1313,7 +1313,6 @@ RectTransform:
   m_Children:
   - {fileID: 1839649832}
   - {fileID: 1898818218}
-  - {fileID: 1761357956}
   - {fileID: 1260672150}
   - {fileID: 1932805937}
   m_Father: {fileID: 0}
