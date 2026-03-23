@@ -17,10 +17,10 @@ public class RadialProgressComponent : MonoBehaviour
         m_RadialProgress = new RadialProgress() {
             style = {
                 position = Position.Absolute,
-                left = 200, top = 100, width = 200, height = 200,
+                left = 850, top = 220, width = 200, height = 200,
             }
         };
-        m_RadialProgress.m_ProgressColor = Color.red;
+        m_RadialProgress.trackColour = Color.red;
 
         root.Add(m_RadialProgress);
     }

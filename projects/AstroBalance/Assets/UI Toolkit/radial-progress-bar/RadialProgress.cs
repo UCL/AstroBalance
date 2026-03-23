@@ -37,8 +37,13 @@ namespace MyUILibrary
         static CustomStyleProperty<Color> s_ProgressColor = new CustomStyleProperty<Color>("--progress-color");
 
         Color m_TrackColor = Color.gray;
-        Color m_ProgressColor = Color.red;
+        Color m_ProgressColor = Color.green;
 
+        public Color trackColour
+        {
+            get => m_TrackColor;
+            set {m_TrackColor = trackColour;}
+        }
         // This is the label that displays the percentage.
         Label m_Label;
 
@@ -123,4 +128,4 @@ namespace MyUILibrary
             painter.Stroke();
         }
     }
-}    
+}
