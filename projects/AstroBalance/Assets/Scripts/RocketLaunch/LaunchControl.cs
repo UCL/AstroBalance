@@ -142,6 +142,14 @@ public class LaunchControl : MonoBehaviour
         }
     }
 
+    /// <sumary>
+    /// Returns the percentage progress to launch
+    /// </summary>
+    public float GetProgress()
+    {
+        return ((launchTime - timer.GetTimeRemaining())/launchTime)* 100;
+    }
+
     private void EndGame()
     {
         winText.text = "Blast Off! Well Done.";
