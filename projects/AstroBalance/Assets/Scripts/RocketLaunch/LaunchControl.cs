@@ -53,6 +53,8 @@ public class LaunchControl : MonoBehaviour
     private int minDataRequired = 2; // we need at least 2 data points to calculate a speed.
     private string saveFilename = "RocketLaunchScores";
 
+    LaunchCode launchCode;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -63,6 +65,8 @@ public class LaunchControl : MonoBehaviour
 
         SaveData<RocketLaunchData> saveData = new(saveFilename);
         RocketLaunchData lastGameData = saveData.GetLastCompleteGameData();
+
+	launchCode = FindFirstObjectByType<LaunchCode>();
 
         if (lastGameData == null)
         {
@@ -84,9 +88,12 @@ public class LaunchControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        timeToLaunch -= Time.deltaTime;
+        if (launchCode.gazeSteady)
+        {
+            timeToLaunch -= Time.deltaTime;
+        }
 
-        Debug.Log (timeToLaunch);
+        Debug.Log(timeToLaunch);
         // If time limit reached, end game
         if (timeToLaunch <= 0)
         {
@@ -148,7 +155,7 @@ public class LaunchControl : MonoBehaviour
     /// </summary>
     public float GetProgress()
     {
-        return ((launchTime - timeToLaunch)/launchTime)* 100;
+        return ((launchTime - timeToLaunch) / launchTime) * 100;
     }
 
     private void EndGame()

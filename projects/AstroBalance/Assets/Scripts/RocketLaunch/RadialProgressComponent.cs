@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using MyUILibrary;
 using UnityEngine;
 using UnityEngine.UIElements;
-using MyUILibrary;
 
 [RequireComponent(typeof(UIDocument))]
 public class RadialProgressComponent : MonoBehaviour
@@ -14,11 +14,16 @@ public class RadialProgressComponent : MonoBehaviour
     {
         var root = GetComponent<UIDocument>().rootVisualElement;
         coundownController = FindFirstObjectByType<LaunchControl>();
-        m_RadialProgress = new RadialProgress() {
-            style = {
+        m_RadialProgress = new RadialProgress()
+        {
+            style =
+            {
                 position = Position.Absolute,
-                left = 850, top = 220, width = 200, height = 200,
-            }
+                left = 850,
+                top = 220,
+                width = 200,
+                height = 200,
+            },
         };
         m_RadialProgress.trackColour = Color.red;
 

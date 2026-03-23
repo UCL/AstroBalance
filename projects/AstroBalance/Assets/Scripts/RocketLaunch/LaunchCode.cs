@@ -41,6 +41,11 @@ public class LaunchCode : MonoBehaviour
     private Sprite countDownSprite;
     private GazeBuffer gazeBuffer;
     private int minDataRequired = 2; // we need at least 2 data points to calculate steadiness.
+    private bool gazeIsSteady;
+    public bool gazeSteady
+    {
+        get => gazeIsSteady;
+    }
 
     void Start()
     {
@@ -51,6 +56,7 @@ public class LaunchCode : MonoBehaviour
         gameObject.GetComponent<SpriteRenderer>().sprite = countDownSprite;
         timeToSpriteChange = timerDuration;
         gazeBuffer = new GazeBuffer(gazeBufferCapacity, minDataRequired);
+        gazeIsSteady = false;
     }
 
     void Update()
@@ -72,8 +78,6 @@ public class LaunchCode : MonoBehaviour
         }
 
         gazeBuffer.addIfNew(gazeItem);
-
-        bool gazeIsSteady = false;
         float targetX = 0f;
         float targetY = 0f;
         if (targetObject != null)
