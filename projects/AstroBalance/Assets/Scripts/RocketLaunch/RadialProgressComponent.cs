@@ -33,5 +33,11 @@ public class RadialProgressComponent : MonoBehaviour
     void Update()
     {
         m_RadialProgress.progress = coundownController.GetProgress();
+        if (coundownController.GetProgress() >= 100)
+        {
+            var root = GetComponent<UIDocument>().rootVisualElement;
+            root.Remove(m_RadialProgress);
+            this.enabled = false;
+        }
     }
 }
