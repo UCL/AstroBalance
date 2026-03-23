@@ -21,6 +21,7 @@ public class LaunchControl : MonoBehaviour
 
     [SerializeField, Tooltip("The time (in seconds) to launch.")]
     private int launchTime = 30;
+    private float timeToLaunch;
 
     [SerializeField, Tooltip("The capacity of the head pose buffer to use.")]
     private int headPoseBufferCapacity = 10;
@@ -39,9 +40,6 @@ public class LaunchControl : MonoBehaviour
 
     [SerializeField, Tooltip("A test box for the instructions.")]
     private TextMeshProUGUI instructionsText;
-
-    [SerializeField, Tooltip("Countdown timer prefab")]
-    private CountdownTimer timer;
 
     [SerializeField, Tooltip("Screen shown upon winning the game")]
     private GameObject winScreen;
@@ -80,14 +78,17 @@ public class LaunchControl : MonoBehaviour
             ? "Nod your head and repeat the code to launch the rocket!"
             : "Shake your head and repeat the code to launch the rocket!";
         gameData = new RocketLaunchData();
-        timer.StartCountdown(launchTime);
+        timeToLaunch = (float)launchTime;
     }
 
     // Update is called once per frame
     void Update()
     {
+        timeToLaunch -= Time.deltaTime;
+
+        Debug.Log (timeToLaunch);
         // If time limit reached, end game
-        if (timer.GetTimeRemaining() <= 0)
+        if (timeToLaunch <= 0)
         {
             if (transform.position.y < 10)
             {
@@ -147,7 +148,7 @@ public class LaunchControl : MonoBehaviour
     /// </summary>
     public float GetProgress()
     {
-        return ((launchTime - timer.GetTimeRemaining())/launchTime)* 100;
+        return ((launchTime - timeToLaunch)/launchTime)* 100;
     }
 
     private void EndGame()
