@@ -32,6 +32,9 @@ public class LaunchControl : MonoBehaviour
     [SerializeField, Tooltip("A scale factor to control the ratio of head speed to flame size.")]
     private float speedScale = 1.0f;
 
+    [SerializeField, Tooltip("The minimum head speed required to reduce the launch timer.")]
+    private float minimumSpeed = 20;
+
     [SerializeField, Tooltip("Launch acceleration factor. Bigger for faster launch.")]
     private float acceleration = 0.04f;
 
@@ -88,12 +91,6 @@ public class LaunchControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (launchCode.gazeSteady)
-        {
-            timeToLaunch -= Time.deltaTime;
-        }
-
-        Debug.Log(timeToLaunch);
         // If time limit reached, end game
         if (timeToLaunch <= 0)
         {
@@ -147,6 +144,13 @@ public class LaunchControl : MonoBehaviour
             }
             var myEmitter = speedObject.emission;
             myEmitter.rateOverTime = headSpeed * speedScale;
+
+            if (launchCode.gazeSteady && headSpeed > minimumSpeed)
+            {
+                timeToLaunch -= Time.deltaTime;
+            }
+
+            Debug.Log(timeToLaunch);
         }
     }
 
