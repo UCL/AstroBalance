@@ -7,20 +7,20 @@ using UnityEngine.UIElements;
 [RequireComponent(typeof(UIDocument))]
 public class RadialProgressComponent : MonoBehaviour
 {
-    LaunchControl coundownController;
+    LaunchControl countdownController;
     RadialProgress m_RadialProgress;
 
     void Start()
     {
         var root = GetComponent<UIDocument>().rootVisualElement;
-        coundownController = FindFirstObjectByType<LaunchControl>();
+        countdownController = FindFirstObjectByType<LaunchControl>();
         m_RadialProgress = new RadialProgress()
         {
             style =
             {
                 position = Position.Absolute,
-                left = 850,
-                top = 220,
+                left = 860,
+                top = 225,
                 width = 200,
                 height = 200,
             },
@@ -32,8 +32,8 @@ public class RadialProgressComponent : MonoBehaviour
 
     void Update()
     {
-        m_RadialProgress.progress = coundownController.GetProgress();
-        if (coundownController.GetProgress() >= 100)
+        m_RadialProgress.progress = countdownController.GetProgress();
+        if (countdownController.GetProgress() >= 100)
         {
             var root = GetComponent<UIDocument>().rootVisualElement;
             root.Remove(m_RadialProgress);

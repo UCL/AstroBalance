@@ -141,6 +141,7 @@ public class LaunchControl : MonoBehaviour
         // If time limit reached, end game
         if (timeToLaunch <= 0)
         {
+            targetObject.GetComponent<SpriteRenderer>().enabled = false;
             if (transform.position.y < 10)
             {
                 rocketSpeed += Time.deltaTime * acceleration;
