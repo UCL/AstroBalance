@@ -149,8 +149,6 @@ public class LaunchControl : MonoBehaviour
             {
                 timeToLaunch -= Time.deltaTime;
             }
-
-            Debug.Log(timeToLaunch);
         }
     }
 

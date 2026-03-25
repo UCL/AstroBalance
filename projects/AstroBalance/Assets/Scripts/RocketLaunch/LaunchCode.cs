@@ -36,6 +36,13 @@ public class LaunchCode : MonoBehaviour
     [SerializeField, Tooltip("The game object the user is supposed to look at.")]
     private GameObject targetObject;
 
+    [
+        SerializeField,
+        Tooltip("Adaptive difficulty, higher numbers are more difficult"),
+        Range(1, 10)
+    ]
+    private float adaptiveDifficulty;
+
     Tracker tracker;
     private float timeToSpriteChange;
     private Sprite countDownSprite;
@@ -46,6 +53,7 @@ public class LaunchCode : MonoBehaviour
     {
         get => gazeIsSteady;
     }
+    private Vector3 startScale;
 
     void Start()
     {
@@ -53,6 +61,8 @@ public class LaunchCode : MonoBehaviour
         countDownSprite = countDownSprites[Random.Range(0, countDownSprites.Count)];
         // remove the number from the list to avoid selected a repeat number next time.
         countDownSprites.Remove(countDownSprite);
+        startScale = GetComponent<SpriteRenderer>().transform.localScale;
+        GetComponent<SpriteRenderer>().transform.localScale = startScale / adaptiveDifficulty;
         gameObject.GetComponent<SpriteRenderer>().sprite = countDownSprite;
         timeToSpriteChange = timerDuration;
         gazeBuffer = new GazeBuffer(gazeBufferCapacity, minDataRequired);
@@ -82,9 +92,19 @@ public class LaunchCode : MonoBehaviour
         float targetY = 0f;
         if (targetObject != null)
         {
-            targetX = targetObject.transform.position.x;
-            targetY = targetObject.transform.position.y;
-            gazeIsSteady = gazeBuffer.gazeSteady(gazeTime, gazeTolerance, targetX, targetY);
+            // use centre of bounds in case the target object is not centred
+            targetX = targetObject.transform.GetComponent<Renderer>().bounds.center.x;
+            targetY = targetObject.transform.GetComponent<Renderer>().bounds.center.y;
+            Vector2 gazeTol = new Vector2(
+                targetObject.transform.GetComponent<Renderer>().bounds.extents.x,
+                targetObject.transform.GetComponent<Renderer>().bounds.extents.y
+            );
+            gazeIsSteady = gazeBuffer.gazeSteady(
+                gazeTime,
+                gazeTolerance * gazeTol.magnitude,
+                targetX,
+                targetY
+            );
         }
         else
         {
@@ -124,6 +144,7 @@ public class LaunchCode : MonoBehaviour
             countDownSprites.Remove(newCountDownSprite);
             countDownSprites.Add(countDownSprite);
             countDownSprite = newCountDownSprite;
+            GetComponent<SpriteRenderer>().transform.localScale = startScale / adaptiveDifficulty;
             gameObject.GetComponent<SpriteRenderer>().sprite = newCountDownSprite;
         }
     }
