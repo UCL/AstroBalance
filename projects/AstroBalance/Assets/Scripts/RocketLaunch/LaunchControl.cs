@@ -146,29 +146,10 @@ public class LaunchControl : MonoBehaviour
         }
         else
         {
+            GazeItem gazeItem = FillBuffers();
             bool gazeIsSteady = false;
             float headSpeed = 0f;
 
-            HeadPose headPose = new HeadPose();
-            if (useMouseForTracker)
-            {
-                var mousePos = Input.mousePosition;
-                headPose.Position.X = mousePos.x;
-                headPose.Position.Y = 0f;
-                headPose.Position.Z = 0.5f;
-                headPose.Rotation.YawDegrees = mousePos.x;
-                headPose.Rotation.PitchDegrees = mousePos.y;
-                headPose.Rotation.RollDegrees = 0f;
-                headPose.TimeStampMicroSeconds = (long)(Time.timeSinceLevelLoad * 1000000);
-            }
-            else
-            {
-                headPose = tracker.getHeadPose();
-            }
-            HeadPitchItem headPitch = new HeadPitchItem(headPose);
-            HeadYawItem headYaw = new HeadYawItem(headPose);
-            headPitchBuffer.addIfNew(headPitch);
-            headYawBuffer.addIfNew(headYaw);
             if (usePitch)
             {
                 headSpeed = headPitchBuffer.getSpeed(speedTime) - headYawBuffer.getSpeed(speedTime);
@@ -188,25 +169,6 @@ public class LaunchControl : MonoBehaviour
             myEmitter.rateOverTime = headSpeed * speedScale;
 
             // gaze steadiness
-            GazeItem gazeItem = new GazeItem();
-            if (useMouseForTracker)
-            {
-                var mousePos = Input.mousePosition;
-                gazeItem.gazePoint.X = mousePos.x;
-                gazeItem.gazePoint.Y = mousePos.y;
-                gazeItem.gazePoint.TimeStampMicroSeconds = (long)(
-                    Time.timeSinceLevelLoad * 1000000
-                );
-            }
-            else
-            {
-                gazeItem.gazePoint = tracker.getGazePoint();
-                Vector2 worldGaze = tracker.ConvertGazePointToWorldCoordinates(gazeItem.gazePoint);
-                gazeItem.gazePoint.X = worldGaze.x;
-                gazeItem.gazePoint.Y = worldGaze.y;
-            }
-
-            gazeBuffer.addIfNew(gazeItem);
             float targetX = 0f;
             float targetY = 0f;
             if (targetObject != null)
@@ -257,8 +219,6 @@ public class LaunchControl : MonoBehaviour
             else
             {
                 incrementCountDownCode();
-                timeToSpriteChange = timerDuration;
-
             }
             if (gazeIsSteady && headSpeed > minimumSpeed)
             {
@@ -267,28 +227,51 @@ public class LaunchControl : MonoBehaviour
         }
     }
 
-    private void incrementCountDownCode()
-       {
-           Sprite newCountDownSprite = countDownSprites[Random.Range(0, countDownSprites.Count)];
-           // remove the number from the list to avoid selected a repeat number next time.
-           countDownSprites.Remove(newCountDownSprite);
-           if (countDownSprite != null)
-           {
-               countDownSprites.Add(countDownSprite);
-           }
-           countDownSprite = newCountDownSprite;
-           startScale = targetObject.GetComponent<SpriteRenderer>().transform.localScale;
-           targetObject.GetComponent<SpriteRenderer>().transform.localScale =
-              startScale / adaptiveDifficulty;
-           targetObject.GetComponent<SpriteRenderer>().sprite = countDownSprite;
-           timeToSpriteChange = timerDuration;
-       }
     /// <sumary>
     /// Returns the percentage progress to launch
     /// </summary>
     public float GetProgress()
     {
         return ((launchTime - timeToLaunch) / launchTime) * 100;
+    }
+
+    private GazeItem FillBuffers()
+    {
+        HeadPose headPose = new HeadPose();
+        GazeItem gazeItem = new GazeItem();
+        if (useMouseForTracker)
+        {
+            var mousePos = Input.mousePosition;
+            headPose.Position.X = mousePos.x;
+            headPose.Position.Y = 0f;
+            headPose.Position.Z = 0.5f;
+            headPose.Rotation.YawDegrees = mousePos.x;
+            headPose.Rotation.PitchDegrees = mousePos.y;
+            headPose.Rotation.RollDegrees = 0f;
+            headPose.TimeStampMicroSeconds = (long)(Time.timeSinceLevelLoad * 1000000);
+
+            gazeItem.gazePoint.X = mousePos.x;
+            gazeItem.gazePoint.Y = mousePos.y;
+            gazeItem.gazePoint.TimeStampMicroSeconds = (long)(
+                Time.timeSinceLevelLoad * 1000000
+                );
+        }
+        else
+        {
+            headPose = tracker.getHeadPose();
+
+            gazeItem.gazePoint = tracker.getGazePoint();
+            Vector2 worldGaze = tracker.ConvertGazePointToWorldCoordinates(gazeItem.gazePoint);
+            gazeItem.gazePoint.X = worldGaze.x;
+            gazeItem.gazePoint.Y = worldGaze.y;
+        }
+        HeadPitchItem headPitch = new HeadPitchItem(headPose);
+        HeadYawItem headYaw = new HeadYawItem(headPose);
+        headPitchBuffer.addIfNew(headPitch);
+        headYawBuffer.addIfNew(headYaw);
+        gazeBuffer.addIfNew(gazeItem);
+
+        return gazeItem;
     }
 
     private void EndGame()
@@ -308,5 +291,22 @@ public class LaunchControl : MonoBehaviour
 
         SaveData<RocketLaunchData> saveData = new(saveFilename);
         saveData.SaveGameData(gameData);
+    }
+
+    private void incrementCountDownCode()
+    {
+        Sprite newCountDownSprite = countDownSprites[Random.Range(0, countDownSprites.Count)];
+        // remove the number from the list to avoid selected a repeat number next time.
+        countDownSprites.Remove(newCountDownSprite);
+        if (countDownSprite != null)
+        {
+           countDownSprites.Add(countDownSprite);
+        }
+        countDownSprite = newCountDownSprite;
+        startScale = targetObject.GetComponent<SpriteRenderer>().transform.localScale;
+        targetObject.GetComponent<SpriteRenderer>().transform.localScale =
+           startScale / adaptiveDifficulty;
+        targetObject.GetComponent<SpriteRenderer>().sprite = countDownSprite;
+        timeToSpriteChange = timerDuration;
     }
 }
