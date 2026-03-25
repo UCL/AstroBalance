@@ -87,7 +87,7 @@ public class LaunchControl : MonoBehaviour
 
     // gaze steadiness paraemeters
     private float timeToSpriteChange;
-    private Sprite countDownSprite;
+    private Sprite countDownSprite = null;
     private GazeBuffer gazeBuffer;
     private Vector3 startScale;
 
@@ -123,19 +123,11 @@ public class LaunchControl : MonoBehaviour
             : "Shake your head and repeat the code to launch the rocket!";
         gameData = new RocketLaunchData();
         timeToLaunch = (float)launchTime;
-
-        countDownSprite = countDownSprites[Random.Range(0, countDownSprites.Count)];
-        // remove the number from the list to avoid selected a repeat number next time.
-        countDownSprites.Remove(countDownSprite);
-        startScale = targetObject.GetComponent<SpriteRenderer>().transform.localScale;
-        targetObject.GetComponent<SpriteRenderer>().transform.localScale =
-            startScale / adaptiveDifficulty;
-        targetObject.GetComponent<SpriteRenderer>().sprite = countDownSprite;
-        timeToSpriteChange = timerDuration;
         gazeBuffer = new GazeBuffer(gazeBufferCapacity, minDataRequired);
+        incrementCountDownCode();
     }
 
-    // Update is called once per frame
+       // Update is called once per frame
     void Update()
     {
         // If time limit reached, end game
@@ -264,18 +256,9 @@ public class LaunchControl : MonoBehaviour
             }
             else
             {
+                incrementCountDownCode();
                 timeToSpriteChange = timerDuration;
 
-                Sprite newCountDownSprite = countDownSprites[
-                    Random.Range(0, countDownSprites.Count)
-                ];
-                // remove the number from the list to avoid selected a repeat number next time.
-                countDownSprites.Remove(newCountDownSprite);
-                countDownSprites.Add(countDownSprite);
-                countDownSprite = newCountDownSprite;
-                targetObject.GetComponent<SpriteRenderer>().transform.localScale =
-                    startScale / adaptiveDifficulty;
-                targetObject.GetComponent<SpriteRenderer>().sprite = newCountDownSprite;
             }
             if (gazeIsSteady && headSpeed > minimumSpeed)
             {
@@ -284,6 +267,22 @@ public class LaunchControl : MonoBehaviour
         }
     }
 
+    private void incrementCountDownCode()
+       {
+           Sprite newCountDownSprite = countDownSprites[Random.Range(0, countDownSprites.Count)];
+           // remove the number from the list to avoid selected a repeat number next time.
+           countDownSprites.Remove(newCountDownSprite);
+           if (countDownSprite != null)
+           {
+               countDownSprites.Add(countDownSprite);
+           }
+           countDownSprite = newCountDownSprite;
+           startScale = targetObject.GetComponent<SpriteRenderer>().transform.localScale;
+           targetObject.GetComponent<SpriteRenderer>().transform.localScale =
+              startScale / adaptiveDifficulty;
+           targetObject.GetComponent<SpriteRenderer>().sprite = countDownSprite;
+           timeToSpriteChange = timerDuration;
+       }
     /// <sumary>
     /// Returns the percentage progress to launch
     /// </summary>
