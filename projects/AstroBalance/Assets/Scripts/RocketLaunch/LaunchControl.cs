@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using Tobii.GameIntegration.Net;
 using UnityEngine;
@@ -39,24 +40,60 @@ public class LaunchControl : MonoBehaviour
     private float acceleration = 0.04f;
 
     [SerializeField, Tooltip("An optional status text window for debugging.")]
-    private TextMeshProUGUI statusText;
+    private TextMeshProUGUI speedStatusText;
 
-    [SerializeField, Tooltip("A test box for the instructions.")]
+    // options for the gaze elememts
+    [SerializeField, Tooltip("Time between new random numbers in seconds.")]
+    private float timerDuration = 1.0F;
+
+    [SerializeField, Tooltip("Sprites to display on the countdown.")]
+    private List<Sprite> countDownSprites;
+
+    [SerializeField, Tooltip("The capacity of the gaze buffer to use.")]
+    private int gazeBufferCapacity = 100;
+
+    [SerializeField, Tooltip("The time in seconds that the gaze should be steady for.")]
+    private float gazeTime = 3.0f;
+
+    [SerializeField, Tooltip("The tolerance in unity coordinates that gaze needs to stay within.")]
+    private float gazeTolerance = 3.0f;
+
+    [SerializeField, Tooltip("An optional status text window for debugging.")]
+    private TextMeshProUGUI gazeStatusText;
+
+    [SerializeField, Tooltip("The game object the user is supposed to look at.")]
+    private GameObject targetObject;
+
+    [
+        SerializeField,
+        Tooltip("Adaptive difficulty, higher numbers are more difficult"),
+        Range(1, 10)
+    ]
+    private float adaptiveDifficulty;
+
+    [SerializeField, Tooltip("A text box for the instructions.")]
     private TextMeshProUGUI instructionsText;
 
     [SerializeField, Tooltip("Screen shown upon winning the game")]
     private GameObject winScreen;
 
-    private TextMeshProUGUI winText;
+    // head speed parameters
     private HeadAngleBuffer headPitchBuffer;
     private HeadAngleBuffer headYawBuffer;
     private bool usePitch; //true if we're using pitch speed, false if we're using yaw speed.
     private RocketLaunchData gameData;
     private float rocketSpeed;
-    private int minDataRequired = 2; // we need at least 2 data points to calculate a speed.
+    private int minDataRequired = 2; // we need at least 2 data points to calculate a speed or steadiness
+
+    // gaze steadiness paraemeters
+    private float timeToSpriteChange;
+    private Sprite countDownSprite;
+    private GazeBuffer gazeBuffer;
+    private Vector3 startScale;
+
     private string saveFilename = "RocketLaunchScores";
 
-    LaunchCode launchCode;
+    private TextMeshProUGUI winText;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -86,6 +123,16 @@ public class LaunchControl : MonoBehaviour
             : "Shake your head and repeat the code to launch the rocket!";
         gameData = new RocketLaunchData();
         timeToLaunch = (float)launchTime;
+
+        countDownSprite = countDownSprites[Random.Range(0, countDownSprites.Count)];
+        // remove the number from the list to avoid selected a repeat number next time.
+        countDownSprites.Remove(countDownSprite);
+        startScale = targetObject.GetComponent<SpriteRenderer>().transform.localScale;
+        targetObject.GetComponent<SpriteRenderer>().transform.localScale =
+            startScale / adaptiveDifficulty;
+        targetObject.GetComponent<SpriteRenderer>().sprite = countDownSprite;
+        timeToSpriteChange = timerDuration;
+        gazeBuffer = new GazeBuffer(gazeBufferCapacity, minDataRequired);
     }
 
     // Update is called once per frame
@@ -106,6 +153,9 @@ public class LaunchControl : MonoBehaviour
         }
         else
         {
+            bool gazeIsSteady = false;
+            float headSpeed = 0f;
+
             HeadPose headPose = new HeadPose();
             if (useMouseForTracker)
             {
@@ -126,7 +176,6 @@ public class LaunchControl : MonoBehaviour
             HeadYawItem headYaw = new HeadYawItem(headPose);
             headPitchBuffer.addIfNew(headPitch);
             headYawBuffer.addIfNew(headYaw);
-            float headSpeed = 0f;
             if (usePitch)
             {
                 headSpeed = headPitchBuffer.getSpeed(speedTime) - headYawBuffer.getSpeed(speedTime);
@@ -137,15 +186,97 @@ public class LaunchControl : MonoBehaviour
             }
             headSpeed = Mathf.Max(0, headSpeed); // Clamp to zero to avoid negative speeds
 
-            if (statusText != null)
+            if (speedStatusText != null)
             {
                 string speedText = usePitch ? "Pitch Speed" : "Yaw Speed";
-                statusText.text = speedText + " = " + headSpeed;
+                speedStatusText.text = speedText + " = " + headSpeed;
             }
             var myEmitter = speedObject.emission;
             myEmitter.rateOverTime = headSpeed * speedScale;
 
-            if (launchCode.gazeSteady && headSpeed > minimumSpeed)
+            // gaze steadiness
+            GazeItem gazeItem = new GazeItem();
+            if (useMouseForTracker)
+            {
+                var mousePos = Input.mousePosition;
+                gazeItem.gazePoint.X = mousePos.x;
+                gazeItem.gazePoint.Y = mousePos.y;
+                gazeItem.gazePoint.TimeStampMicroSeconds = (long)(
+                    Time.timeSinceLevelLoad * 1000000
+                );
+            }
+            else
+            {
+                gazeItem.gazePoint = tracker.getGazePoint();
+                Vector2 worldGaze = tracker.ConvertGazePointToWorldCoordinates(gazeItem.gazePoint);
+                gazeItem.gazePoint.X = worldGaze.x;
+                gazeItem.gazePoint.Y = worldGaze.y;
+            }
+
+            gazeBuffer.addIfNew(gazeItem);
+            float targetX = 0f;
+            float targetY = 0f;
+            if (targetObject != null)
+            {
+                // use centre of bounds in case the target object is not centred
+                targetX = targetObject.transform.GetComponent<Renderer>().bounds.center.x;
+                targetY = targetObject.transform.GetComponent<Renderer>().bounds.center.y;
+                Vector2 gazeTol = new Vector2(
+                    targetObject.transform.GetComponent<Renderer>().bounds.extents.x,
+                    targetObject.transform.GetComponent<Renderer>().bounds.extents.y
+                );
+                gazeIsSteady = gazeBuffer.gazeSteady(
+                    gazeTime,
+                    gazeTolerance * gazeTol.magnitude,
+                    targetX,
+                    targetY
+                );
+            }
+            else
+            {
+                gazeIsSteady = gazeBuffer.gazeSteady(gazeTime, gazeTolerance);
+            }
+
+            if (gazeStatusText != null)
+            {
+                string steadyText = gazeIsSteady ? "Gaze is steady" : "Gaze is not steady";
+                gazeStatusText.text =
+                    "Look here -> "
+                    + targetX
+                    + ", "
+                    + targetY
+                    + "\n"
+                    + "Looking here -> "
+                    + gazeItem.gazePoint.X
+                    + ", "
+                    + gazeItem.gazePoint.Y
+                    + "\n"
+                    + steadyText;
+            }
+
+            if (timeToSpriteChange > 0)
+            {
+                if (gazeIsSteady)
+                {
+                    timeToSpriteChange -= Time.deltaTime;
+                }
+            }
+            else
+            {
+                timeToSpriteChange = timerDuration;
+
+                Sprite newCountDownSprite = countDownSprites[
+                    Random.Range(0, countDownSprites.Count)
+                ];
+                // remove the number from the list to avoid selected a repeat number next time.
+                countDownSprites.Remove(newCountDownSprite);
+                countDownSprites.Add(countDownSprite);
+                countDownSprite = newCountDownSprite;
+                targetObject.GetComponent<SpriteRenderer>().transform.localScale =
+                    startScale / adaptiveDifficulty;
+                targetObject.GetComponent<SpriteRenderer>().sprite = newCountDownSprite;
+            }
+            if (gazeIsSteady && headSpeed > minimumSpeed)
             {
                 timeToLaunch -= Time.deltaTime;
             }
