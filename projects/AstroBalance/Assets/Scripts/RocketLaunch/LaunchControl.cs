@@ -127,7 +127,7 @@ public class LaunchControl : MonoBehaviour
         incrementCountDownCode();
     }
 
-       // Update is called once per frame
+    // Update is called once per frame
     void Update()
     {
         // If time limit reached, end game
@@ -146,7 +146,7 @@ public class LaunchControl : MonoBehaviour
         }
         else
         {
-            GazeItem gazeItem = FillBuffers();
+            GazeItem gazeItem = AddToBuffers();
             bool gazeIsSteady = false;
             float headSpeed = 0f;
 
@@ -160,11 +160,6 @@ public class LaunchControl : MonoBehaviour
             }
             headSpeed = Mathf.Max(0, headSpeed); // Clamp to zero to avoid negative speeds
 
-            if (speedStatusText != null)
-            {
-                string speedText = usePitch ? "Pitch Speed" : "Yaw Speed";
-                speedStatusText.text = speedText + " = " + headSpeed;
-            }
             var myEmitter = speedObject.emission;
             myEmitter.rateOverTime = headSpeed * speedScale;
 
@@ -192,22 +187,7 @@ public class LaunchControl : MonoBehaviour
                 gazeIsSteady = gazeBuffer.gazeSteady(gazeTime, gazeTolerance);
             }
 
-            if (gazeStatusText != null)
-            {
-                string steadyText = gazeIsSteady ? "Gaze is steady" : "Gaze is not steady";
-                gazeStatusText.text =
-                    "Look here -> "
-                    + targetX
-                    + ", "
-                    + targetY
-                    + "\n"
-                    + "Looking here -> "
-                    + gazeItem.gazePoint.X
-                    + ", "
-                    + gazeItem.gazePoint.Y
-                    + "\n"
-                    + steadyText;
-            }
+            writeDebugInformation(headSpeed, gazeItem, targetX, targetY, gazeIsSteady);
 
             if (timeToSpriteChange > 0)
             {
@@ -235,7 +215,10 @@ public class LaunchControl : MonoBehaviour
         return ((launchTime - timeToLaunch) / launchTime) * 100;
     }
 
-    private GazeItem FillBuffers()
+    /// <summary>
+    /// Adds latest tracking data to buffers and returns latest gaze information
+    /// </summary>
+    private GazeItem AddToBuffers()
     {
         HeadPose headPose = new HeadPose();
         GazeItem gazeItem = new GazeItem();
@@ -252,9 +235,7 @@ public class LaunchControl : MonoBehaviour
 
             gazeItem.gazePoint.X = mousePos.x;
             gazeItem.gazePoint.Y = mousePos.y;
-            gazeItem.gazePoint.TimeStampMicroSeconds = (long)(
-                Time.timeSinceLevelLoad * 1000000
-                );
+            gazeItem.gazePoint.TimeStampMicroSeconds = (long)(Time.timeSinceLevelLoad * 1000000);
         }
         else
         {
@@ -272,6 +253,37 @@ public class LaunchControl : MonoBehaviour
         gazeBuffer.addIfNew(gazeItem);
 
         return gazeItem;
+    }
+
+    private void writeDebugInformation(
+        float headSpeed,
+        GazeItem gazeItem,
+        float targetX,
+        float targetY,
+        bool gazeIsSteady
+    )
+    {
+        if (speedStatusText != null)
+        {
+            string speedText = usePitch ? "Pitch Speed" : "Yaw Speed";
+            speedStatusText.text = speedText + " = " + headSpeed;
+        }
+        if (gazeStatusText != null)
+        {
+            string steadyText = gazeIsSteady ? "Gaze is steady" : "Gaze is not steady";
+            gazeStatusText.text =
+                "Look here -> "
+                + targetX
+                + ", "
+                + targetY
+                + "\n"
+                + "Looking here -> "
+                + gazeItem.gazePoint.X
+                + ", "
+                + gazeItem.gazePoint.Y
+                + "\n"
+                + steadyText;
+        }
     }
 
     private void EndGame()
@@ -300,12 +312,12 @@ public class LaunchControl : MonoBehaviour
         countDownSprites.Remove(newCountDownSprite);
         if (countDownSprite != null)
         {
-           countDownSprites.Add(countDownSprite);
+            countDownSprites.Add(countDownSprite);
         }
         countDownSprite = newCountDownSprite;
         startScale = targetObject.GetComponent<SpriteRenderer>().transform.localScale;
         targetObject.GetComponent<SpriteRenderer>().transform.localScale =
-           startScale / adaptiveDifficulty;
+            startScale / adaptiveDifficulty;
         targetObject.GetComponent<SpriteRenderer>().sprite = countDownSprite;
         timeToSpriteChange = timerDuration;
     }
