@@ -18,21 +18,15 @@ public class LaunchControl : MonoBehaviour
     ]
     private bool useMouseForTracker = false;
 
-    [SerializeField, Tooltip("The game object that changes size based on head speed.")]
-    private ParticleSystem speedObject;
-
     [SerializeField, Tooltip("The time (in seconds) to launch.")]
     private int launchTime = 30;
     private float timeToLaunch;
 
     [SerializeField, Tooltip("The capacity of the head pose buffer to use.")]
-    private int headPoseBufferCapacity = 10;
+    private int headPoseBufferCapacity = 100;
 
     [SerializeField, Tooltip("The time in seconds to measure head speed over.")]
-    private float speedTime = 1.0f;
-
-    [SerializeField, Tooltip("A scale factor to control the ratio of head speed to flame size.")]
-    private float speedScale = 1.0f;
+    private float speedTime = 2.0f;
 
     [SerializeField, Tooltip("The minimum head speed required to reduce the launch timer.")]
     private float minimumSpeed = 20;
@@ -91,6 +85,8 @@ public class LaunchControl : MonoBehaviour
     private RocketLaunchData gameData;
     private float rocketSpeed;
     private int minDataRequired = 2; // we need at least 2 data points to calculate a speed or steadiness
+    private float headSpeed;
+    private float mouseToGazeScale = 20f; // if we're debugging using the mouse the reported speeds are much higher than with gaze.
 
     // gaze steadiness paraemeters
     private float timeToSpriteChange;
@@ -114,7 +110,6 @@ public class LaunchControl : MonoBehaviour
 
 	launchCode = FindFirstObjectByType<LaunchCode>();
         IEnumerable<RocketLaunchData> lastGameData = saveData.GetLastNGamesData(maxPreviousGames);
-        Debug.Log("There are " + lastGameData.Count() + " previous games");
 
         adaptiveDifficulty *= (maxPreviousGames + lastGameData.Count())/maxPreviousGames;
 
@@ -158,7 +153,6 @@ public class LaunchControl : MonoBehaviour
         {
             GazeItem gazeItem = AddToBuffers();
             bool gazeIsSteady = false;
-            float headSpeed = 0f;
 
             if (usePitch)
             {
@@ -169,9 +163,6 @@ public class LaunchControl : MonoBehaviour
                 headSpeed = headYawBuffer.getSpeed(speedTime) - headPitchBuffer.getSpeed(speedTime);
             }
             headSpeed = Mathf.Max(0, headSpeed); // Clamp to zero to avoid negative speeds
-
-            var myEmitter = speedObject.emission;
-            myEmitter.rateOverTime = headSpeed * speedScale;
 
             // gaze steadiness
             float targetX = 0f;
@@ -225,6 +216,10 @@ public class LaunchControl : MonoBehaviour
         return ((launchTime - timeToLaunch) / launchTime) * 100;
     }
 
+    public float HeadSpeed
+    {
+        get => headSpeed;
+    }
     /// <summary>
     /// Adds latest tracking data to buffers and returns latest gaze information
     /// </summary>
@@ -238,8 +233,8 @@ public class LaunchControl : MonoBehaviour
             headPose.Position.X = mousePos.x;
             headPose.Position.Y = 0f;
             headPose.Position.Z = 0.5f;
-            headPose.Rotation.YawDegrees = mousePos.x;
-            headPose.Rotation.PitchDegrees = mousePos.y;
+            headPose.Rotation.YawDegrees = mousePos.x / mouseToGazeScale;
+            headPose.Rotation.PitchDegrees = mousePos.y / mouseToGazeScale;
             headPose.Rotation.RollDegrees = 0f;
             headPose.TimeStampMicroSeconds = (long)(Time.timeSinceLevelLoad * 1000000);
 
