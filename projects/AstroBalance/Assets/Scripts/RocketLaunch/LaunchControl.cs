@@ -86,7 +86,7 @@ public class LaunchControl : MonoBehaviour
     private float rocketSpeed;
     private int minDataRequired = 2; // we need at least 2 data points to calculate a speed or steadiness
     private float headSpeed;
-    private float mouseToGazeScale = 20f; // if we're debugging using the mouse the reported speeds are much higher than with gaze.
+    private float mouseToGazeScale = 10f; // if we're debugging using the mouse the reported speeds are much higher than with gaze.
 
     // gaze steadiness paraemeters
     private float timeToSpriteChange;
