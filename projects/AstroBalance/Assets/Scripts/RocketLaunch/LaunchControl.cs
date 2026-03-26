@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using Tobii.GameIntegration.Net;
 using UnityEngine;
@@ -71,6 +72,12 @@ public class LaunchControl : MonoBehaviour
     ]
     private float adaptiveDifficulty;
 
+    [
+        SerializeField,
+        Tooltip("The maximum number of previous games to retrieve to determine experience based difficulty")
+    ]
+    private int maxPreviousGames = 100;
+
     [SerializeField, Tooltip("A text box for the instructions.")]
     private TextMeshProUGUI instructionsText;
 
@@ -104,17 +111,20 @@ public class LaunchControl : MonoBehaviour
         tracker = FindFirstObjectByType<Tracker>();
 
         SaveData<RocketLaunchData> saveData = new(saveFilename);
-        RocketLaunchData lastGameData = saveData.GetLastCompleteGameData();
 
 	launchCode = FindFirstObjectByType<LaunchCode>();
+        IEnumerable<RocketLaunchData> lastGameData = saveData.GetLastNGamesData(maxPreviousGames);
+        Debug.Log("There are " + lastGameData.Count() + " previous games");
 
-        if (lastGameData == null)
+        adaptiveDifficulty *= (maxPreviousGames + lastGameData.Count())/maxPreviousGames;
+
+        if (lastGameData.Count() == 0)
         {
             usePitch = true;
         }
         else
         {
-            usePitch = !lastGameData.pitch;
+            usePitch = !lastGameData.Last().pitch;
         }
         headPitchBuffer = new HeadAngleBuffer(headPoseBufferCapacity, minDataRequired);
         headYawBuffer = new HeadAngleBuffer(headPoseBufferCapacity, minDataRequired);
@@ -122,7 +132,7 @@ public class LaunchControl : MonoBehaviour
             ? "Nod your head and repeat the code to launch the rocket!"
             : "Shake your head and repeat the code to launch the rocket!";
         gameData = new RocketLaunchData();
-        timeToLaunch = (float)launchTime;
+        timeToLaunch = (float)launchTime * adaptiveDifficulty;
         gazeBuffer = new GazeBuffer(gazeBufferCapacity, minDataRequired);
         incrementCountDownCode();
     }
