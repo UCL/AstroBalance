@@ -5,6 +5,9 @@ public class SmokeController : MonoBehaviour
     [SerializeField, Tooltip("The rocket launch object")]
     LaunchControl launchController;
 
+    [SerializeField, Tooltip("Smoke emission scale"), Range(0f,0.5f)]
+    float smokeEmissionScale = 0.05f;
+
     private ParticleSystem[] smokeEmitters;
 
     public ParticleSystem smoke_1;
@@ -13,7 +16,6 @@ public class SmokeController : MonoBehaviour
     void Start()
     {
         smokeEmitters = GetComponents<ParticleSystem>();
-	Debug.Log("There are " + smokeEmitters.Length + " emitters");
 	for (int i = 0; i < smokeEmitters.Length; i++)
 	{
 	    var emitter = smokeEmitters[i].emission;
@@ -34,7 +36,7 @@ public class SmokeController : MonoBehaviour
 	    for (int i = 0; i < smokeEmitters.Length; i++)
 	    {
 	        var emitter = smokeEmitters[i].emission;
-	        emitter.rateOverTime = headSpeed/20f;
+	        emitter.rateOverTime = headSpeed * smokeEmissionScale;
 	    }
 	}
     }
