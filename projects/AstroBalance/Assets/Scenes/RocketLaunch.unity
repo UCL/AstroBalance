@@ -11531,7 +11531,7 @@ PrefabInstance:
       objectReference: {fileID: 522649600}
     - target: {fileID: 8902890511493098178, guid: 00c1b36d25d21214eb8e6df02c079dea, type: 3}
       propertyPath: gazeTolerance
-      value: 60
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8902890511493098178, guid: 00c1b36d25d21214eb8e6df02c079dea, type: 3}
       propertyPath: gazeStatusText

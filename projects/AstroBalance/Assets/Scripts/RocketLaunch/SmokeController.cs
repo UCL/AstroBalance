@@ -39,5 +39,13 @@ public class SmokeController : MonoBehaviour
 	        emitter.rateOverTime = headSpeed * smokeEmissionScale;
 	    }
 	}
+	else
+	{
+	    for (int i = 0; i < smokeEmitters.Length; i++)
+	    {
+	        var emitter = smokeEmitters[i].emission;
+	        emitter.rateOverTime = 0f;
+	    }
+	}
     }
 }
