@@ -19,7 +19,7 @@ public class RadialProgressComponent : MonoBehaviour
             style =
             {
                 position = Position.Absolute,
-                left = 860,
+                left = Screen.width/2f - 100,
                 top = 225,
                 width = 200,
                 height = 200,
