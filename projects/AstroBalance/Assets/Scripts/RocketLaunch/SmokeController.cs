@@ -5,14 +5,20 @@ public class SmokeController : MonoBehaviour
     [SerializeField, Tooltip("The rocket launch object")]
     LaunchControl launchController;
 
-    private ParticleSystem smokeEmitter;
+    private ParticleSystem[] smokeEmitters;
+
+    public ParticleSystem smoke_1;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        smokeEmitter = GetComponent<ParticleSystem>();
-	var emitter = smokeEmitter.emission;
-	emitter.rateOverTime = 0f;
+        smokeEmitters = GetComponents<ParticleSystem>();
+	Debug.Log("There are " + smokeEmitters.Length + " emitters");
+	for (int i = 0; i < smokeEmitters.Length; i++)
+	{
+	    var emitter = smokeEmitters[i].emission;
+	    emitter.rateOverTime = 0f;
+	}
         
     }
 
@@ -25,8 +31,11 @@ public class SmokeController : MonoBehaviour
 
 	if ( ! launchComplete )
 	{
-	    var emitter = smokeEmitter.emission;
-	    emitter.rateOverTime = headSpeed / 20f;
+	    for (int i = 0; i < smokeEmitters.Length; i++)
+	    {
+	        var emitter = smokeEmitters[i].emission;
+	        emitter.rateOverTime = headSpeed/20f;
+	    }
 	}
     }
 }
