@@ -125,7 +125,7 @@ public class SaveData<T>
     /// Convert GameData object to a csv string.
     /// </summary>
     /// <param name="gameData">GameData to convert</param>
-    /// <param name="header">When true, returns a csv header string (names of fields),
+    /// <param name="headerOnly">When true, returns a csv header string (names of fields),
     /// otherwise returns a csv row string (values of fields)</param>
     /// <returns>Csv string</returns>
     private string GameDataToCsv(T gameData, bool headerOnly)
@@ -135,7 +135,7 @@ public class SaveData<T>
 
         for (int i = 0; i < fields.Length; i++)
         {
-            if (header)
+            if (headerOnly)
             {
                 csvString.Append(fields[i].Name);
             }
