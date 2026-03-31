@@ -19,10 +19,11 @@ public class RadialProgressComponent : MonoBehaviour
             style =
             {
                 position = Position.Absolute,
-                left = Screen.width/2f - 100,
-                top = 225,
-                width = 200,
-                height = 200,
+                left = new Length(45, LengthUnit.Percent),
+                //top = new Length(20, LengthUnit.Percent), // this doesn't seem to work for setting the height.
+		top = 225,
+                width = new Length(10, LengthUnit.Percent),
+                height = new Length(10, LengthUnit.Percent)
             },
         };
         m_RadialProgress.trackColour = Color.red;
