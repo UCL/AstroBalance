@@ -129,7 +129,7 @@ public class SaveData<T>
     /// <param name="header">When true, returns a csv header string (names of fields),
     /// otherwise returns a csv row string (values of fields)</param>
     /// <returns>Csv string</returns>
-    private string GameDataToCsv(T gameData, bool header)
+    private string GameDataToCsv(T gameData, bool headerOnly)
     {
         StringBuilder csvString = new StringBuilder();
         FieldInfo[] fields = GetFields(gameData);
