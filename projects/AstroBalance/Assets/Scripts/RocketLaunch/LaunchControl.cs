@@ -30,6 +30,9 @@ public class LaunchControl : MonoBehaviour
 
     [SerializeField, Tooltip("The minimum head speed required to reduce the launch timer.")]
     private float minimumSpeed = 20;
+    
+    [SerializeField, Tooltip("A pitch/yaw scale factor, as in general I can shake my head faster than I can nod.")]
+    private float shakeSpeedReduction = 0.5f;
 
     [SerializeField, Tooltip("Launch acceleration factor. Bigger for faster launch.")]
     private float acceleration = 0.04f;
@@ -160,7 +163,7 @@ public class LaunchControl : MonoBehaviour
             }
             else
             {
-                headSpeed = headYawBuffer.getSpeed(speedTime) - headPitchBuffer.getSpeed(speedTime);
+                headSpeed = (headYawBuffer.getSpeed(speedTime) - headPitchBuffer.getSpeed(speedTime)) * shakeSpeedReduction;
             }
             headSpeed = Mathf.Max(0, headSpeed); // Clamp to zero to avoid negative speeds
 
