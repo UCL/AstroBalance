@@ -5492,7 +5492,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &927586578
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5664,6 +5664,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GazeCrosshair
       objectReference: {fileID: 0}
+    - target: {fileID: 4280215944859401971, guid: c21ce9e309b6b634098fd8e1e3065097, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5686,7 +5690,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1091449923
 RectTransform:
   m_ObjectHideFlags: 0
