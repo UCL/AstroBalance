@@ -15,7 +15,6 @@ public class SaveData<T>
     where T : GameData, new()
 {
     private bool saveFileExists = false;
-    public List<T> savedGames = new List<T>();
     private string dataPath;
 
     /// <summary>
