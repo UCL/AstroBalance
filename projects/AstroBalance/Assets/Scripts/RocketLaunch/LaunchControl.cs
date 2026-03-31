@@ -111,8 +111,7 @@ public class LaunchControl : MonoBehaviour
 
         SaveData<RocketLaunchData> saveData = new(saveFilename);
 
-	launchCode = FindFirstObjectByType<LaunchCode>();
-        IEnumerable<RocketLaunchData> lastGameData = saveData.GetLastNGamesData(maxPreviousGames);
+        IEnumerable<RocketLaunchData> lastGameData = saveData.GetLastNCompleteGamesData(maxPreviousGames);
 
         adaptiveDifficulty *= (maxPreviousGames + lastGameData.Count())/maxPreviousGames;
 
