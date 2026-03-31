@@ -14,7 +14,7 @@ using UnityEngine;
 public class SaveData<T>
     where T : GameData, new()
 {
-    public bool saveFileExists = false;
+    private bool saveFileExists = false;
     public List<T> savedGames = new List<T>();
     private string dataPath;
 
