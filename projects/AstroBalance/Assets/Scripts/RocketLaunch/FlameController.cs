@@ -34,7 +34,6 @@ public class FlameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-	Debug.Log(launchController.HeadSpeed);
 	float headSpeed = launchController.HeadSpeed;
 	bool launchComplete = launchController.GetProgress() >= 100f ? true : false;
 	
