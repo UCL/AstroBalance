@@ -76,7 +76,7 @@ public class StarMapManager : MonoBehaviour
     private void ChooseConstellationSize()
     {
         SaveData<StarMapData> saveData = new(saveFilename);
-        IEnumerable<StarMapData> lastNGamesData = saveData.GetLastNGamesData(maxScoreGames);
+        IEnumerable<StarMapData> lastNGamesData = saveData.GetLastNCompleteGamesData(maxScoreGames);
         int smallConstellationMaxLength = smallConstellation.GetNumberOfStars();
 
         // We haven't played enough games, to get maxScoreGames in a row
