@@ -102,6 +102,7 @@ public class LaunchControl : MonoBehaviour
     private int minDataRequired = 2; // we need at least 2 data points to calculate a speed or steadiness
     private float headSpeed;
     private float mouseToGazeScale = 10f; // if we're debugging using the mouse the reported speeds are much higher than with gaze.
+    private float altitude;
 
     // gaze steadiness paraemeters
     private float timeToSpriteChange;
@@ -116,6 +117,7 @@ public class LaunchControl : MonoBehaviour
     void Start()
     {
         rocketSpeed = 0f;
+	altitude = 0f;
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
         winScreen.SetActive(false);
         tracker = FindFirstObjectByType<Tracker>();
@@ -161,10 +163,14 @@ public class LaunchControl : MonoBehaviour
         if (timeToLaunch <= 0)
         {
             targetObject.GetComponent<SpriteRenderer>().enabled = false;
+            rocketSpeed += Time.deltaTime * acceleration;
+	    altitude += rocketSpeed * Time.deltaTime;
             if (transform.position.y < 10)
             {
-                rocketSpeed += Time.deltaTime * acceleration;
-                transform.Translate(Vector3.up * rocketSpeed);
+		if (altitude > 5)
+		{	
+                    transform.Translate(Vector3.up * rocketSpeed/10);
+		}
             }
             else
             {
@@ -238,6 +244,11 @@ public class LaunchControl : MonoBehaviour
     public float GetProgress()
     {
         return ((launchTime - timeToLaunch) / launchTime) * 100;
+    }
+
+    public float Altitude
+    {
+        get => altitude;
     }
 
     public float HeadSpeed
