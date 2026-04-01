@@ -121,7 +121,7 @@ public class LaunchControl : MonoBehaviour
         }
         else
         {
-            usePitch = !lastGameData.First().pitch;
+            usePitch = !lastGameData.Last().pitch;
         }
         headPitchBuffer = new HeadAngleBuffer(headPoseBufferCapacity, minDataRequired);
         headYawBuffer = new HeadAngleBuffer(headPoseBufferCapacity, minDataRequired);
