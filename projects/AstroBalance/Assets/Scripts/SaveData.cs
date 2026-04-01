@@ -97,6 +97,8 @@ public class SaveData<T>
             lineNo--;
         }
 
+	lastCompleterGames.Reverse();
+
         return lastCompleteGames;
     }
 
