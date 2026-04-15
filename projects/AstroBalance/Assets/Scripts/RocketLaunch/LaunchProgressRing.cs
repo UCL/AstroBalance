@@ -8,7 +8,7 @@ public class LaunchProgressRing : MonoBehaviour
 {
 
     [SerializeField, Tooltip("Arrow fill colour")]
-    private Color fillColor = Color.yellow;
+    private Color fillColor = Color.red;
 
     LaunchControl countdownController;
 
@@ -26,7 +26,6 @@ public class LaunchProgressRing : MonoBehaviour
         {
             if (image.type == Image.Type.Filled)
             {
-                Debug.Log("Setting image to " + image);
                 fillImage = image;
                 break;
             }
@@ -41,7 +40,6 @@ public class LaunchProgressRing : MonoBehaviour
         float progress = countdownController.GetProgress() / 100f;
 	if ( progress < 1f )
 	{ 
-	    Debug.Log("Progress = " + progress);
             fillImage.fillAmount = progress;
 	}
 	else

@@ -19,7 +19,7 @@ public class LaunchControl : MonoBehaviour
     private bool useMouseForTracker = false;
 
     [SerializeField, Tooltip("The time (in seconds) to launch.")]
-    private int launchTime = 30;
+    private float launchTime = 30;
     private float timeToLaunch;
 
     [SerializeField, Tooltip("The capacity of the head pose buffer to use.")]
@@ -95,7 +95,6 @@ public class LaunchControl : MonoBehaviour
     private float timeToSpriteChange;
     private Sprite countDownSprite = null;
     private GazeBuffer gazeBuffer;
-    private Vector3 startScale;
 
     private string saveFilename = "RocketLaunchScores";
 
@@ -113,7 +112,13 @@ public class LaunchControl : MonoBehaviour
 
         IEnumerable<RocketLaunchData> lastGameData = saveData.GetLastNCompleteGamesData(maxPreviousGames);
 
-        adaptiveDifficulty *= (maxPreviousGames + lastGameData.Count())/maxPreviousGames;
+        // Adjust the adaptive difficulty (size of gaze target and time to launch) based on 
+	// how many previous games are in the save games data
+
+	adaptiveDifficulty *= ((float)maxPreviousGames + (float)lastGameData.Count())/(float)maxPreviousGames;
+        targetObject.GetComponent<SpriteRenderer>().transform.localScale /= adaptiveDifficulty;
+	gazeTolerance /= adaptiveDifficulty;
+	launchTime *= adaptiveDifficulty;
 
         if (lastGameData.Count() == 0)
         {
@@ -322,9 +327,6 @@ public class LaunchControl : MonoBehaviour
             countDownSprites.Add(countDownSprite);
         }
         countDownSprite = newCountDownSprite;
-        startScale = targetObject.GetComponent<SpriteRenderer>().transform.localScale;
-        targetObject.GetComponent<SpriteRenderer>().transform.localScale =
-            startScale / adaptiveDifficulty;
         targetObject.GetComponent<SpriteRenderer>().sprite = countDownSprite;
         timeToSpriteChange = timerDuration;
     }

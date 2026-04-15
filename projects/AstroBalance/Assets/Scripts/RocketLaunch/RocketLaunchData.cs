@@ -5,5 +5,5 @@
 public class RocketLaunchData : GameData
 {
     public bool pitch; // true if head pitch was used, false if yaw was used
-    public int launchTimeSeconds;
+    public float launchTimeSeconds;
 }
