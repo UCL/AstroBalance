@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class LaunchProgressRing : MonoBehaviour
 {
-
     [SerializeField, Tooltip("Arrow fill colour")]
     private Color fillColor = Color.red;
 
@@ -14,7 +13,6 @@ public class LaunchProgressRing : MonoBehaviour
 
     private Image fillImage;
     private float delaySeconds = 0.1f;
-
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -38,15 +36,14 @@ public class LaunchProgressRing : MonoBehaviour
     void Update()
     {
         float progress = countdownController.GetProgress() / 100f;
-	if ( progress < 1f )
-	{ 
+        if (progress < 1f)
+        {
             fillImage.fillAmount = progress;
-	}
-	else
-	{	
-	   StartCoroutine(HandleLaunchComplete());
-	}
-
+        }
+        else
+        {
+            StartCoroutine(HandleLaunchComplete());
+        }
     }
 
     private IEnumerator HandleLaunchComplete()

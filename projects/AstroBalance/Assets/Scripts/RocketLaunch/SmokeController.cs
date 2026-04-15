@@ -5,7 +5,7 @@ public class SmokeController : MonoBehaviour
     [SerializeField, Tooltip("The rocket launch object")]
     LaunchControl launchController;
 
-    [SerializeField, Tooltip("Smoke emission scale"), Range(0f,0.5f)]
+    [SerializeField, Tooltip("Smoke emission scale"), Range(0f, 0.5f)]
     float smokeEmissionScale = 0.05f;
 
     private ParticleSystem[] smokeEmitters;
@@ -16,36 +16,34 @@ public class SmokeController : MonoBehaviour
     void Start()
     {
         smokeEmitters = GetComponents<ParticleSystem>();
-	for (int i = 0; i < smokeEmitters.Length; i++)
-	{
-	    var emitter = smokeEmitters[i].emission;
-	    emitter.rateOverTime = 0f;
-	}
-        
+        for (int i = 0; i < smokeEmitters.Length; i++)
+        {
+            var emitter = smokeEmitters[i].emission;
+            emitter.rateOverTime = 0f;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-	float headSpeed = launchController.HeadSpeed;
-	bool launchComplete = launchController.GetProgress() >= 100f ? true : false;
-	
+        float headSpeed = launchController.HeadSpeed;
+        bool launchComplete = launchController.GetProgress() >= 100f ? true : false;
 
-	if ( ! launchComplete )
-	{
-	    for (int i = 0; i < smokeEmitters.Length; i++)
-	    {
-	        var emitter = smokeEmitters[i].emission;
-	        emitter.rateOverTime = headSpeed * smokeEmissionScale;
-	    }
-	}
-	else
-	{
-	    for (int i = 0; i < smokeEmitters.Length; i++)
-	    {
-	        var emitter = smokeEmitters[i].emission;
-	        emitter.rateOverTime = 0f;
-	    }
-	}
+        if (!launchComplete)
+        {
+            for (int i = 0; i < smokeEmitters.Length; i++)
+            {
+                var emitter = smokeEmitters[i].emission;
+                emitter.rateOverTime = headSpeed * smokeEmissionScale;
+            }
+        }
+        else
+        {
+            for (int i = 0; i < smokeEmitters.Length; i++)
+            {
+                var emitter = smokeEmitters[i].emission;
+                emitter.rateOverTime = 0f;
+            }
+        }
     }
 }

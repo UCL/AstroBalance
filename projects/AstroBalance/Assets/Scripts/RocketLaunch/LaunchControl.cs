@@ -30,8 +30,13 @@ public class LaunchControl : MonoBehaviour
 
     [SerializeField, Tooltip("The minimum head speed required to reduce the launch timer.")]
     private float minimumSpeed = 20;
-    
-    [SerializeField, Tooltip("A pitch/yaw scale factor, as in general I can shake my head faster than I can nod.")]
+
+    [
+        SerializeField,
+        Tooltip(
+            "A pitch/yaw scale factor, as in general I can shake my head faster than I can nod."
+        )
+    ]
     private float shakeSpeedReduction = 0.5f;
 
     [SerializeField, Tooltip("Launch acceleration factor. Bigger for faster launch.")]
@@ -71,7 +76,9 @@ public class LaunchControl : MonoBehaviour
 
     [
         SerializeField,
-        Tooltip("The maximum number of previous games to retrieve to determine experience based difficulty")
+        Tooltip(
+            "The maximum number of previous games to retrieve to determine experience based difficulty"
+        )
     ]
     private int maxPreviousGames = 100;
 
@@ -110,15 +117,18 @@ public class LaunchControl : MonoBehaviour
 
         SaveData<RocketLaunchData> saveData = new(saveFilename);
 
-        IEnumerable<RocketLaunchData> lastGameData = saveData.GetLastNCompleteGamesData(maxPreviousGames);
+        IEnumerable<RocketLaunchData> lastGameData = saveData.GetLastNCompleteGamesData(
+            maxPreviousGames
+        );
 
-        // Adjust the adaptive difficulty (size of gaze target and time to launch) based on 
-	// how many previous games are in the save games data
+        // Adjust the adaptive difficulty (size of gaze target and time to launch) based on
+        // how many previous games are in the save games data
 
-	adaptiveDifficulty *= ((float)maxPreviousGames + (float)lastGameData.Count())/(float)maxPreviousGames;
+        adaptiveDifficulty *=
+            ((float)maxPreviousGames + (float)lastGameData.Count()) / (float)maxPreviousGames;
         targetObject.GetComponent<SpriteRenderer>().transform.localScale /= adaptiveDifficulty;
-	gazeTolerance /= adaptiveDifficulty;
-	launchTime *= adaptiveDifficulty;
+        gazeTolerance /= adaptiveDifficulty;
+        launchTime *= adaptiveDifficulty;
 
         if (lastGameData.Count() == 0)
         {
@@ -167,7 +177,9 @@ public class LaunchControl : MonoBehaviour
             }
             else
             {
-                headSpeed = (headYawBuffer.getSpeed(speedTime) - headPitchBuffer.getSpeed(speedTime)) * shakeSpeedReduction;
+                headSpeed =
+                    (headYawBuffer.getSpeed(speedTime) - headPitchBuffer.getSpeed(speedTime))
+                    * shakeSpeedReduction;
             }
             headSpeed = Mathf.Max(0, headSpeed); // Clamp to zero to avoid negative speeds
 
@@ -227,6 +239,7 @@ public class LaunchControl : MonoBehaviour
     {
         get => headSpeed;
     }
+
     /// <summary>
     /// Adds latest tracking data to buffers and returns latest gaze information
     /// </summary>
