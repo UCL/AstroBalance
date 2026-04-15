@@ -1,4 +1,0 @@
-<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/UI%20Toolkit/radial-progress-bar/RadialProgress.uss?fileID=7433441132597879392&amp;guid=b2ee9cf45c9388f589983de207acb93f&amp;type=3#RadialProgress" />
-    <MyUILibrary.RadialProgress name="radial-rpgress" progress="80" class="radial-progress" style="position: absolute;" />
-</ui:UXML>
