@@ -10,12 +10,10 @@ using UnityEngine;
 /// </summary>
 public class LaunchControl : MonoBehaviour
 {
-
     [SerializeField, Tooltip("The time (in seconds) required to launch.")]
     private float launchTime = 30;
 
     [Header("Head Movement Variables")]
-
     [SerializeField, Tooltip("The capacity of the head pose buffer to use.")]
     private int headPoseBufferCapacity = 100;
 
@@ -34,7 +32,6 @@ public class LaunchControl : MonoBehaviour
     private float shakeSpeedReduction = 0.5f;
 
     [Header("Steady Gaze Variables")]
-
     [SerializeField, Tooltip("Time between new random numbers in seconds.")]
     private float timerDuration = 1.0F;
 
@@ -51,7 +48,6 @@ public class LaunchControl : MonoBehaviour
     private GameObject targetObject;
 
     [Header("Adaptive Difficulty Variables")]
-
     [
         SerializeField,
         Tooltip(
@@ -67,9 +63,7 @@ public class LaunchControl : MonoBehaviour
     ]
     private float adaptiveDifficulty;
 
-
-    [Header("User Interface Items")] 
-
+    [Header("User Interface Items")]
     [SerializeField, Tooltip("Sprites to display on the countdown.")]
     private List<Sprite> countDownSprites;
 
@@ -78,25 +72,23 @@ public class LaunchControl : MonoBehaviour
 
     [SerializeField, Tooltip("Screen shown upon winning the game")]
     private GameObject winScreen;
-    
+
     [Header("Launch Speed Variables")]
     [SerializeField, Tooltip("Launch acceleration factor. Bigger for faster launch.")]
     private float acceleration = 0.04f;
 
     [Header("Debugging Variables")]
-
     [
         SerializeField,
         Tooltip("Set to true to substitute the mouse for the eye tracker (for debugging purposes)")
     ]
     private bool useMouseForTracker = false;
-    
+
     [SerializeField, Tooltip("An optional status text window for debugging.")]
     private TextMeshProUGUI gazeStatusText;
 
     [SerializeField, Tooltip("An optional status text window for debugging.")]
     private TextMeshProUGUI speedStatusText;
-
 
     private Tracker tracker;
     private float timeToLaunch;
