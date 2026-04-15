@@ -10,17 +10,11 @@ using UnityEngine;
 /// </summary>
 public class LaunchControl : MonoBehaviour
 {
-    Tracker tracker;
 
-    [
-        SerializeField,
-        Tooltip("Set to true to substitute the mouse for the eye tracker (for debugging purposes)")
-    ]
-    private bool useMouseForTracker = false;
-
-    [SerializeField, Tooltip("The time (in seconds) to launch.")]
+    [SerializeField, Tooltip("The time (in seconds) required to launch.")]
     private float launchTime = 30;
-    private float timeToLaunch;
+
+    [Header("Head Movement Variables")]
 
     [SerializeField, Tooltip("The capacity of the head pose buffer to use.")]
     private int headPoseBufferCapacity = 100;
@@ -39,18 +33,10 @@ public class LaunchControl : MonoBehaviour
     ]
     private float shakeSpeedReduction = 0.5f;
 
-    [SerializeField, Tooltip("Launch acceleration factor. Bigger for faster launch.")]
-    private float acceleration = 0.04f;
+    [Header("Steady Gaze Variables")]
 
-    [SerializeField, Tooltip("An optional status text window for debugging.")]
-    private TextMeshProUGUI speedStatusText;
-
-    // options for the gaze elememts
     [SerializeField, Tooltip("Time between new random numbers in seconds.")]
     private float timerDuration = 1.0F;
-
-    [SerializeField, Tooltip("Sprites to display on the countdown.")]
-    private List<Sprite> countDownSprites;
 
     [SerializeField, Tooltip("The capacity of the gaze buffer to use.")]
     private int gazeBufferCapacity = 100;
@@ -61,18 +47,10 @@ public class LaunchControl : MonoBehaviour
     [SerializeField, Tooltip("The tolerance in unity coordinates that gaze needs to stay within.")]
     private float gazeTolerance = 3.0f;
 
-    [SerializeField, Tooltip("An optional status text window for debugging.")]
-    private TextMeshProUGUI gazeStatusText;
-
     [SerializeField, Tooltip("The game object the user is supposed to look at.")]
     private GameObject targetObject;
 
-    [
-        SerializeField,
-        Tooltip("Adaptive difficulty, higher numbers are more difficult"),
-        Range(1, 10)
-    ]
-    private float adaptiveDifficulty;
+    [Header("Adaptive Difficulty Variables")]
 
     [
         SerializeField,
@@ -82,11 +60,46 @@ public class LaunchControl : MonoBehaviour
     ]
     private int maxPreviousGames = 100;
 
+    [
+        SerializeField,
+        Tooltip("Adaptive difficulty, higher numbers are more difficult"),
+        Range(1, 10)
+    ]
+    private float adaptiveDifficulty;
+
+
+    [Header("User Interface Items")] 
+
+    [SerializeField, Tooltip("Sprites to display on the countdown.")]
+    private List<Sprite> countDownSprites;
+
     [SerializeField, Tooltip("A text box for the instructions.")]
     private TextMeshProUGUI instructionsText;
 
     [SerializeField, Tooltip("Screen shown upon winning the game")]
     private GameObject winScreen;
+    
+    [Header("Launch Speed Variables")]
+    [SerializeField, Tooltip("Launch acceleration factor. Bigger for faster launch.")]
+    private float acceleration = 0.04f;
+
+    [Header("Debugging Variables")]
+
+    [
+        SerializeField,
+        Tooltip("Set to true to substitute the mouse for the eye tracker (for debugging purposes)")
+    ]
+    private bool useMouseForTracker = false;
+    
+    [SerializeField, Tooltip("An optional status text window for debugging.")]
+    private TextMeshProUGUI gazeStatusText;
+
+    [SerializeField, Tooltip("An optional status text window for debugging.")]
+    private TextMeshProUGUI speedStatusText;
+
+
+    private Tracker tracker;
+    private float timeToLaunch;
 
     // head speed parameters
     private HeadAngleBuffer headPitchBuffer;
