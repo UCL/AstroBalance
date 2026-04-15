@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 100502615}
   - component: {fileID: 100502617}
   m_Layer: 0
-  m_Name: ground_0
+  m_Name: ground_left_emitter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5904,7 +5904,7 @@ GameObject:
   - component: {fileID: 1213062032}
   - component: {fileID: 1213062031}
   m_Layer: 0
-  m_Name: Gantry_0
+  m_Name: Gantry
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6504,7 +6504,7 @@ GameObject:
   - component: {fileID: 1936186843}
   - component: {fileID: 1936186842}
   m_Layer: 0
-  m_Name: ground_0 (1)
+  m_Name: grounc_right_emitter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
