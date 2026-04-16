@@ -71,7 +71,10 @@ public class SaveData<T>
     /// <summary>
     /// Get data from the last n complete played games.
     /// </summary>
-    /// <param name="nGames">Number of games to retrieve</param>
+/// <summary>
+/// Get a list of data from the last n complete played games (or as many as have been completed). Game data is stored in chronological order, from earliest to latest (most recent game in final position). 
+/// </summary>
+/// <param name="nGames">Maximum number of games to retrieve</param>
     public IEnumerable<T> GetLastNCompleteGamesData(int nGames)
     {
         List<T> lastCompleteGames = new List<T>();
