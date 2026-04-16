@@ -87,7 +87,7 @@ public class SaveData<T>
         // Start from end of file, and find n complete games
         while (lineNo > 0 && lastCompleteGames.Count() < nGames)
         {
-            string line = File.ReadLines(dataPath).ElementAt(lineNo);
+            string line = csvLines.ElementAt(lineNo);
 
             T gameData = CsvToGameData(header, line);
             if (gameData.gameCompleted)
