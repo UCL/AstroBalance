@@ -34,6 +34,12 @@ public class Star : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (other.CompareTag("Star"))
+        {
+            // ignore collisions between stars
+            return;
+        }
+
         if (!gameManager.IsGameActive())
         {
             return;
