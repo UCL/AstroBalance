@@ -71,7 +71,10 @@ public class SaveData<T>
     /// <summary>
     /// Get data from the last n complete played games.
     /// </summary>
-    /// <param name="nGames">Number of games to retrieve</param>
+    /// <summary>
+    /// Get a list of data from the last n complete played games (or as many as have been completed). Game data is stored in chronological order, from earliest to latest (most recent game in final position).
+    /// </summary>
+    /// <param name="nGames">Maximum number of games to retrieve</param>
     public IEnumerable<T> GetLastNCompleteGamesData(int nGames)
     {
         List<T> lastCompleteGames = new List<T>();
@@ -87,7 +90,7 @@ public class SaveData<T>
         // Start from end of file, and find n complete games
         while (lineNo > 0 && lastCompleteGames.Count() < nGames)
         {
-            string line = File.ReadLines(dataPath).ElementAt(lineNo);
+            string line = csvLines.ElementAt(lineNo);
 
             T gameData = CsvToGameData(header, line);
             if (gameData.gameCompleted)
@@ -96,6 +99,8 @@ public class SaveData<T>
             }
             lineNo--;
         }
+
+        lastCompleteGames.Reverse();
 
         return lastCompleteGames;
     }
