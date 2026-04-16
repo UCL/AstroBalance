@@ -5319,7 +5319,7 @@ GameObject:
   - component: {fileID: 891046746}
   - component: {fileID: 891046747}
   m_Layer: 0
-  m_Name: flame_0
+  m_Name: flame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6504,7 +6504,7 @@ GameObject:
   - component: {fileID: 1936186843}
   - component: {fileID: 1936186842}
   m_Layer: 0
-  m_Name: grounc_right_emitter
+  m_Name: ground_right_emitter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11570,7 +11570,7 @@ PrefabInstance:
       objectReference: {fileID: 1147461947}
     - target: {fileID: 8902890511493098178, guid: 00c1b36d25d21214eb8e6df02c079dea, type: 3}
       propertyPath: launchTime
-      value: 30
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8902890511493098178, guid: 00c1b36d25d21214eb8e6df02c079dea, type: 3}
       propertyPath: statusText
@@ -11602,7 +11602,7 @@ PrefabInstance:
       objectReference: {fileID: 1103606206}
     - target: {fileID: 8902890511493098178, guid: 00c1b36d25d21214eb8e6df02c079dea, type: 3}
       propertyPath: adaptiveDifficulty
-      value: 1
+      value: 1.7
       objectReference: {fileID: 0}
     - target: {fileID: 8902890511493098178, guid: 00c1b36d25d21214eb8e6df02c079dea, type: 3}
       propertyPath: useMouseForTracker

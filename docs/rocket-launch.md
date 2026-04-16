@@ -27,3 +27,11 @@ then a timer decrements until launch time is achieved.
   - **Debugging Variables**: Intended for debugging only.
     - Use Mouse For Tracker: Can be used for debugging when no Tobii eye tracker is available.
     - Gaze and Speed Status Text: Text boxes where we can write debugging information to screen.
+
+- **FlameController**: Attached to the flame object, which is a child of the rocker object.
+  - Flicker Amplitude and frequency. At rest the flame will flicker slightly to match the aesthetics of other levels. Amplitude and frequency can be altered.
+  - Flame Speed Scale: The size of the flame will increase as the head speed increases. Increasing the scale will create a bigger flame.
+  - Flame Speed move: As the flame grows we also need to move it down relative to the rocket in order to prevent the flame appearing to come out of the top of the rocket. Faster head speeds or a larger flame speed scale will require a larger value for flame speed move.
+
+- **SmokeController**: Attached to ground left/right emitter.
+  - Smoke Emission Scale: A larger value will increase the amount of smoke emitted for a given head speed.
