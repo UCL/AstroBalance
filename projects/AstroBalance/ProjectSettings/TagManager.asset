@@ -42,3 +42,17 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Flame
+    uniqueID: 1203234187
+    locked: 0
+  - name: Launch Pad
+    uniqueID: 1910169621
+    locked: 0
+  - name: Ship
+    uniqueID: 420106563
+    locked: 0
+  - name: Trackers
+    uniqueID: 3514010023
+    locked: 0
+  m_RenderingLayers:
+  - Default

@@ -10,11 +10,11 @@ public class FlameController : MonoBehaviour
     [SerializeField, Tooltip("Frequency of flame flicker effect")]
     private float flickerFrequency = 18f;
 
-    [SerializeField, Tooltip("Flame scaling factor based on speed."), Range(0.01f, 0.5f)]
-    private float flameSpeedScale = 0.025f;
+    [SerializeField, Tooltip("Flame scaling factor based on speed."), Range(0.001f, 0.1f)]
+    private float flameSpeedScale = 0.0025f;
 
-    [SerializeField, Tooltip("Flame move factor based on speed."), Range(0.2f, 10.0f)]
-    private float flameSpeedMove = 2.0f;
+    [SerializeField, Tooltip("Flame move factor based on speed."), Range(0.002f, 0.20f)]
+    private float flameSpeedMove = 0.02f;
 
     private SpriteRenderer Renderer;
     private Vector3 original_scale;
