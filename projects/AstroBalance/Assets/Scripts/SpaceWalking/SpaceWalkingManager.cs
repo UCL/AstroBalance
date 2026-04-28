@@ -85,10 +85,8 @@ public class SpaceWalkingManager : MonoBehaviour
     /// </summary>
     private void ChooseGameDifficulty()
     {
-        SaveData<SpaceWalkingData> saveData = new(saveFilename);
-        IEnumerable<SpaceWalkingData> lastNGamesData = saveData.GetLastNCompleteGamesData(
-            nGamesToUpgrade
-        );
+        SaveGameData<SpaceWalkingData> saveData = new(saveFilename);
+        IEnumerable<SpaceWalkingData> lastNGamesData = saveData.GetLastNComplete(nGamesToUpgrade);
 
         if (debugHeadTurns)
         {
@@ -231,8 +229,8 @@ public class SpaceWalkingManager : MonoBehaviour
         gameData.headTurnsActive = headTurnsActive;
         gameData.LogEndTime();
 
-        SaveData<SpaceWalkingData> saveData = new(saveFilename);
-        saveData.SaveGameData(gameData);
+        SaveGameData<SpaceWalkingData> saveData = new(saveFilename);
+        saveData.Save(gameData);
     }
 
     private void SetTimeLimit(int limit)

@@ -1,9 +1,8 @@
 using System;
 
 /// <summary>
-/// Base class for all save data.
-/// This represents a single row in the saved csv file.
-/// All values that need to be recorded in ALL save data should go here.
+/// Base class for a save data item (i.e. a single row in the csv file).
+/// All values that need to be recorded across ALL save data should go here.
 /// </summary>
 [System.Serializable]
 public abstract class Data

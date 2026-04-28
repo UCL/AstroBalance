@@ -64,10 +64,8 @@ public class StarSeekManager : MonoBehaviour
     /// </summary>
     private void ChooseGameTimeLimit()
     {
-        SaveData<StarSeekData> saveData = new(saveFilename);
-        IEnumerable<StarSeekData> lastNGamesData = saveData.GetLastNCompleteGamesData(
-            nGamesToUpgrade
-        );
+        SaveGameData<StarSeekData> saveData = new(saveFilename);
+        IEnumerable<StarSeekData> lastNGamesData = saveData.GetLastNComplete(nGamesToUpgrade);
 
         if (lastNGamesData.Count() < nGamesToUpgrade)
         {
@@ -151,8 +149,8 @@ public class StarSeekManager : MonoBehaviour
         gameData.nStarsCollected = score;
         gameData.LogEndTime();
 
-        SaveData<StarSeekData> saveData = new(saveFilename);
-        saveData.SaveGameData(gameData);
+        SaveGameData<StarSeekData> saveData = new(saveFilename);
+        saveData.Save(gameData);
     }
 
     private void SetTimeLimit(int limit)

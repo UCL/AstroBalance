@@ -120,11 +120,9 @@ public class LaunchControl : MonoBehaviour
         winScreen.SetActive(false);
         tracker = FindFirstObjectByType<Tracker>();
 
-        SaveData<RocketLaunchData> saveData = new(saveFilename);
+        SaveGameData<RocketLaunchData> saveData = new(saveFilename);
 
-        IEnumerable<RocketLaunchData> lastGameData = saveData.GetLastNCompleteGamesData(
-            maxPreviousGames
-        );
+        IEnumerable<RocketLaunchData> lastGameData = saveData.GetLastNComplete(maxPreviousGames);
 
         // Adjust the adaptive difficulty (size of gaze target and time to launch) based on
         // how many previous games are in the save games data
@@ -331,8 +329,8 @@ public class LaunchControl : MonoBehaviour
         gameData.launchTimeSeconds = launchTime;
         gameData.LogEndTime();
 
-        SaveData<RocketLaunchData> saveData = new(saveFilename);
-        saveData.SaveGameData(gameData);
+        SaveGameData<RocketLaunchData> saveData = new(saveFilename);
+        saveData.Save(gameData);
     }
 
     private void incrementCountDownCode()

@@ -151,7 +151,7 @@ public class ZeroGravityManager : MonoBehaviour
         gameData.score = score;
         gameData.LogEndTime();
 
-        SaveData<ZeroGravityData> saveData = new(saveFilename);
-        saveData.SaveGameData(gameData);
+        SaveGameData<ZeroGravityData> saveData = new(saveFilename);
+        saveData.Save(gameData);
     }
 }
