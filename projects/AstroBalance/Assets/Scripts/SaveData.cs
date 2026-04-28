@@ -7,15 +7,15 @@ using System.Text;
 using UnityEngine;
 
 /// <summary>
-/// Class to save / load data from multiple game sessions.
+/// Class to save / load data from a csv file.
 /// </summary>
-/// <typeparam name="T">The type of game data (specific to each mini-game)</typeparam>
+/// <typeparam name="T">The type of data</typeparam>
 [System.Serializable]
 public class SaveData<T>
-    where T : GameData, new()
+    where T : Data, new()
 {
-    private bool saveFileExists = false;
-    private string dataPath;
+    protected bool saveFileExists = false;
+    protected string dataPath;
 
     /// <summary>
     /// Create a new Save Data collection. If available, this will
@@ -30,113 +30,107 @@ public class SaveData<T>
     }
 
     /// <summary>
-    /// Add data from a new game session to the save file.
+    /// Add data to the save file.
     /// </summary>
-    /// <param name="gameData">Game data from this session</param>
-    public void SaveGameData(T gameData)
+    /// <param name="data">Data from this session</param>
+    public void Save(T data)
     {
         using (StreamWriter sw = new StreamWriter(dataPath, true))
         {
             if (!saveFileExists)
             {
-                sw.WriteLine(GameDataToCsv(gameData, true));
+                sw.WriteLine(DataToCsv(data, true));
                 saveFileExists = true;
             }
 
-            sw.WriteLine(GameDataToCsv(gameData, false));
+            sw.WriteLine(DataToCsv(data, false));
         }
     }
 
     /// <summary>
-    /// Get data from the last complete played game session.
+    /// Get most recent saved data item (i.e. the last row from the csv file).
     /// </summary>
-    public T GetLastCompleteGameData()
+    public T GetLast()
     {
         if (!saveFileExists)
         {
             return null;
         }
 
-        IEnumerable<T> lastGameData = GetLastNCompleteGamesData(1);
-        if (lastGameData.Count() != 1)
+        IEnumerable<T> last = GetLastN(1);
+        if (last.Count() != 1)
         {
             return null;
         }
         else
         {
-            return lastGameData.ElementAt(0);
+            return last.ElementAt(0);
         }
     }
 
     /// <summary>
-    /// Get data from the last n complete played games.
+    /// Get a list of the last n saved data items (or as many as are available).
+    /// Data is stored in chronological order, from earliest to latest (most recent data in final position).
     /// </summary>
-    /// <summary>
-    /// Get a list of data from the last n complete played games (or as many as have been completed). Game data is stored in chronological order, from earliest to latest (most recent game in final position).
-    /// </summary>
-    /// <param name="nGames">Maximum number of games to retrieve</param>
-    public IEnumerable<T> GetLastNCompleteGamesData(int nGames)
+    /// <param name="nData">Maximum number of data items to retrieve</param>
+    public IEnumerable<T> GetLastN(int nData)
     {
-        List<T> lastCompleteGames = new List<T>();
+        List<T> lastN = new List<T>();
         if (!saveFileExists)
         {
-            return lastCompleteGames;
+            return lastN;
         }
 
         IEnumerable<string> csvLines = File.ReadLines(dataPath);
         string header = csvLines.First();
         int lineNo = csvLines.Count() - 1;
 
-        // Start from end of file, and find n complete games
-        while (lineNo > 0 && lastCompleteGames.Count() < nGames)
+        // Start from end of file, and read last n lines
+        while (lineNo > 0 && lastN.Count() < nData)
         {
             string line = csvLines.ElementAt(lineNo);
 
-            T gameData = CsvToGameData(header, line);
-            if (gameData.gameCompleted)
-            {
-                lastCompleteGames.Add(gameData);
-            }
+            T data = CsvToData(header, line);
+            lastN.Add(data);
             lineNo--;
         }
+        lastN.Reverse();
 
-        lastCompleteGames.Reverse();
-
-        return lastCompleteGames;
+        return lastN;
     }
 
     /// <summary>
-    /// Convert csv header / row into a GameData object.
+    /// Convert csv header / row into a Data object.
     /// </summary>
     /// <param name="csvHeader">Csv header as string (first line of csv file)</param>
     /// <param name="csvRow">Csv row as string</param>
-    /// <returns>GameData object with fields populated by row values</returns>
-    private T CsvToGameData(string csvHeader, string csvRow)
+    /// <returns>Data object with fields populated by row values</returns>
+    protected T CsvToData(string csvHeader, string csvRow)
     {
         string[] headerNames = csvHeader.Split(',');
         string[] values = csvRow.Split(",");
 
-        T gameData = new();
+        T data = new();
         for (int i = 0; i < headerNames.Length; i++)
         {
             FieldInfo field = typeof(T).GetField(headerNames[i]);
-            field.SetValue(gameData, Convert.ChangeType(values[i], field.FieldType));
+            field.SetValue(data, Convert.ChangeType(values[i], field.FieldType));
         }
 
-        return gameData;
+        return data;
     }
 
     /// <summary>
-    /// Convert GameData object to a csv string.
+    /// Convert Data object to a csv string.
     /// </summary>
-    /// <param name="gameData">GameData to convert</param>
+    /// <param name="data">Data to convert</param>
     /// <param name="headerOnly">When true, returns a csv header string (names of fields),
     /// otherwise returns a csv row string (values of fields)</param>
     /// <returns>Csv string</returns>
-    private string GameDataToCsv(T gameData, bool headerOnly)
+    private string DataToCsv(T data, bool headerOnly)
     {
         StringBuilder csvString = new StringBuilder();
-        FieldInfo[] fields = GetFields(gameData);
+        FieldInfo[] fields = GetFields(data);
 
         for (int i = 0; i < fields.Length; i++)
         {
@@ -146,7 +140,7 @@ public class SaveData<T>
             }
             else
             {
-                csvString.Append(fields[i].GetValue(gameData));
+                csvString.Append(fields[i].GetValue(data));
             }
             if (i < fields.Length - 1)
             {
@@ -159,7 +153,7 @@ public class SaveData<T>
 
     /// <summary>
     /// Return info on all public fields.
-    /// Order is: date, startTime, endTime, gameCompleted, then any
+    /// Order is: date, startTime, endTime, then any
     /// other fields in alphabetical order.
     /// </summary>
     private FieldInfo[] GetFields(T gameData)
@@ -173,12 +167,11 @@ public class SaveData<T>
         sortedFields[0] = type.GetField("date");
         sortedFields[1] = type.GetField("startTime");
         sortedFields[2] = type.GetField("endTime");
-        sortedFields[3] = type.GetField("gameCompleted");
 
         // Then, all other fields sorted in alphabetical order
         Array.Sort(fields, (x, y) => String.Compare(x.Name, y.Name));
 
-        int nextIndex = 4;
+        int nextIndex = 3;
         foreach (FieldInfo field in fields)
         {
             if (!sortedFields.Contains(field))

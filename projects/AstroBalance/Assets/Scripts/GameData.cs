@@ -5,21 +5,7 @@ using System;
 /// All values that need to be recorded across ALL mini-games should go here.
 /// </summary>
 [System.Serializable]
-public abstract class GameData
+public abstract class GameData : Data
 {
-    public string date;
-    public string startTime;
-    public string endTime;
     public bool gameCompleted = false;
-
-    public GameData()
-    {
-        date = DateTime.Now.ToString("yyyy-MM-dd");
-        startTime = DateTime.Now.ToString("HH:mm:ss");
-    }
-
-    public void LogEndTime()
-    {
-        endTime = DateTime.Now.ToString("HH:mm:ss");
-    }
 }
