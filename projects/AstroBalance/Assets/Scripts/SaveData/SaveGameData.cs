@@ -1,10 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using UnityEngine;
 
 /// <summary>
 /// Class to save / load data from multiple game sessions.
