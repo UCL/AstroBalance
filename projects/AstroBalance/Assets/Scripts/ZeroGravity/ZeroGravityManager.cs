@@ -153,5 +153,7 @@ public class ZeroGravityManager : MonoBehaviour
 
         SaveGameData<ZeroGravityData> saveData = new(saveFilename);
         saveData.Save(gameData);
+
+        CaptureSessionData.MarkGameAsPlayed("zeroGravity");
     }
 }

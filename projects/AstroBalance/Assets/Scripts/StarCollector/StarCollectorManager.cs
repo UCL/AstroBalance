@@ -237,5 +237,7 @@ public class StarCollectorManager : MonoBehaviour
 
         SaveGameData<StarCollectorData> saveData = new(saveFilename);
         saveData.Save(gameData);
+
+        CaptureSessionData.MarkGameAsPlayed("starCollector");
     }
 }

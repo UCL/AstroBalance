@@ -151,6 +151,8 @@ public class StarSeekManager : MonoBehaviour
 
         SaveGameData<StarSeekData> saveData = new(saveFilename);
         saveData.Save(gameData);
+
+        CaptureSessionData.MarkGameAsPlayed("starSeek");
     }
 
     private void SetTimeLimit(int limit)

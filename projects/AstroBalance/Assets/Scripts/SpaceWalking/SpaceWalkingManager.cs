@@ -231,6 +231,8 @@ public class SpaceWalkingManager : MonoBehaviour
 
         SaveGameData<SpaceWalkingData> saveData = new(saveFilename);
         saveData.Save(gameData);
+
+        CaptureSessionData.MarkGameAsPlayed("spaceWalking");
     }
 
     private void SetTimeLimit(int limit)
