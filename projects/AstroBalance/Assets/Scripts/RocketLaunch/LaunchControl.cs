@@ -324,6 +324,7 @@ public class LaunchControl : MonoBehaviour
 
     private void SaveGameData()
     {
+        // Update save data for this game
         gameData.gameCompleted = true;
         gameData.pitch = usePitch;
         gameData.launchTimeSeconds = launchTime;
@@ -332,7 +333,8 @@ public class LaunchControl : MonoBehaviour
         SaveGameData<RocketLaunchData> saveData = new(saveFilename);
         saveData.Save(gameData);
 
-        CaptureSessionData.MarkGameAsPlayed("rocketLaunch");
+        // Update save data for this session
+        CaptureSessionData.MarkGameAsPlayed("game1RocketLaunchPlayed");
     }
 
     private void incrementCountDownCode()

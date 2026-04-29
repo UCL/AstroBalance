@@ -147,6 +147,7 @@ public class ZeroGravityManager : MonoBehaviour
 
     private void SaveGameData()
     {
+        // Update save data for this game
         gameData.gameCompleted = true;
         gameData.score = score;
         gameData.LogEndTime();
@@ -154,6 +155,7 @@ public class ZeroGravityManager : MonoBehaviour
         SaveGameData<ZeroGravityData> saveData = new(saveFilename);
         saveData.Save(gameData);
 
-        CaptureSessionData.MarkGameAsPlayed("zeroGravity");
+        // Update save data for this session
+        CaptureSessionData.MarkGameAsPlayed("game6ZeroGravityPlayed");
     }
 }

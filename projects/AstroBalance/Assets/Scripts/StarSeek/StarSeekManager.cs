@@ -144,6 +144,7 @@ public class StarSeekManager : MonoBehaviour
 
     private void SaveGameData()
     {
+        // Update save data for this game
         gameData.gameCompleted = true;
         gameData.timeLimitSeconds = timeLimit;
         gameData.nStarsCollected = score;
@@ -152,7 +153,8 @@ public class StarSeekManager : MonoBehaviour
         SaveGameData<StarSeekData> saveData = new(saveFilename);
         saveData.Save(gameData);
 
-        CaptureSessionData.MarkGameAsPlayed("starSeek");
+        // Update save data for this session
+        CaptureSessionData.MarkGameAsPlayed("game3StarSeekPlayed");
     }
 
     private void SetTimeLimit(int limit)

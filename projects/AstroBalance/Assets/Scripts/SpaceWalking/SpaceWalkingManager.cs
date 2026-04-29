@@ -223,6 +223,7 @@ public class SpaceWalkingManager : MonoBehaviour
 
     private void SaveGameData()
     {
+        // Update save data for this game
         gameData.gameCompleted = true;
         gameData.timeLimitSeconds = timeLimit;
         gameData.nCompleteSteps = score;
@@ -232,7 +233,8 @@ public class SpaceWalkingManager : MonoBehaviour
         SaveGameData<SpaceWalkingData> saveData = new(saveFilename);
         saveData.Save(gameData);
 
-        CaptureSessionData.MarkGameAsPlayed("spaceWalking");
+        // Update save data for this session
+        CaptureSessionData.MarkGameAsPlayed("game5SpaceWalkPlayed");
     }
 
     private void SetTimeLimit(int limit)

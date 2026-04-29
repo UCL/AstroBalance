@@ -172,6 +172,7 @@ public class StarMapManager : MonoBehaviour
 
     private void SaveGameData()
     {
+        // Update save data for this game
         gameData.gameCompleted = true;
         gameData.nSequencesRepeated = nSequencesRepeated;
         gameData.maxSequenceLength = maxSequenceLength;
@@ -182,6 +183,7 @@ public class StarMapManager : MonoBehaviour
         SaveGameData<StarMapData> saveData = new(saveFilename);
         saveData.Save(gameData);
 
-        CaptureSessionData.MarkGameAsPlayed("starMap");
+        // Update save data for this session
+        CaptureSessionData.MarkGameAsPlayed("game4StarMapPlayed");
     }
 }

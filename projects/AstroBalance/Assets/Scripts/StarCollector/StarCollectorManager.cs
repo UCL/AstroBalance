@@ -229,6 +229,7 @@ public class StarCollectorManager : MonoBehaviour
         float totalStars = score + missed;
         float percentCollected = ((float)score / totalStars) * 100;
 
+        // Update save data for this game
         gameData.gameCompleted = true;
         gameData.timeLimitSeconds = timeLimit;
         gameData.nStarsCollected = score;
@@ -238,6 +239,7 @@ public class StarCollectorManager : MonoBehaviour
         SaveGameData<StarCollectorData> saveData = new(saveFilename);
         saveData.Save(gameData);
 
-        CaptureSessionData.MarkGameAsPlayed("starCollector");
+        // Update save data for this session
+        CaptureSessionData.MarkGameAsPlayed("game2StarCollectorPlayed");
     }
 }
