@@ -48,6 +48,22 @@ public class SaveData<T>
     }
 
     /// <summary>
+    /// Overwrite the last (most recent) item in the save file.
+    /// </summary>
+    /// <param name="data">Data to overwrite with</param>
+    public void Overwrite(T data)
+    {
+        if (!saveFileExists)
+        {
+            throw new InvalidOperationException("Can't overwrite file that doesn't exit");
+        }
+
+        List<string> csvLines = File.ReadLines(dataPath).ToList();
+        csvLines[csvLines.Count() - 1] = DataToCsv(data, false);
+        File.WriteAllLines(dataPath, csvLines);
+    }
+
+    /// <summary>
     /// Get most recent saved data item (i.e. the last row from the csv file).
     /// </summary>
     public T GetLast()
