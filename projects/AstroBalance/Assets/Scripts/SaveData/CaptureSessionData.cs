@@ -6,6 +6,9 @@ public class CaptureSessionData : MonoBehaviour
 {
     private static readonly string saveFilename = "sessionSummary";
 
+    /// <summary>
+    /// Create a new SessionData entry when the application is opened.
+    /// </summary>
     void Start()
     {
         SaveData<SessionData> sessionData = new(saveFilename);
@@ -27,6 +30,9 @@ public class CaptureSessionData : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Record the session end time / duration when the application is closed.
+    /// </summary>
     private void OnApplicationQuit()
     {
         SaveData<SessionData> sessionData = new(saveFilename);
