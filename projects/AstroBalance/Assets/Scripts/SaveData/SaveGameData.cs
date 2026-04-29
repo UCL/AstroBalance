@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 
 /// <summary>
-/// Class to save / load data from multiple game sessions.
+/// Class to save / load data from a particular mini-game.
 /// </summary>
 /// <typeparam name="T">The type of game data (specific to each mini-game)</typeparam>
 [System.Serializable]
