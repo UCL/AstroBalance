@@ -6,7 +6,6 @@ using System.Linq;
 [System.Serializable]
 public class SessionData : Data
 {
-    public int sessionNumber;
     public int totalSessionDurationMinutes;
     public bool game1RocketLaunchPlayed = false;
     public bool game2StarCollectorPlayed = false;

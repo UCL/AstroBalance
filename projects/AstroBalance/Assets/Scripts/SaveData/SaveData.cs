@@ -169,7 +169,7 @@ public class SaveData<T>
 
     /// <summary>
     /// Return info on all public fields.
-    /// Order is: date, startTime, endTime, then any
+    /// Order is: sessionNumber, sessionDate, sessionStartTime, sessionEndTime, then any
     /// other fields in alphabetical order.
     /// </summary>
     private FieldInfo[] GetFields(T data)
@@ -178,16 +178,17 @@ public class SaveData<T>
         FieldInfo[] fields = type.GetFields();
         FieldInfo[] sortedFields = new FieldInfo[fields.Length];
 
-        // We return date, startTime, endTime, first (as this is general data
+        // We return session number, date, startTime, endTime first (as this is general data
         // for all save files, and useful to have at the start of the csv)
-        sortedFields[0] = type.GetField("date");
-        sortedFields[1] = type.GetField("startTime");
-        sortedFields[2] = type.GetField("endTime");
+        sortedFields[0] = type.GetField("sessionNumber");
+        sortedFields[1] = type.GetField("sessionDate");
+        sortedFields[2] = type.GetField("sessionStartTime");
+        sortedFields[3] = type.GetField("sessionEndTime");
 
         // Then, all other fields sorted in alphabetical order
         Array.Sort(fields, (x, y) => String.Compare(x.Name, y.Name));
 
-        int nextIndex = 3;
+        int nextIndex = 4;
         foreach (FieldInfo field in fields)
         {
             if (!sortedFields.Contains(field))
