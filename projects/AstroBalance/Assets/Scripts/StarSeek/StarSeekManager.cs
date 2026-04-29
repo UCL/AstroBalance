@@ -168,8 +168,10 @@ public class StarSeekManager : MonoBehaviour
             gameData.gameDurationSeconds = timeLimit;
         }
 
-        gameData.nStarsCollected = score;
         gameData.LogEndTime();
+        gameData.nStarsCollected = score;
+        gameData.adaptiveLevel =
+            1 + Mathf.CeilToInt((timeLimit - minTimeLimit) / timeLimitIncrement);
 
         SaveGameData<StarSeekData> saveData = new(saveFilename);
         gameData.sessionNumber = saveData.GetNextSessionNumber();
