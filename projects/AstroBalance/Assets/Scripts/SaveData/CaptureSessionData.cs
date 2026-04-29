@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CaptureSessionData : MonoBehaviour
 {
-    private static readonly string saveFilename = "sessionSummary";
+    private static readonly string saveFilename = "SessionSummary";
 
     /// <summary>
     /// Create a new SessionData entry when the application is opened.
