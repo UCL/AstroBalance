@@ -5,5 +5,6 @@
 public class StarSeekData : GameData
 {
     public int timeLimitSeconds;
+    public int gameDurationSeconds;
     public int nStarsCollected;
 }

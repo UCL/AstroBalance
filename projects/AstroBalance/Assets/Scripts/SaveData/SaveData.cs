@@ -116,6 +116,25 @@ public class SaveData<T>
     }
 
     /// <summary>
+    /// Get next available session number.
+    /// </summary>
+    public int GetNextSessionNumber()
+    {
+        T lastSession = GetLast();
+        int nextNumber;
+        if (lastSession is not null)
+        {
+            nextNumber = lastSession.sessionNumber + 1;
+        }
+        else
+        {
+            nextNumber = 1;
+        }
+
+        return nextNumber;
+    }
+
+    /// <summary>
     /// Convert csv header / row into a Data object.
     /// </summary>
     /// <param name="csvHeader">Csv header as string (first line of csv file)</param>
