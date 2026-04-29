@@ -181,5 +181,7 @@ public class StarMapManager : MonoBehaviour
 
         SaveGameData<StarMapData> saveData = new(saveFilename);
         saveData.Save(gameData);
+
+        CaptureSessionData.MarkGameAsPlayed("starMap");
     }
 }

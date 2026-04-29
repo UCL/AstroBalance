@@ -1,12 +1,13 @@
+using System;
+using System.Reflection;
 using UnityEngine;
 
 public class CaptureSessionData : MonoBehaviour
 {
-    private string saveFilename = "sessionSummary";
+    private static readonly string saveFilename = "sessionSummary";
 
     void Start()
     {
-        Debug.Log("running session start");
         SaveData<SessionData> sessionData = new(saveFilename);
         SessionData lastSession = sessionData.GetLast();
 
@@ -34,6 +35,30 @@ public class CaptureSessionData : MonoBehaviour
         if (lastSession.endTime == "")
         {
             lastSession.LogEndTime();
+            TimeSpan sessionDuration = DateTime
+                .Parse(lastSession.endTime)
+                .Subtract(DateTime.Parse(lastSession.startTime));
+            lastSession.totalSessionDurationMinutes = sessionDuration.Minutes;
+            sessionData.Overwrite(lastSession);
+        }
+    }
+
+    /// <summary>
+    /// Mark a given game as played in this session's data
+    /// </summary>
+    /// <param name="gameName">Game name in camel case e.g. starMap</param>
+    public static void MarkGameAsPlayed(string gameName)
+    {
+        SaveData<SessionData> sessionData = new(saveFilename);
+        SessionData lastSession = sessionData.GetLast();
+
+        FieldInfo gamePlayedField = lastSession.GetType().GetField(gameName + "Played");
+        bool gamePlayed = (bool)gamePlayedField.GetValue(lastSession);
+
+        if (gamePlayed == false)
+        {
+            gamePlayedField.SetValue(lastSession, true);
+            lastSession.totalGamesPlayed += 1;
             sessionData.Overwrite(lastSession);
         }
     }

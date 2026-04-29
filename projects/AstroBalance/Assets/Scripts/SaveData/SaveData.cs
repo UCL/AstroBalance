@@ -172,14 +172,14 @@ public class SaveData<T>
     /// Order is: date, startTime, endTime, then any
     /// other fields in alphabetical order.
     /// </summary>
-    private FieldInfo[] GetFields(T gameData)
+    private FieldInfo[] GetFields(T data)
     {
-        Type type = gameData.GetType();
+        Type type = data.GetType();
         FieldInfo[] fields = type.GetFields();
         FieldInfo[] sortedFields = new FieldInfo[fields.Length];
 
-        // We return date, startTime, endTime, gameCompleted first (as this is general data
-        // for all games, and useful to have at the start of the csv)
+        // We return date, startTime, endTime, first (as this is general data
+        // for all save files, and useful to have at the start of the csv)
         sortedFields[0] = type.GetField("date");
         sortedFields[1] = type.GetField("startTime");
         sortedFields[2] = type.GetField("endTime");
