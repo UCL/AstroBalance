@@ -263,12 +263,20 @@ public class SpaceWalkingManager : MonoBehaviour
             gameData.gameDurationSeconds = timeLimit;
         }
 
+        gameData.LogEndTime();
         gameData.nCompleteSteps = stepScore;
         gameData.headTurnsActive = headTurnsActive;
         gameData.nCompleteHeadTurns = headTurnScore;
-        gameData.LogEndTime();
+
+        int adaptiveLevel = 1 + Mathf.CeilToInt((timeLimit - minTimeLimit) / timeLimitIncrement);
+        if (timeLimit == maxTimeLimit && headTurnsActive)
+        {
+            adaptiveLevel += 1;
+        }
+        gameData.adaptiveLevel = adaptiveLevel;
 
         SaveGameData<SpaceWalkingData> saveData = new(saveFilename);
+        gameData.sessionNumber = saveData.GetNextSessionNumber();
         saveData.Save(gameData);
 
         // Update save data for this session
