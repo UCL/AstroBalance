@@ -62,7 +62,8 @@ public class SpaceWalkingManager : MonoBehaviour
 
     private TextMeshProUGUI winText;
     private bool gameActive = true;
-    private int score = 0;
+    private int stepScore = 0;
+    private int headTurnScore = 0;
     private int timeLimit;
     private SpaceWalkingData gameData;
     private string saveFilename = "SpaceWalkingScores";
@@ -188,19 +189,34 @@ public class SpaceWalkingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Increase score (successfully completed steps) by one,
+    /// Increase successfully completed steps by one,
     /// then try to start a head turn sequence.
     /// </summary>
-    public void UpdateScore()
+    public void UpdateStepScore()
     {
         if (!gameActive)
         {
             return;
         }
 
-        score += 1;
-        scoreText.text = score.ToString();
+        stepScore += 1;
+        scoreText.text = stepScore.ToString();
         HeadTurn();
+    }
+
+    /// <summary>
+    /// Increase successfully completed head turns by one,
+    /// then activate the next tile.
+    /// </summary>
+    public void UpdateHeadTurnScore()
+    {
+        if (!gameActive || !headTurnsActive)
+        {
+            return;
+        }
+
+        headTurnScore += 1;
+        NextTile();
     }
 
     public bool IsGameActive()
@@ -215,26 +231,59 @@ public class SpaceWalkingManager : MonoBehaviour
             gameActive = false;
 
             headTurnScreen.gameObject.SetActive(false);
-            winText.text = "Congratulations! \n \n You completed " + score + " steps";
+            winText.text = "Congratulations! \n \n You completed " + stepScore + " steps";
             winScreen.SetActive(true);
-            SaveGameData();
+            SaveGameData(true);
         }
     }
 
-    private void SaveGameData()
+    private void OnDestroy()
+    {
+        // If the scene is exited early (e.g. with the exit button), then save this
+        // partial game's data
+        if (gameActive)
+        {
+            SaveGameData(false);
+        }
+    }
+
+    private void SaveGameData(bool gameComplete)
     {
         // Update save data for this game
-        gameData.gameCompleted = true;
+        gameData.gameCompleted = gameComplete;
         gameData.timeLimitSeconds = timeLimit;
-        gameData.nCompleteSteps = score;
-        gameData.headTurnsActive = headTurnsActive;
+
+        float remainingTime = timer.GetTimeRemaining();
+        if (remainingTime > 0)
+        {
+            gameData.gameDurationSeconds = Mathf.FloorToInt(timeLimit - remainingTime + 0.5f);
+        }
+        else
+        {
+            gameData.gameDurationSeconds = timeLimit;
+        }
+
         gameData.LogEndTime();
+        gameData.nCompleteSteps = stepScore;
+        gameData.headTurnsActive = headTurnsActive;
+        gameData.nCompleteHeadTurns = headTurnScore;
+
+        int adaptiveLevel = 1 + Mathf.CeilToInt((timeLimit - minTimeLimit) / timeLimitIncrement);
+        if (timeLimit == maxTimeLimit && headTurnsActive)
+        {
+            adaptiveLevel += 1;
+        }
+        gameData.adaptiveLevel = adaptiveLevel;
 
         SaveGameData<SpaceWalkingData> saveData = new(saveFilename);
+        gameData.sessionNumber = saveData.GetNextSessionNumber();
         saveData.Save(gameData);
 
         // Update save data for this session
-        CaptureSessionData.MarkGameAsComplete("nCompleteSpaceWalkGames");
+        if (gameComplete)
+        {
+            CaptureSessionData.MarkGameAsComplete("nCompleteSpaceWalkGames");
+        }
     }
 
     private void SetTimeLimit(int limit)

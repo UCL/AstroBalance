@@ -138,23 +138,50 @@ public class StarSeekManager : MonoBehaviour
 
             winText.text = "Congratulations! \n \n You collected " + score + " stars";
             winScreen.SetActive(true);
-            SaveGameData();
+            SaveGameData(true);
         }
     }
 
-    private void SaveGameData()
+    private void OnDestroy()
+    {
+        // If the scene is exited early (e.g. with the exit button), then save this
+        // partial game's data
+        if (gameActive)
+        {
+            SaveGameData(false);
+        }
+    }
+
+    private void SaveGameData(bool gameComplete)
     {
         // Update save data for this game
-        gameData.gameCompleted = true;
+        gameData.gameCompleted = gameComplete;
         gameData.timeLimitSeconds = timeLimit;
-        gameData.nStarsCollected = score;
+
+        float remainingTime = timer.GetTimeRemaining();
+        if (remainingTime > 0)
+        {
+            gameData.gameDurationSeconds = Mathf.FloorToInt(timeLimit - remainingTime + 0.5f);
+        }
+        else
+        {
+            gameData.gameDurationSeconds = timeLimit;
+        }
+
         gameData.LogEndTime();
+        gameData.nStarsCollected = score;
+        gameData.adaptiveLevel =
+            1 + Mathf.CeilToInt((timeLimit - minTimeLimit) / timeLimitIncrement);
 
         SaveGameData<StarSeekData> saveData = new(saveFilename);
+        gameData.sessionNumber = saveData.GetNextSessionNumber();
         saveData.Save(gameData);
 
         // Update save data for this session
-        CaptureSessionData.MarkGameAsComplete("nCompleteStarSeekGames");
+        if (gameComplete)
+        {
+            CaptureSessionData.MarkGameAsComplete("nCompleteStarSeekGames");
+        }
     }
 
     private void SetTimeLimit(int limit)

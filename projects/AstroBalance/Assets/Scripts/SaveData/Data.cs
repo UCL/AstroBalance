@@ -7,18 +7,19 @@ using System;
 [System.Serializable]
 public abstract class Data
 {
-    public string date;
-    public string startTime;
-    public string endTime;
+    public int sessionNumber = 1;
+    public string sessionDate;
+    public string sessionStartTime;
+    public string sessionEndTime;
 
     public Data()
     {
-        date = DateTime.Now.ToString("yyyy-MM-dd");
-        startTime = DateTime.Now.ToString("HH:mm:ss");
+        sessionDate = DateTime.Now.ToString("yyyy-MM-dd");
+        sessionStartTime = DateTime.Now.ToString("HH:mm:ss");
     }
 
     public void LogEndTime()
     {
-        endTime = DateTime.Now.ToString("HH:mm:ss");
+        sessionEndTime = DateTime.Now.ToString("HH:mm:ss");
     }
 }

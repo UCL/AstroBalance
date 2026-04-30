@@ -12,7 +12,9 @@ You may need to [download the drivers](https://www.gaming.tobii.com/getstarted/)
 
 ## Documentation
 
-Documentation for each mini-game is provided under [`docs/`](/docs/), focusing on how to edit important values during play testing.
+Documentation for each mini-game is provided under [`docs/`](/docs/) covering:
+- how to edit important values during play testing.
+- the save data each mini-game produces
 
 ## Developing
 

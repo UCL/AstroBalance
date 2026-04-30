@@ -21,7 +21,7 @@ public class CaptureSessionData : MonoBehaviour
             newSession.sessionNumber = 1;
             sessionData.Save(newSession);
         }
-        else if (lastSession.endTime != "")
+        else if (lastSession.sessionEndTime != "")
         {
             // The last session has ended, so create a new one
             SessionData newSession = new SessionData();
@@ -38,12 +38,12 @@ public class CaptureSessionData : MonoBehaviour
         SaveData<SessionData> sessionData = new(saveFilename);
         SessionData lastSession = sessionData.GetLast();
 
-        if (lastSession.endTime == "")
+        if (lastSession.sessionEndTime == "")
         {
             lastSession.LogEndTime();
             TimeSpan sessionDuration = DateTime
-                .Parse(lastSession.endTime)
-                .Subtract(DateTime.Parse(lastSession.startTime));
+                .Parse(lastSession.sessionEndTime)
+                .Subtract(DateTime.Parse(lastSession.sessionStartTime));
             lastSession.totalSessionDuration = sessionDuration.ToString(@"hh\:mm\:ss");
             sessionData.Overwrite(lastSession);
         }

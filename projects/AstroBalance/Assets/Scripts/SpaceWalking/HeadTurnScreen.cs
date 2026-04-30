@@ -30,7 +30,7 @@ public class HeadTurnScreen : MonoBehaviour
         {
             arrowActive = false;
             gameObject.SetActive(false);
-            gameManager.NextTile();
+            gameManager.UpdateHeadTurnScore();
         }
     }
 
