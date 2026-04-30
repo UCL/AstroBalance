@@ -156,6 +156,6 @@ public class ZeroGravityManager : MonoBehaviour
         saveData.Save(gameData);
 
         // Update save data for this session
-        CaptureSessionData.MarkGameAsPlayed("game6ZeroGravityPlayed");
+        CaptureSessionData.MarkGameAsComplete("nCompleteZeroGravityGames");
     }
 }

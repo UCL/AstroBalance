@@ -180,7 +180,7 @@ public class StarSeekManager : MonoBehaviour
         // Update save data for this session
         if (gameComplete)
         {
-            CaptureSessionData.MarkGameAsPlayed("game3StarSeekPlayed");
+            CaptureSessionData.MarkGameAsComplete("nCompleteStarSeekGames");
         }
     }
 

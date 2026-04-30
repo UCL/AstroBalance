@@ -282,7 +282,7 @@ public class SpaceWalkingManager : MonoBehaviour
         // Update save data for this session
         if (gameComplete)
         {
-            CaptureSessionData.MarkGameAsPlayed("game5SpaceWalkPlayed");
+            CaptureSessionData.MarkGameAsComplete("nCompleteSpaceWalkGames");
         }
     }
 
