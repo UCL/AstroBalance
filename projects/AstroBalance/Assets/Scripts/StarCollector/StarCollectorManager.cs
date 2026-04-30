@@ -81,10 +81,8 @@ public class StarCollectorManager : MonoBehaviour
     /// </summary>
     private void ChooseGameTimeLimit()
     {
-        SaveData<StarCollectorData> saveData = new(saveFilename);
-        IEnumerable<StarCollectorData> lastNGamesData = saveData.GetLastNCompleteGamesData(
-            nGamesToUpgrade
-        );
+        SaveGameData<StarCollectorData> saveData = new(saveFilename);
+        IEnumerable<StarCollectorData> lastNGamesData = saveData.GetLastNComplete(nGamesToUpgrade);
 
         if (lastNGamesData.Count() < nGamesToUpgrade)
         {
@@ -231,13 +229,17 @@ public class StarCollectorManager : MonoBehaviour
         float totalStars = score + missed;
         float percentCollected = ((float)score / totalStars) * 100;
 
+        // Update save data for this game
         gameData.gameCompleted = true;
         gameData.timeLimitSeconds = timeLimit;
         gameData.nStarsCollected = score;
         gameData.percentStarsCollected = percentCollected;
         gameData.LogEndTime();
 
-        SaveData<StarCollectorData> saveData = new(saveFilename);
-        saveData.SaveGameData(gameData);
+        SaveGameData<StarCollectorData> saveData = new(saveFilename);
+        saveData.Save(gameData);
+
+        // Update save data for this session
+        CaptureSessionData.MarkGameAsComplete("nCompleteStarCollectorGames");
     }
 }
