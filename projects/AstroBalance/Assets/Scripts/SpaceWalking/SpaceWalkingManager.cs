@@ -62,7 +62,8 @@ public class SpaceWalkingManager : MonoBehaviour
 
     private TextMeshProUGUI winText;
     private bool gameActive = true;
-    private int score = 0;
+    private int stepScore = 0;
+    private int headTurnScore = 0;
     private int timeLimit;
     private SpaceWalkingData gameData;
     private string saveFilename = "SpaceWalkingScores";
@@ -188,19 +189,34 @@ public class SpaceWalkingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Increase score (successfully completed steps) by one,
+    /// Increase successfully completed steps by one,
     /// then try to start a head turn sequence.
     /// </summary>
-    public void UpdateScore()
+    public void UpdateStepScore()
     {
         if (!gameActive)
         {
             return;
         }
 
-        score += 1;
-        scoreText.text = score.ToString();
+        stepScore += 1;
+        scoreText.text = stepScore.ToString();
         HeadTurn();
+    }
+
+    /// <summary>
+    /// Increase successfully completed head turns by one,
+    /// then activate the next tile.
+    /// </summary>
+    public void UpdateHeadTurnScore()
+    {
+        if (!gameActive || !headTurnsActive)
+        {
+            return;
+        }
+
+        headTurnScore += 1;
+        NextTile();
     }
 
     public bool IsGameActive()
@@ -215,7 +231,7 @@ public class SpaceWalkingManager : MonoBehaviour
             gameActive = false;
 
             headTurnScreen.gameObject.SetActive(false);
-            winText.text = "Congratulations! \n \n You completed " + score + " steps";
+            winText.text = "Congratulations! \n \n You completed " + stepScore + " steps";
             winScreen.SetActive(true);
             SaveGameData(true);
         }
@@ -247,8 +263,9 @@ public class SpaceWalkingManager : MonoBehaviour
             gameData.gameDurationSeconds = timeLimit;
         }
 
-        gameData.nCompleteSteps = score;
+        gameData.nCompleteSteps = stepScore;
         gameData.headTurnsActive = headTurnsActive;
+        gameData.nCompleteHeadTurns = headTurnScore;
         gameData.LogEndTime();
 
         SaveGameData<SpaceWalkingData> saveData = new(saveFilename);
