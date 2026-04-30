@@ -44,7 +44,7 @@ public class CaptureSessionData : MonoBehaviour
             TimeSpan sessionDuration = DateTime
                 .Parse(lastSession.endTime)
                 .Subtract(DateTime.Parse(lastSession.startTime));
-            lastSession.totalSessionDurationMinutes = sessionDuration.Minutes;
+            lastSession.totalSessionDuration = sessionDuration.ToString(@"hh\:mm\:ss");
             sessionData.Overwrite(lastSession);
         }
     }

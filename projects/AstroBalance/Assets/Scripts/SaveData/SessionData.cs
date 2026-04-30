@@ -7,7 +7,7 @@ using System.Linq;
 public class SessionData : Data
 {
     public int sessionNumber;
-    public int totalSessionDurationMinutes;
+    public string totalSessionDuration;
     public bool game1RocketLaunchPlayed = false;
     public bool game2StarCollectorPlayed = false;
     public bool game3StarSeekPlayed = false;
