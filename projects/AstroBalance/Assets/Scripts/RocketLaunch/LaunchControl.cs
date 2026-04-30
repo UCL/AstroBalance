@@ -334,7 +334,7 @@ public class LaunchControl : MonoBehaviour
         saveData.Save(gameData);
 
         // Update save data for this session
-        CaptureSessionData.MarkGameAsPlayed("game1RocketLaunchPlayed");
+        CaptureSessionData.MarkGameAsComplete("nCompleteRocketLaunchGames");
     }
 
     private void incrementCountDownCode()

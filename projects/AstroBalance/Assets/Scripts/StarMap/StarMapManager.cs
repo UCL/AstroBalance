@@ -184,6 +184,6 @@ public class StarMapManager : MonoBehaviour
         saveData.Save(gameData);
 
         // Update save data for this session
-        CaptureSessionData.MarkGameAsPlayed("game4StarMapPlayed");
+        CaptureSessionData.MarkGameAsComplete("nCompleteStarMapGames");
     }
 }

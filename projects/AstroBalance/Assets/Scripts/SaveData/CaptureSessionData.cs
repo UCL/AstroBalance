@@ -50,22 +50,19 @@ public class CaptureSessionData : MonoBehaviour
     }
 
     /// <summary>
-    /// Mark a given game as played in this session's data
+    /// Mark a given game as complete in this session's data
     /// </summary>
-    /// <param name="gameColumn">Name of relevant column e.g. game1RocketLaunchPlayed</param>
-    public static void MarkGameAsPlayed(string gameColumn)
+    /// <param name="gameColumn">Name of relevant column e.g. nCompleteRocketLaunchGames</param>
+    public static void MarkGameAsComplete(string gameColumn)
     {
         SaveData<SessionData> sessionData = new(saveFilename);
         SessionData lastSession = sessionData.GetLast();
 
-        FieldInfo gamePlayedField = lastSession.GetType().GetField(gameColumn);
-        bool gamePlayed = (bool)gamePlayedField.GetValue(lastSession);
+        FieldInfo nGamesField = lastSession.GetType().GetField(gameColumn);
+        int nGames = (int)nGamesField.GetValue(lastSession);
 
-        if (gamePlayed == false)
-        {
-            gamePlayedField.SetValue(lastSession, true);
-            lastSession.UpdateTotalGamesPlayed();
-            sessionData.Overwrite(lastSession);
-        }
+        nGamesField.SetValue(lastSession, nGames + 1);
+        lastSession.UpdateTotalCompleteGames();
+        sessionData.Overwrite(lastSession);
     }
 }

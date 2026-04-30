@@ -240,6 +240,6 @@ public class StarCollectorManager : MonoBehaviour
         saveData.Save(gameData);
 
         // Update save data for this session
-        CaptureSessionData.MarkGameAsPlayed("game2StarCollectorPlayed");
+        CaptureSessionData.MarkGameAsComplete("nCompleteStarCollectorGames");
     }
 }
