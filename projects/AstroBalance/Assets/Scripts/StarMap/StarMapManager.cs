@@ -247,8 +247,16 @@ public class StarMapManager : MonoBehaviour
             trialData.gameCompleted = gameComplete;
             trialData.nSequencesRepeated = nCorrectSequences;
             trialData.maxSequenceLength = maxCorrectSequenceLength;
-            trialData.repeatOrder = chosenOrder.ToString();
             trialData.constellationSize = constellationSize.ToString();
+
+            if (chosenOrder == RepeatOrder.Same)
+            {
+                trialData.sequenceType = "Forward";
+            }
+            else
+            {
+                trialData.sequenceType = "Backward";
+            }
         }
         saveData.Save(gameData);
 

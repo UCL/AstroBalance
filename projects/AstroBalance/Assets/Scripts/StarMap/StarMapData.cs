@@ -5,7 +5,7 @@
 public class StarMapData : GameData
 {
     public int trialNumber;
-    public string repeatOrder; // string representation of StarMapManager.RepeatOrder enum
+    public string sequenceType;
     public int sequenceLength;
     public bool responseCorrect;
     public float responseTimeSeconds;
