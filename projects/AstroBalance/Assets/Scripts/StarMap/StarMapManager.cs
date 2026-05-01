@@ -37,7 +37,7 @@ public class StarMapManager : MonoBehaviour
     private RepeatOrder chosenOrder;
     private Constellation chosenConstellation;
     private ConstellationSize constellationSize;
-    private StarMapData gameData;
+    private List<StarMapData> gameData; // Each item is data on a single 'trial' i.e. a single sequence and guess
 
     public enum RepeatOrder
     {
@@ -65,7 +65,7 @@ public class StarMapManager : MonoBehaviour
 
         orderText.text = "Repeat in " + chosenOrder.ToString().ToLower() + " order";
 
-        gameData = new StarMapData();
+        gameData.Add(new StarMapData());
         chosenConstellation.ShowNewSequence(chosenOrder);
     }
 
@@ -145,6 +145,8 @@ public class StarMapManager : MonoBehaviour
 
         scoreText.text = maxSequenceLength.ToString();
 
+        // TODO - populate trial data
+
         // game ends when we reach the max number of stars, or when we guess correctly
         // after the sequence length having been reduced due to incorrect guesses
         if (sequenceLength == chosenConstellation.GetNumberOfStars() || afterDowngrade)
@@ -166,24 +168,44 @@ public class StarMapManager : MonoBehaviour
 
             winText.text = "Congratulations! \n \n You matched " + maxSequenceLength + " stars";
             winScreen.SetActive(true);
-            SaveGameData();
+            SaveGameData(true);
         }
     }
 
-    private void SaveGameData()
+    private void OnDestroy()
     {
-        // Update save data for this game
-        gameData.gameCompleted = true;
-        gameData.nSequencesRepeated = nSequencesRepeated;
-        gameData.maxSequenceLength = maxSequenceLength;
-        gameData.repeatOrder = chosenOrder.ToString();
-        gameData.constellationSize = constellationSize.ToString();
-        gameData.LogEndTime();
+        // If the scene is exited early (e.g. with the exit button), then save this
+        // partial game's data
+        if (gameActive)
+        {
+            SaveGameData(false);
+        }
+    }
+
+    private void SaveGameData(bool gameComplete)
+    {
+        // Log end time on first item - this end time will be copied to all
+        // trial data
+        gameData.ElementAt(0).LogEndTime();
+        string endTime = gameData.ElementAt(0).sessionEndTime;
+
+        foreach (StarMapData trialData in gameData)
+        {
+            trialData.sessionEndTime = endTime;
+            trialData.gameCompleted = gameComplete;
+            trialData.nSequencesRepeated = nSequencesRepeated;
+            trialData.maxSequenceLength = maxSequenceLength;
+            trialData.repeatOrder = chosenOrder.ToString();
+            trialData.constellationSize = constellationSize.ToString();
+        }
 
         SaveGameData<StarMapData> saveData = new(saveFilename);
         saveData.Save(gameData);
 
         // Update save data for this session
-        CaptureSessionData.MarkGameAsComplete("nCompleteStarMapGames");
+        if (gameComplete)
+        {
+            CaptureSessionData.MarkGameAsComplete("nCompleteStarMapGames");
+        }
     }
 }
