@@ -81,39 +81,49 @@ public class StarMapManager : MonoBehaviour
     private void ChooseConstellationSize()
     {
         SaveGameData<StarMapData> saveData = new(saveFilename);
-        IEnumerable<StarMapData> lastNGamesData = saveData.GetLastNComplete(maxScoreGames);
+        IEnumerable<StarMapData> lastNSessionsData = saveData.GetLastNCompleteSessions(
+            maxScoreGames
+        );
         int smallConstellationMaxLength = smallConstellation.GetNumberOfStars();
 
-        // We haven't played enough games, to get maxScoreGames in a row
-        if (lastNGamesData.Count() < maxScoreGames)
+        // First time playing the game - start with the small constellation
+        if (lastNSessionsData.Count() == 0)
         {
             constellationSize = ConstellationSize.Small;
+            return;
         }
         // Once upgraded to the large constellation, stay at the large constellation
-        else if (lastNGamesData.Last().constellationSize == ConstellationSize.Large.ToString())
+        else if (lastNSessionsData.Last().constellationSize == ConstellationSize.Large.ToString())
+        {
+            constellationSize = ConstellationSize.Large;
+            return;
+        }
+
+        // Otherwise, loop through session data to determine if there have been enough max score games to upgrade.
+        // Note: StarMap saves one row per trial, so there will be multiple rows per game session.
+        int nMaxGames = 0;
+        List<int> sessionNumbers = new List<int>();
+        foreach (StarMapData data in lastNSessionsData)
+        {
+            bool newSession = !sessionNumbers.Contains(data.sessionNumber);
+            if (newSession && data.maxSequenceLength == smallConstellationMaxLength)
+            {
+                nMaxGames++;
+            }
+
+            if (newSession)
+            {
+                sessionNumbers.Add(data.sessionNumber);
+            }
+        }
+
+        if (nMaxGames >= maxScoreGames)
         {
             constellationSize = ConstellationSize.Large;
         }
-        // Otherwise upgrade if have enough maxScoreGames
         else
         {
-            int nMaxGames = 0;
-            foreach (StarMapData data in lastNGamesData)
-            {
-                if (data.maxSequenceLength == smallConstellationMaxLength)
-                {
-                    nMaxGames++;
-                }
-            }
-
-            if (nMaxGames >= maxScoreGames)
-            {
-                constellationSize = ConstellationSize.Large;
-            }
-            else
-            {
-                constellationSize = ConstellationSize.Small;
-            }
+            constellationSize = ConstellationSize.Small;
         }
     }
 
