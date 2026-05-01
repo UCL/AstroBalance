@@ -37,7 +37,7 @@ public class StarMapManager : MonoBehaviour
     private RepeatOrder chosenOrder;
     private Constellation chosenConstellation;
     private ConstellationSize constellationSize;
-    private List<StarMapData> gameData; // Each item is data on a single 'trial' i.e. a single sequence and guess
+    private List<StarMapData> gameData = new List<StarMapData>(); // Each item is data on a single 'trial' i.e. a single sequence and guess
     private string gameStartTime; // the overall game start time, in the format needed for the save data
 
     public enum RepeatOrder
