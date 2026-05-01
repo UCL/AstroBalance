@@ -31,13 +31,14 @@ public class StarMapManager : MonoBehaviour
 
     private TextMeshProUGUI winText;
     private bool gameActive = true;
-    private int nSequencesRepeated = 0;
-    private int maxSequenceLength = 0; // maximum length of sequence repeated correctly
+    private int nCorrectSequences = 0;
+    private int maxCorrectSequenceLength = 0; // maximum length of sequence repeated correctly
     private string saveFilename = "StarMapScores";
     private RepeatOrder chosenOrder;
     private Constellation chosenConstellation;
     private ConstellationSize constellationSize;
     private List<StarMapData> gameData; // Each item is data on a single 'trial' i.e. a single sequence and guess
+    private string gameStartTime; // the overall game start time, in the format needed for the save data
 
     public enum RepeatOrder
     {
@@ -65,7 +66,11 @@ public class StarMapManager : MonoBehaviour
 
         orderText.text = "Repeat in " + chosenOrder.ToString().ToLower() + " order";
 
-        gameData.Add(new StarMapData());
+        // Record game start time, so it can be used in all trial save data
+        StarMapData data = new();
+        data.LogEndTime();
+        gameStartTime = data.sessionStartTime;
+
         chosenConstellation.ShowNewSequence(chosenOrder);
     }
 
@@ -131,27 +136,52 @@ public class StarMapManager : MonoBehaviour
     void Update() { }
 
     /// <summary>
-    /// Increase score (successfully guessed sequences) by one.
+    /// Update score (and associated data) after the player guesses a sequence.
     /// </summary>
+    /// <param name="guessCorrect">Whether the player guessed the sequence correctly</param>
     /// <param name="sequenceLength">length of the guessed sequence</param>
     /// <param name="afterDowngrade">whether this is after a downgrade in length due to incorrect guesses</param>
-    public void UpdateScore(int sequenceLength, bool afterDowngrade)
+    /// <param name="guessTime">total time in seconds the player took to guess</param>
+    public void UpdateScore(
+        bool guessCorrect,
+        int sequenceLength,
+        bool afterDowngrade,
+        float guessTime
+    )
     {
-        nSequencesRepeated += 1;
-        if (sequenceLength > maxSequenceLength)
+        //nSequencesRepeated += 1;
+
+        // Populate save data for this trial
+        StarMapData trialData = new StarMapData();
+        if (gameData.Count == 0)
         {
-            maxSequenceLength = sequenceLength;
+            trialData.trialNumber = 1;
         }
-
-        scoreText.text = maxSequenceLength.ToString();
-
-        // TODO - populate trial data
-
-        // game ends when we reach the max number of stars, or when we guess correctly
-        // after the sequence length having been reduced due to incorrect guesses
-        if (sequenceLength == chosenConstellation.GetNumberOfStars() || afterDowngrade)
+        else
         {
-            EndGame();
+            trialData.trialNumber = gameData.Last().trialNumber + 1;
+        }
+        trialData.responseCorrect = guessCorrect;
+        trialData.sequenceLength = sequenceLength;
+        trialData.responseTimeSeconds = guessTime;
+        gameData.Add(trialData);
+
+        // Update score text, and end condition if guess was correct
+        if (guessCorrect)
+        {
+            if (sequenceLength > maxCorrectSequenceLength)
+            {
+                maxCorrectSequenceLength = sequenceLength;
+            }
+
+            scoreText.text = maxCorrectSequenceLength.ToString();
+
+            // game ends when we reach the max number of stars, or when we guess correctly
+            // after the sequence length having been reduced due to incorrect guesses
+            if (sequenceLength == chosenConstellation.GetNumberOfStars() || afterDowngrade)
+            {
+                EndGame();
+            }
         }
     }
 
@@ -166,7 +196,8 @@ public class StarMapManager : MonoBehaviour
         {
             gameActive = false;
 
-            winText.text = "Congratulations! \n \n You matched " + maxSequenceLength + " stars";
+            winText.text =
+                "Congratulations! \n \n You matched " + maxCorrectSequenceLength + " stars";
             winScreen.SetActive(true);
             SaveGameData(true);
         }
@@ -189,17 +220,21 @@ public class StarMapManager : MonoBehaviour
         gameData.ElementAt(0).LogEndTime();
         string endTime = gameData.ElementAt(0).sessionEndTime;
 
+        SaveGameData<StarMapData> saveData = new(saveFilename);
+        int sessionNumber = saveData.GetNextSessionNumber();
+
+        // Populate data that is common across all trials
         foreach (StarMapData trialData in gameData)
         {
+            trialData.sessionNumber = sessionNumber;
+            trialData.sessionStartTime = gameStartTime;
             trialData.sessionEndTime = endTime;
             trialData.gameCompleted = gameComplete;
-            trialData.nSequencesRepeated = nSequencesRepeated;
-            trialData.maxSequenceLength = maxSequenceLength;
+            trialData.nSequencesRepeated = nCorrectSequences;
+            trialData.maxSequenceLength = maxCorrectSequenceLength;
             trialData.repeatOrder = chosenOrder.ToString();
             trialData.constellationSize = constellationSize.ToString();
         }
-
-        SaveGameData<StarMapData> saveData = new(saveFilename);
         saveData.Save(gameData);
 
         // Update save data for this session
