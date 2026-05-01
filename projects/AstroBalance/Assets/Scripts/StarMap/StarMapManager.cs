@@ -225,6 +225,11 @@ public class StarMapManager : MonoBehaviour
 
     private void SaveGameData(bool gameComplete)
     {
+        if (gameData.Count() == 0)
+        {
+            return;
+        }
+
         // Log end time on first item - this end time will be copied to all
         // trial data
         gameData.ElementAt(0).LogEndTime();
