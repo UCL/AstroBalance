@@ -248,6 +248,9 @@ public class StarCollectorManager : MonoBehaviour
         float percentCollected = ((float)score / totalStars) * 100;
         gameData.nStarsCollected = score;
         gameData.percentStarsCollected = percentCollected;
+        gameData.adaptiveLevel =
+            1 + Mathf.CeilToInt((timeLimit - minTimeLimit) / timeLimitIncrement);
+        gameData.finalStarFallSpeed = starGenerator.GetStarSpeed();
 
         SaveGameData<StarCollectorData> saveData = new(saveFilename);
         saveData.Save(gameData);
