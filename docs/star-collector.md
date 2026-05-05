@@ -19,3 +19,19 @@ top of the screen.
 
 - **Ship**: values related to ship movement
   - The amount the ship moves per degree of head movement (X By Degrees)
+  
+## Save data
+
+Data is saved to `StarCollectorScores.csv`, with one row per game session. Values are:
+
+- `sessionNumber`: a unique id per game session
+- `sessionDate`: the date of the game session in format YYYY-MM-DD
+- `sessionStartTime`: the game start time in format HH:MM:ss. This is the local time (e.g. if your computer is set to UK time - this is UK time).
+- `sessionEndTime`: the game end time in format HH:MM:ss (local time - see sessionStartTime description)
+- `gameCompleted`: whether this game was completed. If they exited early, this will be false.
+- `timeLimitSeconds`: the time limit set for this game in seconds
+- `gameDurationSeconds`: how long the game was played in seconds. If the game was played through to completion this will be equal to timeLimitSeconds; if they exited early, it will be less.
+- `nStarsCollected`: the number of stars collected during the game
+- `percentStarsCollected`: the percent of all stars collected during the game.
+- `adaptiveLevel`: an integer (1 or above) representing the current difficulty level. Every time the game time limit is increased, this level increases by one.
+- `finalStarFallSpeed`: Speed of falling stars (unity units per second) at the end of the game.
