@@ -222,26 +222,40 @@ public class StarCollectorManager : MonoBehaviour
             winScreen.SetActive(true);
 
             // Save game details to file
-            SaveGameData();
+            SaveGameData(true);
         }
     }
 
-    private void SaveGameData()
+    private void OnDestroy()
     {
+        // If the scene is exited early (e.g. with the exit button), then save this
+        // partial game's data
+        if (gameActive)
+        {
+            SaveGameData(false);
+        }
+    }
+
+    private void SaveGameData(bool gameComplete)
+    {
+        // Update save data for this game
+        gameData.gameCompleted = gameComplete;
+        gameData.timeLimitSeconds = timeLimit;
+        gameData.gameDurationSeconds = Mathf.FloorToInt(timer.GetElapsedTime() + 0.5f);
+        gameData.LogEndTime();
+
         float totalStars = score + missed;
         float percentCollected = ((float)score / totalStars) * 100;
-
-        // Update save data for this game
-        gameData.gameCompleted = true;
-        gameData.timeLimitSeconds = timeLimit;
         gameData.nStarsCollected = score;
         gameData.percentStarsCollected = percentCollected;
-        gameData.LogEndTime();
 
         SaveGameData<StarCollectorData> saveData = new(saveFilename);
         saveData.Save(gameData);
 
         // Update save data for this session
-        CaptureSessionData.MarkGameAsComplete("nCompleteStarCollectorGames");
+        if (gameComplete)
+        {
+            CaptureSessionData.MarkGameAsComplete("nCompleteStarCollectorGames");
+        }
     }
 }
