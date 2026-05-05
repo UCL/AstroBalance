@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Tobii.GameIntegration.Net;
 using UnityEngine;
 
 public class StarCollectorManager : MonoBehaviour
@@ -49,17 +50,37 @@ public class StarCollectorManager : MonoBehaviour
     ]
     private int timeLimitUpgradePercent = 60;
 
+    [
+        SerializeField,
+        Tooltip("Maximum number of head yaw readings to keep in the buffer at one time")
+    ]
+    private int maxNItemsInBuffer = 100;
+
+    [
+        SerializeField,
+        Tooltip("The minimum number of head yaw readings needed to calculate a head velocity")
+    ]
+    private int minNItemsForVelocity = 5;
+
+    [SerializeField, Tooltip("The number of seconds to calculate head yaw velocity over")]
+    private float samplingIntervalSeconds = 0.5f;
+
     private TextMeshProUGUI winText;
+    private Tracker tracker;
     private int timeLimit;
     private int score; // stars collected over whole game
     private int missed; // stars missed over whole game
     private bool gameActive = true;
 
-    private float windowStart;
+    private float speedWindowStart; // start time of speed upgrade window
     private int scoreInTimeWindow = 0; // stars collected in time window
     private int missedInTimeWindow = 0; // stars missed in time window
     private string saveFilename = "StarCollectorScores";
     private StarCollectorData gameData;
+
+    private float bufferWindowStart; // start time of buffer update window
+    private HeadAngleBuffer headYawBuffer;
+    private List<float> headYawVelocities = new List<float>();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -67,12 +88,16 @@ public class StarCollectorManager : MonoBehaviour
         ChooseGameTimeLimit();
 
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
+        tracker = FindFirstObjectByType<Tracker>();
         gameData = new StarCollectorData();
         score = 0;
         scoreText.text = score.ToString();
+
+        headYawBuffer = new HeadAngleBuffer(maxNItemsInBuffer, minNItemsForVelocity);
         timer.StartCountdown(timeLimit);
 
-        windowStart = Time.time;
+        speedWindowStart = Time.time;
+        bufferWindowStart = Time.time;
     }
 
     /// <summary>
@@ -131,9 +156,18 @@ public class StarCollectorManager : MonoBehaviour
             return;
         }
 
+        // Keep track of head yaw angles on every update
+        UpdateHeadYawBuffer();
+
+        // Every 'samplingIntervalSeconds', record the velocity averaged over that time period
+        if (Time.time - bufferWindowStart >= samplingIntervalSeconds)
+        {
+            RecordHeadVelocity();
+        }
+
         // At end of time window, assess performance and update the difficulty
         // of the game
-        if (Time.time - windowStart >= difficultyWindowSeconds)
+        if (Time.time - speedWindowStart >= difficultyWindowSeconds)
         {
             UpdateDifficulty();
         }
@@ -143,6 +177,27 @@ public class StarCollectorManager : MonoBehaviour
         {
             EndGame();
         }
+    }
+
+    /// <summary>
+    /// Add latest head yaw angle to buffer
+    /// </summary>
+    private void UpdateHeadYawBuffer()
+    {
+        HeadPose headPose = tracker.getHeadPose();
+        HeadYawItem headYaw = new HeadYawItem(headPose);
+        headYawBuffer.addIfNew(headYaw);
+    }
+
+    /// <summary>
+    /// Record the latest head yaw velocity
+    /// </summary>
+    private void RecordHeadVelocity()
+    {
+        float headVelocity = headYawBuffer.getSpeed(samplingIntervalSeconds);
+        headYawVelocities.Add(headVelocity);
+        //Debug.Log("recording head velocity" + headVelocity);
+        bufferWindowStart = Time.time;
     }
 
     /// <summary>
@@ -166,7 +221,7 @@ public class StarCollectorManager : MonoBehaviour
             starGenerator.DecreaseSpeed();
         }
 
-        windowStart = Time.time;
+        speedWindowStart = Time.time;
         scoreInTimeWindow = 0;
         missedInTimeWindow = 0;
     }
@@ -251,6 +306,13 @@ public class StarCollectorManager : MonoBehaviour
         gameData.adaptiveLevel =
             1 + Mathf.CeilToInt((timeLimit - minTimeLimit) / timeLimitIncrement);
         gameData.finalStarFallSpeed = starGenerator.GetStarSpeed();
+
+        gameData.headVelocityDegPerSecPeak = headYawVelocities.Max();
+        float average = headYawVelocities.Average();
+        gameData.headVelocityDegPerSecMean = average;
+        gameData.headVelocityDegPerSecSD = Mathf.Sqrt(
+            headYawVelocities.Average(v => Mathf.Pow(v - average, 2))
+        );
 
         SaveGameData<StarCollectorData> saveData = new(saveFilename);
         saveData.Save(gameData);

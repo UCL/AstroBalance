@@ -22,7 +22,7 @@ class HeadAngleBuffer : TobiiBuffer<HeadAngleItem>
     /// Divided by the total change in time returned by TimeStampMicroSeconds
     /// </summary>
     /// <param name="speedTime">The time period in seconds over which to calculate the average speed.</param>
-    /// <returns>The average speed of the buffer over the given time period.</returns>
+    /// <returns>The average speed of the buffer over the given time period (in degrees per second)</returns>
     public float getSpeed(float speedTime)
     {
         float averageSpeed = 0f;
