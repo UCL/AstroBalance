@@ -37,7 +37,7 @@ class HeadAngleBuffer : TobiiBuffer<HeadAngleItem>
 
     private float calculateAverageSpeed(List<HeadAngleItem> headAngles)
     {
-        if (headAngles.Count() < 2)
+        if (headAngles.Count() < minDataRequired)
         {
             return 0f;
         }
@@ -224,7 +224,7 @@ class TobiiBuffer<T>
     protected int lastAddedIndex;
     private bool hasData; // flag to indicate if the buffer has any data
     protected bool hasEnoughData; // flag to indicate if the buffer has enough data to calculate speed or steadiness.
-    private int minDataRequired;
+    protected int minDataRequired;
     protected T[] buffer;
 
     /// <summary>

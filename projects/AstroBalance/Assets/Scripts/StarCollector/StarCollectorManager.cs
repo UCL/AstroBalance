@@ -79,6 +79,7 @@ public class StarCollectorManager : MonoBehaviour
     private StarCollectorData gameData;
 
     private float bufferWindowStart; // start time of buffer update window
+    private bool outOfRangeInWindow = false; // whether the player went out of range of the tracker during this window
     private HeadAngleBuffer headYawBuffer;
     private List<float> headYawVelocities = new List<float>();
 
@@ -184,9 +185,17 @@ public class StarCollectorManager : MonoBehaviour
     /// </summary>
     private void UpdateHeadYawBuffer()
     {
-        HeadPose headPose = tracker.getHeadPose();
-        HeadYawItem headYaw = new HeadYawItem(headPose);
-        headYawBuffer.addIfNew(headYaw);
+        // If the player goes out of range of the tracker
+        if (!tracker.isPlayerDetected())
+        {
+            outOfRangeInWindow = true;
+        }
+        else
+        {
+            HeadPose headPose = tracker.getHeadPose();
+            HeadYawItem headYaw = new HeadYawItem(headPose);
+            headYawBuffer.addIfNew(headYaw);
+        }
     }
 
     /// <summary>
@@ -194,9 +203,21 @@ public class StarCollectorManager : MonoBehaviour
     /// </summary>
     private void RecordHeadVelocity()
     {
-        float headVelocity = headYawBuffer.getSpeed(samplingIntervalSeconds);
-        headYawVelocities.Add(headVelocity);
-        //Debug.Log("recording head velocity" + headVelocity);
+        // Only record velocities if the player was in range of the tracker for the whole window.
+        // (otherwise, if they've been out of range for a while, we may be calculating the speed of quite old data in the buffer)
+        if (!outOfRangeInWindow)
+        {
+            float headVelocity = headYawBuffer.getSpeed(samplingIntervalSeconds);
+
+            // If there aren't enough recorded head yaw angles yet, the returned velocity is zero.
+            // We don't want to include these readings in the overall averages.
+            if (headVelocity > 0)
+            {
+                headYawVelocities.Add(headVelocity);
+            }
+        }
+
+        outOfRangeInWindow = false;
         bufferWindowStart = Time.time;
     }
 
@@ -307,12 +328,21 @@ public class StarCollectorManager : MonoBehaviour
             1 + Mathf.CeilToInt((timeLimit - minTimeLimit) / timeLimitIncrement);
         gameData.finalStarFallSpeed = starGenerator.GetStarSpeed();
 
-        gameData.headVelocityDegPerSecPeak = headYawVelocities.Max();
-        float average = headYawVelocities.Average();
-        gameData.headVelocityDegPerSecMean = average;
-        gameData.headVelocityDegPerSecSD = Mathf.Sqrt(
-            headYawVelocities.Average(v => Mathf.Pow(v - average, 2))
-        );
+        if (headYawVelocities.Count() == 0)
+        {
+            gameData.headVelocityDegPerSecPeak = 0;
+            gameData.headVelocityDegPerSecMean = 0;
+            gameData.headVelocityDegPerSecSD = 0;
+        }
+        else
+        {
+            gameData.headVelocityDegPerSecPeak = headYawVelocities.Max();
+            float average = headYawVelocities.Average();
+            gameData.headVelocityDegPerSecMean = average;
+            gameData.headVelocityDegPerSecSD = Mathf.Sqrt(
+                headYawVelocities.Average(v => Mathf.Pow(v - average, 2))
+            );
+        }
 
         SaveGameData<StarCollectorData> saveData = new(saveFilename);
         saveData.Save(gameData);
