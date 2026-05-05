@@ -103,7 +103,7 @@ public class StarGenerator : MonoBehaviour
             baseStarSpeed = nextSpeed;
         }
 
-        Debug.Log($"Updated star speed to {nextSpeed}");
+        Debug.Log($"Updated star speed to {baseStarSpeed}");
     }
 
     public void StopGeneration()
