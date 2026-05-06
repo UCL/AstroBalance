@@ -66,6 +66,6 @@ public class CaptureSessionData : MonoBehaviour
     public static int CurrentSessionNumber()
     {
         SaveData<SessionData> sessionData = new(saveFilename);
-        return sessionData.GetLastSessionNumber();
+        return sessionData.GetCurrentSessionNumber();
     }
 }
