@@ -5,9 +5,9 @@ There is one row per session (which is the time from launching Unity, to quittin
 following values:
 
 - `sessionNumber`: a unique id per session
-- `sessionDate`: the date of the session in format YYYY-MM-DD
-- `sessionStartTime`: the session start time in format HH:MM:ss. This is the local time (e.g. if your computer is set to UK time - this is UK time).
-- `sessionEndTime`: the session end time in format HH:MM:ss (local time - see sessionStartTime description)
+- `date`: the date of the session in format YYYY-MM-DD
+- `startTime`: the session start time in format HH:MM:ss. This is the local time (e.g. if your computer is set to UK time - this is UK time).
+- `endTime`: the session end time in format HH:MM:ss (local time - see startTime description)
 - `totalSessionDuration`: total duration of session in format HH:MM:ss
 - `nCompleteRocketLaunchGames`: number of complete games of rocket launch played in this session.
 - `nCompleteStarCollectorGames`: number of complete games of star collector played in this session.
