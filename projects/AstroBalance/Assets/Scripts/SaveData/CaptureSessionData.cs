@@ -16,7 +16,7 @@ public class CaptureSessionData : MonoBehaviour
 
         // If there is no summary data yet, or the last session has ended,
         // create a new session
-        if (lastSession is null || lastSession.endTime != "")
+        if (lastSession is null || lastSession.endTime is not null)
         {
             SessionData newSession = new SessionData();
             newSession.sessionNumber = sessionData.GetNextSessionNumber();
@@ -32,7 +32,7 @@ public class CaptureSessionData : MonoBehaviour
         SaveData<SessionData> sessionData = new(saveFilename);
         SessionData lastSession = sessionData.GetLast();
 
-        if (lastSession.endTime == "")
+        if (lastSession.endTime is null)
         {
             lastSession.LogEndTime();
             TimeSpan sessionDuration = DateTime

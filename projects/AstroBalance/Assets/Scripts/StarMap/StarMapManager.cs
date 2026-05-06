@@ -144,6 +144,11 @@ public class StarMapManager : MonoBehaviour
     // Update is called once per frame
     void Update() { }
 
+    private int GetNextTrialNumber()
+    {
+        return gameData.Count() == 0 ? 1 : gameData.Last().trialNumber + 1;
+    }
+
     /// <summary>
     /// Update score (and associated data) after the player guesses a sequence.
     /// </summary>
@@ -158,18 +163,9 @@ public class StarMapManager : MonoBehaviour
         float guessTime
     )
     {
-        //nSequencesRepeated += 1;
-
         // Populate save data for this trial
         StarMapData trialData = new StarMapData();
-        if (gameData.Count == 0)
-        {
-            trialData.trialNumber = 1;
-        }
-        else
-        {
-            trialData.trialNumber = gameData.Last().trialNumber + 1;
-        }
+        trialData.trialNumber = GetNextTrialNumber();
         trialData.responseCorrect = guessCorrect;
         trialData.sequenceLength = sequenceLength;
         trialData.responseTimeSeconds = guessTime;
@@ -218,6 +214,14 @@ public class StarMapManager : MonoBehaviour
         // partial game's data
         if (gameActive)
         {
+            // Add data for this partial (un-finished) trial
+            StarMapData trialData = new StarMapData();
+            trialData.trialNumber = GetNextTrialNumber();
+            trialData.responseCorrect = null;
+            trialData.responseTimeSeconds = null;
+            trialData.sequenceLength = chosenConstellation.GetCurrentSequenceLength();
+            gameData.Add(trialData);
+
             SaveGameData(false);
         }
     }

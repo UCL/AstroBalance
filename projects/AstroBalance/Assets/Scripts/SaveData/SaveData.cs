@@ -170,7 +170,24 @@ public class SaveData<T>
         for (int i = 0; i < headerNames.Length; i++)
         {
             FieldInfo field = typeof(T).GetField(headerNames[i]);
-            field.SetValue(data, Convert.ChangeType(values[i], field.FieldType));
+            Type fieldType = field.FieldType;
+
+            if (
+                fieldType.IsGenericType
+                && fieldType.GetGenericTypeDefinition().Equals(typeof(Nullable<>))
+            )
+            {
+                fieldType = Nullable.GetUnderlyingType(fieldType);
+            }
+
+            if (values[i] != "")
+            {
+                field.SetValue(data, Convert.ChangeType(values[i], fieldType));
+            }
+            else
+            {
+                field.SetValue(data, null);
+            }
         }
 
         return data;
