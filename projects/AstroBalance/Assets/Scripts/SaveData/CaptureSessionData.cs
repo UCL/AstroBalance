@@ -16,7 +16,7 @@ public class CaptureSessionData : MonoBehaviour
 
         // If there is no summary data yet, or the last session has ended,
         // create a new session
-        if (lastSession is null || lastSession.sessionEndTime != "")
+        if (lastSession is null || lastSession.endTime != "")
         {
             SessionData newSession = new SessionData();
             newSession.sessionNumber = sessionData.GetNextSessionNumber();
@@ -32,12 +32,12 @@ public class CaptureSessionData : MonoBehaviour
         SaveData<SessionData> sessionData = new(saveFilename);
         SessionData lastSession = sessionData.GetLast();
 
-        if (lastSession.sessionEndTime == "")
+        if (lastSession.endTime == "")
         {
             lastSession.LogEndTime();
             TimeSpan sessionDuration = DateTime
-                .Parse(lastSession.sessionEndTime)
-                .Subtract(DateTime.Parse(lastSession.sessionStartTime));
+                .Parse(lastSession.endTime)
+                .Subtract(DateTime.Parse(lastSession.startTime));
             lastSession.totalSessionDuration = sessionDuration.ToString(@"hh\:mm\:ss");
             sessionData.Overwrite(lastSession);
         }
@@ -58,5 +58,14 @@ public class CaptureSessionData : MonoBehaviour
         nGamesField.SetValue(lastSession, nGames + 1);
         lastSession.UpdateTotalCompleteGames();
         sessionData.Overwrite(lastSession);
+    }
+
+    /// <summary>
+    /// Get number of current session (last row in session save data)
+    /// </summary>
+    public static int CurrentSessionNumber()
+    {
+        SaveData<SessionData> sessionData = new(saveFilename);
+        return sessionData.GetLastSessionNumber();
     }
 }

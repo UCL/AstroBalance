@@ -276,7 +276,8 @@ public class SpaceWalkingManager : MonoBehaviour
         gameData.adaptiveLevel = adaptiveLevel;
 
         SaveGameData<SpaceWalkingData> saveData = new(saveFilename);
-        gameData.sessionNumber = saveData.GetNextSessionNumber();
+        gameData.sessionNumber = CaptureSessionData.CurrentSessionNumber();
+        gameData.gameNumber = saveData.GetNextGameNumber();
         saveData.Save(gameData);
 
         // Update save data for this session
