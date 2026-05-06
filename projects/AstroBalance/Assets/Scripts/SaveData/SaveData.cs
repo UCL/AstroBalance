@@ -138,9 +138,9 @@ public class SaveData<T>
     }
 
     /// <summary>
-    /// Get last session number.
+    /// Get current session number.
     /// </summary>
-    public int GetLastSessionNumber()
+    public int GetCurrentSessionNumber()
     {
         T lastSession = GetLast();
         return lastSession is not null ? lastSession.sessionNumber : 1;
