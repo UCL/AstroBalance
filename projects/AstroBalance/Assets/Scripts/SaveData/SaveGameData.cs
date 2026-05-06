@@ -67,4 +67,13 @@ public class SaveGameData<T> : SaveData<T>
 
         return lastNComplete;
     }
+
+    /// <summary>
+    /// Get next available game number.
+    /// </summary>
+    public int GetNextGameNumber()
+    {
+        T lastGame = GetLast();
+        return lastGame is not null ? lastGame.gameNumber + 1 : 1;
+    }
 }

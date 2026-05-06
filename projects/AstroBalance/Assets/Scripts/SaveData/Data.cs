@@ -7,6 +7,7 @@ using System;
 [System.Serializable]
 public abstract class Data
 {
+    public int sessionNumber;
     public string date;
     public string startTime;
     public string endTime;

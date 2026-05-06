@@ -18,7 +18,6 @@ public class Tile : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
     private Tracker tracker;
-    private TileManager tileManager;
     private SpaceWalkingManager gameManager;
     private GameObject selectedSparkle;
     private float headXMin;
@@ -46,7 +45,6 @@ public class Tile : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         tracker = FindFirstObjectByType<Tracker>();
         gameManager = FindFirstObjectByType<SpaceWalkingManager>();
-        tileManager = GetComponentInParent<TileManager>();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -120,7 +118,7 @@ public class Tile : MonoBehaviour
         {
             // If the centre tile has been selected successfully, then we have completed a
             // step in and out + the score must be updated
-            gameManager.UpdateScore();
+            gameManager.UpdateStepScore();
         }
         else
         {

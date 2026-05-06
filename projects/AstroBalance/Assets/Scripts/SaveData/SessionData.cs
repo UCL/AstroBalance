@@ -4,7 +4,6 @@
 [System.Serializable]
 public class SessionData : Data
 {
-    public int sessionNumber;
     public string totalSessionDuration;
     public int nCompleteRocketLaunchGames = 0;
     public int nCompleteStarCollectorGames = 0;

@@ -34,8 +34,8 @@ public class LockedOn : MonoBehaviour
         Double,
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    // Awake is called once when the script instance is loaded
+    void Awake()
     {
         gameManager = FindFirstObjectByType<StarSeekManager>();
 

@@ -20,3 +20,18 @@ The star seek mini-game uses gaze + head position to collect stars that appear a
 - **Prefabs/StarSeekStar**: values related to 'locking on' to a star
   - Time required to collect a star (with both gaze + head pose crosshair aligned)
   - Level of bloom (glow) for a star with a single or double lock
+
+## Save data
+
+Data is saved to `StarSeekScores.csv`, with one row per played game. Values are:
+
+- `gameNumber`: a unique id per played star seek game
+- `sessionNumber`: the session this game was played in (corresponds to sessionNumber in [`SessionSummary.csv`](./session-summary.md))
+- `date`: the date the game was played in format YYYY-MM-DD
+- `startTime`: the game start time in format HH:MM:ss. This is the local time (e.g. if your computer is set to UK time - this is UK time).
+- `endTime`: the game end time in format HH:MM:ss (local time - see startTime description)
+- `gameCompleted`: whether this game was completed. If they exited early, this will be false.
+- `timeLimitSeconds`: the time limit set for this game in seconds
+- `gameDurationSeconds`: how long the game was played in seconds. If the game was played through to completion this will be equal to timeLimitSeconds; if they exited early, it will be less.
+- `nStarsCollected`: the number of stars collected during the game
+- `adaptiveLevel`: an integer (1 or above) representing the current difficulty level. Every time the time limit is increased, this level increases by one.
