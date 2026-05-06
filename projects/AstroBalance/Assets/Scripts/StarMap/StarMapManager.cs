@@ -168,7 +168,7 @@ public class StarMapManager : MonoBehaviour
         trialData.trialNumber = GetNextTrialNumber();
         trialData.responseCorrect = guessCorrect;
         trialData.sequenceLength = sequenceLength;
-        trialData.responseTimeSeconds = guessTime;
+        trialData.responseTimeSeconds = (float)Mathf.FloorToInt((guessTime * 100) + 0.5f) / 100; // round to 2 decimal places
         gameData.Add(trialData);
 
         // Update score text, and end condition if guess was correct
