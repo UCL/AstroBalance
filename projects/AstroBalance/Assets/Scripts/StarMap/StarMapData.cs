@@ -9,7 +9,7 @@ public class StarMapData : GameData
     public int sequenceLength;
     public bool responseCorrect;
     public float responseTimeSeconds;
-    public int nSequencesRepeated;
-    public int maxSequenceLength;
+    public int totalNumberTrials;
+    public int maxSpan;
     public string constellationSize; // string representation of StarMapManager.ConstellationSize enum
 }

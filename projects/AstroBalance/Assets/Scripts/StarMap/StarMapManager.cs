@@ -31,7 +31,6 @@ public class StarMapManager : MonoBehaviour
 
     private TextMeshProUGUI winText;
     private bool gameActive = true;
-    private int nCorrectSequences = 0;
     private int maxCorrectSequenceLength = 0; // maximum length of sequence repeated correctly
     private string saveFilename = "StarMapScores";
     private RepeatOrder chosenOrder;
@@ -69,7 +68,7 @@ public class StarMapManager : MonoBehaviour
         // Record game start time, so it can be used in all trial save data
         StarMapData data = new();
         data.LogEndTime();
-        gameStartTime = data.sessionStartTime;
+        gameStartTime = data.startTime;
 
         chosenConstellation.ShowNewSequence(chosenOrder);
     }
@@ -106,7 +105,7 @@ public class StarMapManager : MonoBehaviour
         foreach (StarMapData data in lastNSessionsData)
         {
             bool newSession = !sessionNumbers.Contains(data.sessionNumber);
-            if (newSession && data.maxSequenceLength == smallConstellationMaxLength)
+            if (newSession && data.maxSpan == smallConstellationMaxLength)
             {
                 nMaxGames++;
             }
@@ -233,20 +232,23 @@ public class StarMapManager : MonoBehaviour
         // Log end time on first item - this end time will be copied to all
         // trial data
         gameData.ElementAt(0).LogEndTime();
-        string endTime = gameData.ElementAt(0).sessionEndTime;
+        string endTime = gameData.ElementAt(0).endTime;
 
         SaveGameData<StarMapData> saveData = new(saveFilename);
-        int sessionNumber = saveData.GetNextSessionNumber();
+
+        int sessionNumber = CaptureSessionData.CurrentSessionNumber();
+        int gameNumber = saveData.GetNextGameNumber();
 
         // Populate data that is common across all trials
         foreach (StarMapData trialData in gameData)
         {
             trialData.sessionNumber = sessionNumber;
-            trialData.sessionStartTime = gameStartTime;
-            trialData.sessionEndTime = endTime;
+            trialData.gameNumber = gameNumber;
+            trialData.startTime = gameStartTime;
+            trialData.endTime = endTime;
             trialData.gameCompleted = gameComplete;
-            trialData.nSequencesRepeated = nCorrectSequences;
-            trialData.maxSequenceLength = maxCorrectSequenceLength;
+            trialData.totalNumberTrials = gameData.Count();
+            trialData.maxSpan = maxCorrectSequenceLength;
             trialData.constellationSize = constellationSize.ToString();
 
             if (chosenOrder == RepeatOrder.Same)
