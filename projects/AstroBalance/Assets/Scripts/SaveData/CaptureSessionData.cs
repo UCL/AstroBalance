@@ -14,18 +14,12 @@ public class CaptureSessionData : MonoBehaviour
         SaveData<SessionData> sessionData = new(saveFilename);
         SessionData lastSession = sessionData.GetLast();
 
-        if (lastSession is null)
+        // If there is no summary data yet, or the last session has ended,
+        // create a new session
+        if (lastSession is null || lastSession.sessionEndTime != "")
         {
-            // There is no summary data yet
             SessionData newSession = new SessionData();
-            newSession.sessionNumber = 1;
-            sessionData.Save(newSession);
-        }
-        else if (lastSession.sessionEndTime != "")
-        {
-            // The last session has ended, so create a new one
-            SessionData newSession = new SessionData();
-            newSession.sessionNumber = lastSession.sessionNumber + 1;
+            newSession.sessionNumber = sessionData.GetNextSessionNumber();
             sessionData.Save(newSession);
         }
     }

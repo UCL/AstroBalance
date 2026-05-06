@@ -121,17 +121,7 @@ public class SaveData<T>
     public int GetNextSessionNumber()
     {
         T lastSession = GetLast();
-        int nextNumber;
-        if (lastSession is not null)
-        {
-            nextNumber = lastSession.sessionNumber + 1;
-        }
-        else
-        {
-            nextNumber = 1;
-        }
-
-        return nextNumber;
+        return lastSession is not null ? lastSession.sessionNumber + 1 : 1;
     }
 
     /// <summary>
