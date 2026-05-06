@@ -176,7 +176,8 @@ public class StarSeekManager : MonoBehaviour
             1 + Mathf.CeilToInt((timeLimit - minTimeLimit) / timeLimitIncrement);
 
         SaveGameData<StarSeekData> saveData = new(saveFilename);
-        gameData.sessionNumber = saveData.GetNextSessionNumber();
+        gameData.sessionNumber = CaptureSessionData.CurrentSessionNumber();
+        gameData.gameNumber = saveData.GetNextGameNumber();
         saveData.Save(gameData);
 
         // Update save data for this session

@@ -61,4 +61,13 @@ public class SaveGameData<T> : SaveData<T>
         lastNSessionData.Reverse();
         return lastNSessionData;
     }
+
+    /// <summary>
+    /// Get next available game number.
+    /// </summary>
+    public int GetNextGameNumber()
+    {
+        T lastGame = GetLast();
+        return lastGame is not null ? lastGame.gameNumber + 1 : 1;
+    }
 }

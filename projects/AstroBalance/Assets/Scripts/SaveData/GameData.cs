@@ -7,5 +7,6 @@ using System;
 [System.Serializable]
 public abstract class GameData : Data
 {
+    public int gameNumber = 1;
     public bool gameCompleted = false;
 }
