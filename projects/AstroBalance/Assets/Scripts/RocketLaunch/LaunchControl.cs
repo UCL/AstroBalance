@@ -122,7 +122,7 @@ public class LaunchControl : MonoBehaviour
 
         SaveGameData<RocketLaunchData> saveData = new(saveFilename);
 
-        IEnumerable<RocketLaunchData> lastGameData = saveData.GetLastNCompleteSessions(
+        IEnumerable<RocketLaunchData> lastGameData = saveData.GetLastNCompleteGames(
             maxPreviousGames
         );
 

@@ -80,39 +80,37 @@ public class StarMapManager : MonoBehaviour
     private void ChooseConstellationSize()
     {
         SaveGameData<StarMapData> saveData = new(saveFilename);
-        IEnumerable<StarMapData> lastNSessionsData = saveData.GetLastNCompleteSessions(
-            maxScoreGames
-        );
+        IEnumerable<StarMapData> lastNGamesData = saveData.GetLastNCompleteGames(maxScoreGames);
         int smallConstellationMaxLength = smallConstellation.GetNumberOfStars();
 
         // First time playing the game - start with the small constellation
-        if (lastNSessionsData.Count() == 0)
+        if (lastNGamesData.Count() == 0)
         {
             constellationSize = ConstellationSize.Small;
             return;
         }
         // Once upgraded to the large constellation, stay at the large constellation
-        else if (lastNSessionsData.Last().constellationSize == ConstellationSize.Large.ToString())
+        else if (lastNGamesData.Last().constellationSize == ConstellationSize.Large.ToString())
         {
             constellationSize = ConstellationSize.Large;
             return;
         }
 
-        // Otherwise, loop through session data to determine if there have been enough max score games to upgrade.
-        // Note: StarMap saves one row per trial, so there will be multiple rows per game session.
+        // Otherwise, loop through save data to determine if there have been enough max score games to upgrade.
+        // Note: StarMap saves one row per trial, so there will be multiple rows per played game.
         int nMaxGames = 0;
-        List<int> sessionNumbers = new List<int>();
-        foreach (StarMapData data in lastNSessionsData)
+        List<int> gameNumbers = new List<int>();
+        foreach (StarMapData data in lastNGamesData)
         {
-            bool newSession = !sessionNumbers.Contains(data.sessionNumber);
-            if (newSession && data.maxSpan == smallConstellationMaxLength)
+            bool newGame = !gameNumbers.Contains(data.gameNumber);
+            if (newGame && data.maxSpan == smallConstellationMaxLength)
             {
                 nMaxGames++;
             }
 
-            if (newSession)
+            if (newGame)
             {
-                sessionNumbers.Add(data.sessionNumber);
+                gameNumbers.Add(data.gameNumber);
             }
         }
 
