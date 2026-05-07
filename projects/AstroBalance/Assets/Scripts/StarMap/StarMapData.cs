@@ -4,8 +4,12 @@
 [System.Serializable]
 public class StarMapData : GameData
 {
-    public int nSequencesRepeated;
-    public int maxSequenceLength;
-    public string repeatOrder; // string representation of StarMapManager.RepeatOrder enum
+    public int trialNumber;
+    public string sequenceType;
+    public int sequenceLength;
+    public bool? responseCorrect; // ? makes the field nullable. This will be null for an un-finished trial.
+    public float? responseTimeSeconds; // ? makes the field nullable. This will be null for an un-finished trial.
+    public int totalNumberTrials;
+    public int maxSpan;
     public string constellationSize; // string representation of StarMapManager.ConstellationSize enum
 }

@@ -50,6 +50,8 @@ public class Constellation : MonoBehaviour
     private int incorrectSequences = 0; // Incorrect sequences at current length
     private bool hasBeenDowngraded = false; // Whether the sequence length has been downgraded due to incorrect guesses
     private RepeatOrder order = RepeatOrder.Same;
+    private float starSelectionStartTime = 0; // Time when star selection was enabled (i.e. when the player started guessing)
+    private float starSelectionDuration = 0; // The number of seconds star selection was enabled for the last guess
 
     private void Awake()
     {
@@ -80,6 +82,11 @@ public class Constellation : MonoBehaviour
         }
 
         return stars.Count();
+    }
+
+    public int GetCurrentSequenceLength()
+    {
+        return currentSequenceLength;
     }
 
     /// <summary>
@@ -130,6 +137,8 @@ public class Constellation : MonoBehaviour
         {
             star.DisableSelection();
         }
+
+        starSelectionDuration = Time.time - starSelectionStartTime;
     }
 
     private void EnableStarSelection()
@@ -138,6 +147,8 @@ public class Constellation : MonoBehaviour
         {
             star.EnableSelection();
         }
+
+        starSelectionStartTime = Time.time;
     }
 
     private IEnumerator CompleteSequence(bool correctGuess)
@@ -190,7 +201,12 @@ public class Constellation : MonoBehaviour
 
         // whole sequence has been guessed correctly
         yield return StartCoroutine(CompleteSequence(true));
-        gameManager.UpdateScore(currentSequenceLength, hasBeenDowngraded);
+        gameManager.UpdateScore(
+            true,
+            currentSequenceLength,
+            hasBeenDowngraded,
+            starSelectionDuration
+        );
 
         if (gameManager.IsGameActive() && currentSequenceLength < GetNumberOfStars())
         {
@@ -207,6 +223,13 @@ public class Constellation : MonoBehaviour
     private IEnumerator HandleIncorrectGuess()
     {
         incorrectSequences += 1;
+        yield return StartCoroutine(CompleteSequence(false));
+        gameManager.UpdateScore(
+            false,
+            currentSequenceLength,
+            hasBeenDowngraded,
+            starSelectionDuration
+        );
 
         // reduce length of next sequence, if the player
         // has had n incorrect guesses in a row
@@ -220,7 +243,6 @@ public class Constellation : MonoBehaviour
             incorrectSequences = 0;
         }
 
-        yield return StartCoroutine(CompleteSequence(false));
         ShowNewSequence(order);
     }
 

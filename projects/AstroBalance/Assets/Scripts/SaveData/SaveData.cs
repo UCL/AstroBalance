@@ -48,6 +48,28 @@ public class SaveData<T>
     }
 
     /// <summary>
+    /// Add multiple data items to the save file.
+    /// They will be added in order - the last item in the list will be the last line in the file.
+    /// </summary>
+    /// <param name="data">Data from this session</param>
+    public void Save(List<T> data)
+    {
+        using (StreamWriter sw = new StreamWriter(dataPath, true))
+        {
+            if (!saveFileExists)
+            {
+                sw.WriteLine(DataToCsv(data.ElementAt(0), true));
+                saveFileExists = true;
+            }
+
+            foreach (T dataItem in data)
+            {
+                sw.WriteLine(DataToCsv(dataItem, false));
+            }
+        }
+    }
+
+    /// <summary>
     /// Overwrite the last (most recent) item in the save file.
     /// </summary>
     /// <param name="data">Data to overwrite with</param>
@@ -148,7 +170,24 @@ public class SaveData<T>
         for (int i = 0; i < headerNames.Length; i++)
         {
             FieldInfo field = typeof(T).GetField(headerNames[i]);
-            field.SetValue(data, Convert.ChangeType(values[i], field.FieldType));
+            Type fieldType = field.FieldType;
+
+            if (
+                fieldType.IsGenericType
+                && fieldType.GetGenericTypeDefinition().Equals(typeof(Nullable<>))
+            )
+            {
+                fieldType = Nullable.GetUnderlyingType(fieldType);
+            }
+
+            if (values[i] != "")
+            {
+                field.SetValue(data, Convert.ChangeType(values[i], fieldType));
+            }
+            else
+            {
+                field.SetValue(data, null);
+            }
         }
 
         return data;
