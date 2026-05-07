@@ -42,7 +42,7 @@ public class ZeroGravityManager : MonoBehaviour
     private TextMeshProUGUI winText;
     private TextMeshProUGUI scoreText;
     private int overallScore = 0;
-    public int currentPoseScore = 0;
+    private int currentPoseScore = 0;
     private bool gameActive = true;
     private ActiveTimer activeTimer = ActiveTimer.None;
     private List<ZeroGravityData> gameData = new List<ZeroGravityData>(); // Each item is data on a single pose
@@ -179,6 +179,7 @@ public class ZeroGravityManager : MonoBehaviour
     {
         ZeroGravityData poseData = new ZeroGravityData();
         poseData.poseNumber = GetNextPoseNumber();
+        poseData.poseType = poseAvatar.GetCurrentSpriteName();
         poseData.poseTimeLimitSeconds = poseHoldSeconds;
         poseData.poseDurationSeconds = poseHoldSeconds;
         poseData.balanceStabilityScore = currentPoseScore;

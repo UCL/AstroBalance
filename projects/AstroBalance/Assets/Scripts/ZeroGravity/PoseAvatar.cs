@@ -45,6 +45,22 @@ public class PoseAvatar : MonoBehaviour
         return currentIndex;
     }
 
+    /// <summary>
+    /// Get name of the currently shown sprite.
+    /// This name is the same as the source png filename.
+    /// </summary>
+    public string GetCurrentSpriteName()
+    {
+        if (currentIndex >= 0)
+        {
+            return sprites[currentIndex].texture.name;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     public void HideExplanationText()
     {
         poseText.gameObject.SetActive(false);
