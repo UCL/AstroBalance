@@ -122,9 +122,7 @@ public class LaunchControl : MonoBehaviour
 
         SaveGameData<RocketLaunchData> saveData = new(saveFilename);
 
-        IEnumerable<RocketLaunchData> lastGameData = saveData.GetLastNCompleteGames(
-            maxPreviousGames
-        );
+        IEnumerable<RocketLaunchData> lastGameData = saveData.GetLastNComplete(maxPreviousGames);
 
         // Adjust the adaptive difficulty (size of gaze target and time to launch) based on
         // how many previous games are in the save games data

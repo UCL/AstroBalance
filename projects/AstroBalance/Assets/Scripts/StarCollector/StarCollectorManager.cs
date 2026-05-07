@@ -82,9 +82,7 @@ public class StarCollectorManager : MonoBehaviour
     private void ChooseGameTimeLimit()
     {
         SaveGameData<StarCollectorData> saveData = new(saveFilename);
-        IEnumerable<StarCollectorData> lastNGamesData = saveData.GetLastNCompleteGames(
-            nGamesToUpgrade
-        );
+        IEnumerable<StarCollectorData> lastNGamesData = saveData.GetLastNComplete(nGamesToUpgrade);
 
         if (lastNGamesData.Count() < nGamesToUpgrade)
         {

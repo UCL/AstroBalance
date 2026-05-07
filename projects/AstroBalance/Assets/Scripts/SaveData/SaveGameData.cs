@@ -14,22 +14,22 @@ public class SaveGameData<T> : SaveData<T>
         : base(filename) { }
 
     /// <summary>
-    /// Get a list of data from the last n complete games (or as many as have been completed so far).
+    /// Get a list of data from the last n complete played games (or as many as have been completed so far).
     ///
     /// Game data is stored in chronological order, from earliest to latest (most recent game in final position).
     /// Note: for most mini-games, one data item will be returned per game - but some (like StarMap) return
     /// multiple items per game.
     /// </summary>
     /// <param name="nGames">Maximum number of games to retrieve</param>
-    public IEnumerable<T> GetLastNCompleteGames(int nGames)
+    public IEnumerable<T> GetLastNComplete(int nGames)
     {
-        List<T> lastNGamesData = new List<T>();
+        List<T> lastNComplete = new List<T>();
         int nGamesDataRetrieved = 0;
         int currentGameNumber = -1;
 
         if (!saveFileExists)
         {
-            return lastNGamesData;
+            return lastNComplete;
         }
 
         IEnumerable<string> csvLines = File.ReadLines(dataPath);
@@ -53,13 +53,13 @@ public class SaveGameData<T> : SaveData<T>
                     break;
                 }
 
-                lastNGamesData.Add(gameData);
+                lastNComplete.Add(gameData);
                 currentGameNumber = gameData.gameNumber;
             }
         }
 
-        lastNGamesData.Reverse();
-        return lastNGamesData;
+        lastNComplete.Reverse();
+        return lastNComplete;
     }
 
     /// <summary>

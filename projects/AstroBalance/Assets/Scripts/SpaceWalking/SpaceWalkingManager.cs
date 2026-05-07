@@ -87,9 +87,7 @@ public class SpaceWalkingManager : MonoBehaviour
     private void ChooseGameDifficulty()
     {
         SaveGameData<SpaceWalkingData> saveData = new(saveFilename);
-        IEnumerable<SpaceWalkingData> lastNGamesData = saveData.GetLastNCompleteGames(
-            nGamesToUpgrade
-        );
+        IEnumerable<SpaceWalkingData> lastNGamesData = saveData.GetLastNComplete(nGamesToUpgrade);
 
         if (debugHeadTurns)
         {
