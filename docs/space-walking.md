@@ -30,12 +30,13 @@ The space walking mini-game scores the player on completed steps (up / down / le
 
 ## Save data
 
-Data is saved to `SpaceWalkingScores.csv`, with one row per game session. Values are:
+Data is saved to `SpaceWalkingScores.csv`, with one row per played game. Values are:
 
-- `sessionNumber`: a unique id per game session
-- `sessionDate`: the date of the game session in format YYYY-MM-DD
-- `sessionStartTime`: the game start time in format HH:MM:ss. This is the local time (e.g. if your computer is set to UK time - this is UK time).
-- `sessionEndTime`: the game end time in format HH:MM:ss (local time - see sessionStartTime description)
+- `gameNumber`: a unique id per played space walk game
+- `sessionNumber`: the session this game was played in (corresponds to sessionNumber in [`SessionSummary.csv`](./session-summary.md))
+- `date`: the date the game was played in format YYYY-MM-DD
+- `startTime`: the game start time in format HH:MM:ss. This is the local time (e.g. if your computer is set to UK time - this is UK time).
+- `endTime`: the game end time in format HH:MM:ss (local time - see startTime description)
 - `gameCompleted`: whether this game was completed. If they exited early, this will be false.
 - `timeLimitSeconds`: the time limit set for this game in seconds
 - `gameDurationSeconds`: how long the game was played in seconds. If the game was played through to completion this will be equal to timeLimitSeconds; if they exited early, it will be less.

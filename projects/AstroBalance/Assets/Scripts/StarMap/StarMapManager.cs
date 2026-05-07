@@ -31,7 +31,6 @@ public class StarMapManager : MonoBehaviour
 
     private TextMeshProUGUI winText;
     private bool gameActive = true;
-    private int nCorrectSequences = 0;
     private int maxCorrectSequenceLength = 0; // maximum length of sequence repeated correctly
     private string saveFilename = "StarMapScores";
     private RepeatOrder chosenOrder;
@@ -69,7 +68,7 @@ public class StarMapManager : MonoBehaviour
         // Record game start time, so it can be used in all trial save data
         StarMapData data = new();
         data.LogEndTime();
-        gameStartTime = data.sessionStartTime;
+        gameStartTime = data.startTime;
 
         chosenConstellation.ShowNewSequence(chosenOrder);
     }
@@ -81,39 +80,37 @@ public class StarMapManager : MonoBehaviour
     private void ChooseConstellationSize()
     {
         SaveGameData<StarMapData> saveData = new(saveFilename);
-        IEnumerable<StarMapData> lastNSessionsData = saveData.GetLastNCompleteSessions(
-            maxScoreGames
-        );
+        IEnumerable<StarMapData> lastNGamesData = saveData.GetLastNComplete(maxScoreGames);
         int smallConstellationMaxLength = smallConstellation.GetNumberOfStars();
 
         // First time playing the game - start with the small constellation
-        if (lastNSessionsData.Count() == 0)
+        if (lastNGamesData.Count() == 0)
         {
             constellationSize = ConstellationSize.Small;
             return;
         }
         // Once upgraded to the large constellation, stay at the large constellation
-        else if (lastNSessionsData.Last().constellationSize == ConstellationSize.Large.ToString())
+        else if (lastNGamesData.Last().constellationSize == ConstellationSize.Large.ToString())
         {
             constellationSize = ConstellationSize.Large;
             return;
         }
 
-        // Otherwise, loop through session data to determine if there have been enough max score games to upgrade.
-        // Note: StarMap saves one row per trial, so there will be multiple rows per game session.
+        // Otherwise, loop through save data to determine if there have been enough max score games to upgrade.
+        // Note: StarMap saves one row per trial, so there will be multiple rows per played game.
         int nMaxGames = 0;
-        List<int> sessionNumbers = new List<int>();
-        foreach (StarMapData data in lastNSessionsData)
+        List<int> gameNumbers = new List<int>();
+        foreach (StarMapData data in lastNGamesData)
         {
-            bool newSession = !sessionNumbers.Contains(data.sessionNumber);
-            if (newSession && data.maxSequenceLength == smallConstellationMaxLength)
+            bool newGame = !gameNumbers.Contains(data.gameNumber);
+            if (newGame && data.maxSpan == smallConstellationMaxLength)
             {
                 nMaxGames++;
             }
 
-            if (newSession)
+            if (newGame)
             {
-                sessionNumbers.Add(data.sessionNumber);
+                gameNumbers.Add(data.gameNumber);
             }
         }
 
@@ -145,6 +142,11 @@ public class StarMapManager : MonoBehaviour
     // Update is called once per frame
     void Update() { }
 
+    private int GetNextTrialNumber()
+    {
+        return gameData.Count() == 0 ? 1 : gameData.Last().trialNumber + 1;
+    }
+
     /// <summary>
     /// Update score (and associated data) after the player guesses a sequence.
     /// </summary>
@@ -159,21 +161,12 @@ public class StarMapManager : MonoBehaviour
         float guessTime
     )
     {
-        //nSequencesRepeated += 1;
-
         // Populate save data for this trial
         StarMapData trialData = new StarMapData();
-        if (gameData.Count == 0)
-        {
-            trialData.trialNumber = 1;
-        }
-        else
-        {
-            trialData.trialNumber = gameData.Last().trialNumber + 1;
-        }
+        trialData.trialNumber = GetNextTrialNumber();
         trialData.responseCorrect = guessCorrect;
         trialData.sequenceLength = sequenceLength;
-        trialData.responseTimeSeconds = guessTime;
+        trialData.responseTimeSeconds = (float)Mathf.FloorToInt((guessTime * 100) + 0.5f) / 100; // round to 2 decimal places
         gameData.Add(trialData);
 
         // Update score text, and end condition if guess was correct
@@ -219,6 +212,14 @@ public class StarMapManager : MonoBehaviour
         // partial game's data
         if (gameActive)
         {
+            // Add data for this partial (un-finished) trial
+            StarMapData trialData = new StarMapData();
+            trialData.trialNumber = GetNextTrialNumber();
+            trialData.responseCorrect = null;
+            trialData.responseTimeSeconds = null;
+            trialData.sequenceLength = chosenConstellation.GetCurrentSequenceLength();
+            gameData.Add(trialData);
+
             SaveGameData(false);
         }
     }
@@ -233,20 +234,23 @@ public class StarMapManager : MonoBehaviour
         // Log end time on first item - this end time will be copied to all
         // trial data
         gameData.ElementAt(0).LogEndTime();
-        string endTime = gameData.ElementAt(0).sessionEndTime;
+        string endTime = gameData.ElementAt(0).endTime;
 
         SaveGameData<StarMapData> saveData = new(saveFilename);
-        int sessionNumber = saveData.GetNextSessionNumber();
+
+        int sessionNumber = CaptureSessionData.CurrentSessionNumber();
+        int gameNumber = saveData.GetNextGameNumber();
 
         // Populate data that is common across all trials
         foreach (StarMapData trialData in gameData)
         {
             trialData.sessionNumber = sessionNumber;
-            trialData.sessionStartTime = gameStartTime;
-            trialData.sessionEndTime = endTime;
+            trialData.gameNumber = gameNumber;
+            trialData.startTime = gameStartTime;
+            trialData.endTime = endTime;
             trialData.gameCompleted = gameComplete;
-            trialData.nSequencesRepeated = nCorrectSequences;
-            trialData.maxSequenceLength = maxCorrectSequenceLength;
+            trialData.totalNumberTrials = gameData.Count();
+            trialData.maxSpan = maxCorrectSequenceLength;
             trialData.constellationSize = constellationSize.ToString();
 
             if (chosenOrder == RepeatOrder.Same)

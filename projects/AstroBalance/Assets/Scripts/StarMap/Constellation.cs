@@ -84,6 +84,11 @@ public class Constellation : MonoBehaviour
         return stars.Count();
     }
 
+    public int GetCurrentSequenceLength()
+    {
+        return currentSequenceLength;
+    }
+
     /// <summary>
     /// Choose a new random sequence of stars, and display it to the player.
     /// Once display completes, stars are enabled for selection.

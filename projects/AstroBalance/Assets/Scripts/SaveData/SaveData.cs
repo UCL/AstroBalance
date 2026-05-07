@@ -138,22 +138,21 @@ public class SaveData<T>
     }
 
     /// <summary>
+    /// Get current session number.
+    /// </summary>
+    public int GetCurrentSessionNumber()
+    {
+        T lastSession = GetLast();
+        return lastSession is not null ? lastSession.sessionNumber : 1;
+    }
+
+    /// <summary>
     /// Get next available session number.
     /// </summary>
     public int GetNextSessionNumber()
     {
         T lastSession = GetLast();
-        int nextNumber;
-        if (lastSession is not null)
-        {
-            nextNumber = lastSession.sessionNumber + 1;
-        }
-        else
-        {
-            nextNumber = 1;
-        }
-
-        return nextNumber;
+        return lastSession is not null ? lastSession.sessionNumber + 1 : 1;
     }
 
     /// <summary>
@@ -171,7 +170,24 @@ public class SaveData<T>
         for (int i = 0; i < headerNames.Length; i++)
         {
             FieldInfo field = typeof(T).GetField(headerNames[i]);
-            field.SetValue(data, Convert.ChangeType(values[i], field.FieldType));
+            Type fieldType = field.FieldType;
+
+            if (
+                fieldType.IsGenericType
+                && fieldType.GetGenericTypeDefinition().Equals(typeof(Nullable<>))
+            )
+            {
+                fieldType = Nullable.GetUnderlyingType(fieldType);
+            }
+
+            if (values[i] != "")
+            {
+                field.SetValue(data, Convert.ChangeType(values[i], fieldType));
+            }
+            else
+            {
+                field.SetValue(data, null);
+            }
         }
 
         return data;
@@ -187,9 +203,9 @@ public class SaveData<T>
     private string DataToCsv(T data, bool headerOnly)
     {
         StringBuilder csvString = new StringBuilder();
-        FieldInfo[] fields = GetFields(data);
+        List<FieldInfo> fields = GetFields(data);
 
-        for (int i = 0; i < fields.Length; i++)
+        for (int i = 0; i < fields.Count(); i++)
         {
             if (headerOnly)
             {
@@ -199,7 +215,7 @@ public class SaveData<T>
             {
                 csvString.Append(fields[i].GetValue(data));
             }
-            if (i < fields.Length - 1)
+            if (i < fields.Count() - 1)
             {
                 csvString.Append(",");
             }
@@ -210,32 +226,35 @@ public class SaveData<T>
 
     /// <summary>
     /// Return info on all public fields.
-    /// Order is: sessionNumber, sessionDate, sessionStartTime, sessionEndTime, then any
+    /// Order is: gameNumber (if present), sessionNumber, date, startTime, endTime, then any
     /// other fields in alphabetical order.
     /// </summary>
-    private FieldInfo[] GetFields(T data)
+    private List<FieldInfo> GetFields(T data)
     {
         Type type = data.GetType();
         FieldInfo[] fields = type.GetFields();
-        FieldInfo[] sortedFields = new FieldInfo[fields.Length];
+        List<FieldInfo> sortedFields = new List<FieldInfo>();
 
-        // We return session number, date, startTime, endTime first (as this is general data
-        // for all save files, and useful to have at the start of the csv)
-        sortedFields[0] = type.GetField("sessionNumber");
-        sortedFields[1] = type.GetField("sessionDate");
-        sortedFields[2] = type.GetField("sessionStartTime");
-        sortedFields[3] = type.GetField("sessionEndTime");
+        // We return the following fields first (as this is general data that is
+        // useful to have at the start of the csv)
+        string[] fieldNames = { "gameNumber", "sessionNumber", "date", "startTime", "endTime" };
+        foreach (string name in fieldNames)
+        {
+            FieldInfo field = type.GetField(name);
+            if (field is not null)
+            {
+                sortedFields.Add(field);
+            }
+        }
 
         // Then, all other fields sorted in alphabetical order
         Array.Sort(fields, (x, y) => String.Compare(x.Name, y.Name));
 
-        int nextIndex = 4;
         foreach (FieldInfo field in fields)
         {
             if (!sortedFields.Contains(field))
             {
-                sortedFields[nextIndex] = field;
-                nextIndex++;
+                sortedFields.Add(field);
             }
         }
 

@@ -14,29 +14,29 @@ public class SaveGameData<T> : SaveData<T>
         : base(filename) { }
 
     /// <summary>
-    /// Get a list of data from the last n complete game sessions (or as many as have been completed so far).
+    /// Get a list of data from the last n complete played games (or as many as have been completed so far).
     ///
     /// Game data is stored in chronological order, from earliest to latest (most recent game in final position).
-    /// Note: for most mini-games, one data item will be returned per game session - but some (like StarMap) return
-    /// multiple items per game session.
+    /// Note: for most mini-games, one data item will be returned per game - but some (like StarMap) return
+    /// multiple items per game.
     /// </summary>
-    /// <param name="nSessions">Maximum number of game sessions to retrieve</param>
-    public IEnumerable<T> GetLastNCompleteSessions(int nSessions)
+    /// <param name="nGames">Maximum number of games to retrieve</param>
+    public IEnumerable<T> GetLastNComplete(int nGames)
     {
-        List<T> lastNSessionData = new List<T>();
-        int nSessionsDataRetrieved = 0;
-        int currentSessionNumber = -1;
+        List<T> lastNComplete = new List<T>();
+        int nGamesDataRetrieved = 0;
+        int currentGameNumber = -1;
 
         if (!saveFileExists)
         {
-            return lastNSessionData;
+            return lastNComplete;
         }
 
         IEnumerable<string> csvLines = File.ReadLines(dataPath);
         string header = csvLines.First();
         int maxLineNo = csvLines.Count() - 1;
 
-        // Start from end of file, and find n complete game sessions
+        // Start from end of file, and find n complete played games
         for (int i = maxLineNo; i > 0; i--)
         {
             string line = csvLines.ElementAt(i);
@@ -44,21 +44,30 @@ public class SaveGameData<T> : SaveData<T>
 
             if (gameData.gameCompleted)
             {
-                if (gameData.sessionNumber != currentSessionNumber)
+                if (gameData.gameNumber != currentGameNumber)
                 {
-                    nSessionsDataRetrieved++;
+                    nGamesDataRetrieved++;
                 }
-                if (nSessionsDataRetrieved > nSessions)
+                if (nGamesDataRetrieved > nGames)
                 {
                     break;
                 }
 
-                lastNSessionData.Add(gameData);
-                currentSessionNumber = gameData.sessionNumber;
+                lastNComplete.Add(gameData);
+                currentGameNumber = gameData.gameNumber;
             }
         }
 
-        lastNSessionData.Reverse();
-        return lastNSessionData;
+        lastNComplete.Reverse();
+        return lastNComplete;
+    }
+
+    /// <summary>
+    /// Get next available game number.
+    /// </summary>
+    public int GetNextGameNumber()
+    {
+        T lastGame = GetLast();
+        return lastGame is not null ? lastGame.gameNumber + 1 : 1;
     }
 }
