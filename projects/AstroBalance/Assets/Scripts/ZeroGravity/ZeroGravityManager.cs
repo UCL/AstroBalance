@@ -183,6 +183,7 @@ public class ZeroGravityManager : MonoBehaviour
         poseData.poseTimeLimitSeconds = poseHoldSeconds;
         poseData.poseDurationSeconds = poseHoldSeconds;
         poseData.balanceStabilityScore = currentPoseScore;
+        poseData.falls = swayLine.GetNTimesOutOfRange();
         gameData.Add(poseData);
     }
 

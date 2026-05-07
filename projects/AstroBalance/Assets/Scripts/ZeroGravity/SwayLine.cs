@@ -25,6 +25,7 @@ public class SwayLine : MonoBehaviour
     private float timeIncrement; // time increment required to score
     private float timeOfNextScoreIncrease; // time remaining on pose hold timer at next score increase
     private bool headOutOfRange = false;
+    private int nTimesOutOfRange = 0; // number of times the player's head has gone out of range while scoring is active
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -41,6 +42,7 @@ public class SwayLine : MonoBehaviour
     /// <param name="timeIncrement">Time in seconds head must stay in range to score</param>
     public void ActivateScoring(int timeLimit, float timeIncrement)
     {
+        nTimesOutOfRange = 0;
         this.timeIncrement = timeIncrement;
         // We base scoring on the pose hold timer so that everything stays in sync,
         // and exactly matches the displayed countdown times
@@ -62,6 +64,16 @@ public class SwayLine : MonoBehaviour
         scoringActive = false;
     }
 
+    /// <summary>
+    /// Get the number of times the player's head went out of range while scoring
+    /// was active.
+    /// This value is reset each time scoring is activated.
+    /// </summary>
+    public int GetNTimesOutOfRange()
+    {
+        return nTimesOutOfRange;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -73,6 +85,11 @@ public class SwayLine : MonoBehaviour
         else
         {
             spriteRenderer.enabled = false;
+
+            if (!headOutOfRange && scoringActive)
+            {
+                nTimesOutOfRange++;
+            }
             headOutOfRange = true;
         }
     }
@@ -88,6 +105,11 @@ public class SwayLine : MonoBehaviour
         if (outOfRange)
         {
             spriteRenderer.color = outRangeColor;
+
+            if (!headOutOfRange && scoringActive)
+            {
+                nTimesOutOfRange++;
+            }
             headOutOfRange = true;
         }
         else
