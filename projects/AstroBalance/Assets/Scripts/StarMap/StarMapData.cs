@@ -1,5 +1,5 @@
 /// <summary>
-/// Save data for a single star map session
+/// Save data for a single star map trial
 /// </summary>
 [System.Serializable]
 public class StarMapData : GameData

@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -42,7 +44,8 @@ public class ZeroGravityManager : MonoBehaviour
     private int score = 0;
     private bool gameActive = true;
     private ActiveTimer activeTimer = ActiveTimer.None;
-    private ZeroGravityData gameData;
+    private List<ZeroGravityData> gameData = new List<ZeroGravityData>(); // Each item is data on a single pose
+    private string gameStartTime; // the overall game start time, in the format needed for the save data
     private string saveFilename = "ZeroGravityScores";
 
     /// <summary>
@@ -62,7 +65,11 @@ public class ZeroGravityManager : MonoBehaviour
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
         scoreText = scoreDisplay.GetComponentInChildren<TextMeshProUGUI>();
 
-        gameData = new ZeroGravityData();
+        // Record game start time, so it can be used in all trial save data
+        StarMapData data = new();
+        data.LogEndTime();
+        gameStartTime = data.startTime;
+
         StartCoroutine(DisplayNextPose());
     }
 
@@ -75,6 +82,7 @@ public class ZeroGravityManager : MonoBehaviour
         }
         else if (activeTimer == ActiveTimer.PoseHold && poseHoldTimer.GetTimeRemaining() <= 0)
         {
+            CreateCompletedPoseSaveData();
             StartCoroutine(DisplayNextPose());
         }
     }
@@ -141,21 +149,65 @@ public class ZeroGravityManager : MonoBehaviour
 
             winText.text = "Congratulations! \n \n You scored " + score + " points";
             winScreen.SetActive(true);
-            SaveGameData();
+            SaveGameData(true);
         }
     }
 
-    private void SaveGameData()
+    private void OnDestroy()
     {
-        // Update save data for this game
-        gameData.gameCompleted = true;
-        gameData.score = score;
-        gameData.LogEndTime();
+        // If the scene is exited early (e.g. with the exit button), then save this
+        // partial game's data
+        if (gameActive)
+        {
+            SaveGameData(false);
+        }
+    }
+
+    private int GetNextPoseNumber()
+    {
+        return gameData.Count() == 0 ? 1 : gameData.Last().poseNumber + 1;
+    }
+
+    private void CreateCompletedPoseSaveData()
+    {
+        ZeroGravityData poseData = new ZeroGravityData();
+        poseData.poseNumber = GetNextPoseNumber();
+        poseData.poseTimeLimitSeconds = poseHoldSeconds;
+        poseData.poseDurationSeconds = poseHoldSeconds;
+        gameData.Add(poseData);
+    }
+
+    private void SaveGameData(bool gameComplete)
+    {
+        if (gameData.Count() == 0)
+        {
+            return;
+        }
+
+        // Log end time on first item - this end time will be copied to all
+        // trial data
+        gameData.ElementAt(0).LogEndTime();
+        string endTime = gameData.ElementAt(0).endTime;
 
         SaveGameData<ZeroGravityData> saveData = new(saveFilename);
+        int sessionNumber = CaptureSessionData.CurrentSessionNumber();
+        int gameNumber = saveData.GetNextGameNumber();
+
+        // Populate data that is common across all poses
+        foreach (ZeroGravityData poseData in gameData)
+        {
+            poseData.sessionNumber = sessionNumber;
+            poseData.gameNumber = gameNumber;
+            poseData.startTime = gameStartTime;
+            poseData.endTime = endTime;
+            poseData.gameCompleted = gameComplete;
+        }
         saveData.Save(gameData);
 
         // Update save data for this session
-        CaptureSessionData.MarkGameAsComplete("nCompleteZeroGravityGames");
+        if (gameComplete)
+        {
+            CaptureSessionData.MarkGameAsComplete("nCompleteZeroGravityGames");
+        }
     }
 }
