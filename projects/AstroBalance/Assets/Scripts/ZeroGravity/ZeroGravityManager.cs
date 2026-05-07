@@ -41,7 +41,8 @@ public class ZeroGravityManager : MonoBehaviour
 
     private TextMeshProUGUI winText;
     private TextMeshProUGUI scoreText;
-    private int score = 0;
+    private int overallScore = 0;
+    public int currentPoseScore = 0;
     private bool gameActive = true;
     private ActiveTimer activeTimer = ActiveTimer.None;
     private List<ZeroGravityData> gameData = new List<ZeroGravityData>(); // Each item is data on a single pose
@@ -82,7 +83,6 @@ public class ZeroGravityManager : MonoBehaviour
         }
         else if (activeTimer == ActiveTimer.PoseHold && poseHoldTimer.GetTimeRemaining() <= 0)
         {
-            CreateCompletedPoseSaveData();
             StartCoroutine(DisplayNextPose());
         }
     }
@@ -98,6 +98,12 @@ public class ZeroGravityManager : MonoBehaviour
         poseHoldTimer.gameObject.SetActive(false);
         poseCountdownTimer.gameObject.SetActive(false);
         scoreDisplay.SetActive(false);
+
+        if (poseAvatar.GetCurrentSpriteIndex() >= 0)
+        {
+            CreateCompletedPoseSaveData();
+        }
+        currentPoseScore = 0;
 
         bool poseAvailable = poseAvatar.ShowNextSprite();
         if (!poseAvailable)
@@ -132,8 +138,9 @@ public class ZeroGravityManager : MonoBehaviour
     /// </summary>
     public void UpdateScore()
     {
-        score += scorePerTime;
-        scoreText.text = score.ToString();
+        overallScore += scorePerTime;
+        currentPoseScore += scorePerTime;
+        scoreText.text = overallScore.ToString();
     }
 
     public bool IsGameActive()
@@ -147,7 +154,7 @@ public class ZeroGravityManager : MonoBehaviour
         {
             gameActive = false;
 
-            winText.text = "Congratulations! \n \n You scored " + score + " points";
+            winText.text = "Congratulations! \n \n You scored " + overallScore + " points";
             winScreen.SetActive(true);
             SaveGameData(true);
         }
@@ -174,6 +181,7 @@ public class ZeroGravityManager : MonoBehaviour
         poseData.poseNumber = GetNextPoseNumber();
         poseData.poseTimeLimitSeconds = poseHoldSeconds;
         poseData.poseDurationSeconds = poseHoldSeconds;
+        poseData.balanceStabilityScore = currentPoseScore;
         gameData.Add(poseData);
     }
 

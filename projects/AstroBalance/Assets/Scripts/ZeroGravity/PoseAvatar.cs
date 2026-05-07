@@ -40,6 +40,11 @@ public class PoseAvatar : MonoBehaviour
         return true;
     }
 
+    public int GetCurrentSpriteIndex()
+    {
+        return currentIndex;
+    }
+
     public void HideExplanationText()
     {
         poseText.gameObject.SetActive(false);
