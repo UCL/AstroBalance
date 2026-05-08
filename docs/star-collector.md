@@ -5,12 +5,15 @@ top of the screen.
 
 ## Main objects / values to edit during play testing
 
-- **StarCollectorManager**: values related to the overall win condition of the game
+- **StarCollectorManager**: values related to the overall win condition of the game, and head velocity save data
   - Min / max time limit in seconds
   - Time limit increment in seconds (if time limit upgrade % is met)
   - Number of games in a row that must meet the upgrade % to increase the time limit
   - The length of the time window used to evaluate player performance
   - The % of stars that must be collected to increase speed or time limit
+  - The maximum number of head yaw readings to keep in the buffer at one time (these are used for the head velocity save data)
+  - The minimum number of head yaw readings needed to calculate a head velocity
+  - The number of seconds to calculate head yaw velocity over
  
 - **StarGenerator**: values related to generation of the wave of stars
   - Min, max and base star speed
