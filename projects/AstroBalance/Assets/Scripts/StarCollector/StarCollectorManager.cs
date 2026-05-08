@@ -348,6 +348,8 @@ public class StarCollectorManager : MonoBehaviour
         }
 
         SaveGameData<StarCollectorData> saveData = new(saveFilename);
+        gameData.sessionNumber = CaptureSessionData.CurrentSessionNumber();
+        gameData.gameNumber = saveData.GetNextGameNumber();
         saveData.Save(gameData);
 
         // Update save data for this session
