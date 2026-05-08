@@ -315,13 +315,13 @@ public class StarCollectorManager : MonoBehaviour
         // Update save data for this game
         gameData.gameCompleted = gameComplete;
         gameData.timeLimitSeconds = timeLimit;
-        gameData.gameDurationSeconds = Mathf.FloorToInt(timer.GetElapsedTime() + 0.5f);
+        gameData.gameDurationSeconds = MathsUtilities.RoundToNearestInt(timer.GetElapsedTime());
         gameData.LogEndTime();
 
         float totalStars = score + missed;
         float percentCollected = ((float)score / totalStars) * 100;
         gameData.nStarsCollected = score;
-        gameData.percentStarsCollected = percentCollected;
+        gameData.percentStarsCollected = MathsUtilities.RoundTo2DecimalPlaces(percentCollected);
         gameData.adaptiveLevel =
             1 + Mathf.CeilToInt((timeLimit - minTimeLimit) / timeLimitIncrement);
         gameData.finalStarFallSpeed = starGenerator.GetStarSpeed();
@@ -334,15 +334,22 @@ public class StarCollectorManager : MonoBehaviour
         }
         else
         {
-            gameData.headVelocityDegPerSecPeak = headYawVelocities.Max();
+            gameData.headVelocityDegPerSecPeak = MathsUtilities.RoundTo2DecimalPlaces(
+                headYawVelocities.Max()
+            );
             float average = headYawVelocities.Average();
-            gameData.headVelocityDegPerSecMean = average;
-            gameData.headVelocityDegPerSecSD = Mathf.Sqrt(
+            gameData.headVelocityDegPerSecMean = MathsUtilities.RoundTo2DecimalPlaces(average);
+            float standardDeviation = Mathf.Sqrt(
                 headYawVelocities.Average(v => Mathf.Pow(v - average, 2))
+            );
+            gameData.headVelocityDegPerSecSD = MathsUtilities.RoundTo2DecimalPlaces(
+                standardDeviation
             );
         }
 
         SaveGameData<StarCollectorData> saveData = new(saveFilename);
+        gameData.sessionNumber = CaptureSessionData.CurrentSessionNumber();
+        gameData.gameNumber = saveData.GetNextGameNumber();
         saveData.Save(gameData);
 
         // Update save data for this session

@@ -75,14 +75,7 @@ public class CountdownTimer : MonoBehaviour
     /// </summary>
     public float GetTimeRemaining()
     {
-        if (timeRemaining < 0)
-        {
-            return 0;
-        }
-        else
-        {
-            return timeRemaining;
-        }
+        return timeRemaining < 0 ? 0 : timeRemaining;
     }
 
     /// <summary>

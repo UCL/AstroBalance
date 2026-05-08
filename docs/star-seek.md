@@ -32,6 +32,6 @@ Data is saved to `StarSeekScores.csv`, with one row per played game. Values are:
 - `endTime`: the game end time in format HH:MM:ss (local time - see startTime description)
 - `gameCompleted`: whether this game was completed. If they exited early, this will be false.
 - `timeLimitSeconds`: the time limit set for this game in seconds
-- `gameDurationSeconds`: how long the game was played in seconds. If the game was played through to completion this will be equal to timeLimitSeconds; if they exited early, it will be less.
+- `gameDurationSeconds`: how long the game was played (rounded to the nearest second). If the game was played through to completion this will be equal to timeLimitSeconds; if they exited early, it will be less.
 - `nStarsCollected`: the number of stars collected during the game
 - `adaptiveLevel`: an integer (1 or above) representing the current difficulty level. Every time the time limit is increased, this level increases by one.

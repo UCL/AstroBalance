@@ -39,7 +39,7 @@ Data is saved to `SpaceWalkingScores.csv`, with one row per played game. Values 
 - `endTime`: the game end time in format HH:MM:ss (local time - see startTime description)
 - `gameCompleted`: whether this game was completed. If they exited early, this will be false.
 - `timeLimitSeconds`: the time limit set for this game in seconds
-- `gameDurationSeconds`: how long the game was played in seconds. If the game was played through to completion this will be equal to timeLimitSeconds; if they exited early, it will be less.
+- `gameDurationSeconds`: how long the game was played (rounded to the nearest second). If the game was played through to completion this will be equal to timeLimitSeconds; if they exited early, it will be less.
 - `nCompleteSteps`: number of completed steps during this game. One complete step = a step out and back to the centre.
 - `headTurnsActive`: whether head turn arrows were active for this game (only active at highest difficulty level)
 - `nCompleteHeadTurns`: number of completed head turns (will be 0 if `headTurnsActive` is false)

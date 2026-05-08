@@ -52,6 +52,11 @@ public class CaptureSessionData : MonoBehaviour
         SaveData<SessionData> sessionData = new(saveFilename);
         SessionData lastSession = sessionData.GetLast();
 
+        if (lastSession is null)
+        {
+            return;
+        }
+
         FieldInfo nGamesField = lastSession.GetType().GetField(gameColumn);
         int nGames = (int)nGamesField.GetValue(lastSession);
 
