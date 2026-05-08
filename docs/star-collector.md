@@ -36,6 +36,6 @@ Data is saved to `StarCollectorScores.csv`, with one row per played game. Values
 - `percentStarsCollected`: the percent of all stars collected during the game, rounded to 2 decimal places.
 - `adaptiveLevel`: an integer (1 or above) representing the current difficulty level. Every time the game time limit is increased, this level increases by one.
 - `finalStarFallSpeed`: Speed of falling stars (unity units per second) at the end of the game.
-- `headVelocityDegPerSecMean`: Mean head yaw velocity (left-right rotation) measured in degrees per second. Rounded to 2 decimal places. 
-- `headVelocityDegPerSecPeak`: Peak head yaw velocity (left-right rotation) measured in degrees per second. Rounded to 2 decimal places. 
-- `headVelocityDegPerSecSD`: Standard deviation of head yaw velocity (left-right rotation) measured in degrees per second. Rounded to 2 decimal places. 
+- `headVelocityDegPerSecMean`: Mean head yaw velocity (left-right rotation) measured in degrees per second. Rounded to 2 decimal places. Periods of time when the player is out of range of the tracker are excluded.
+- `headVelocityDegPerSecPeak`: Peak head yaw velocity (left-right rotation) measured in degrees per second. Rounded to 2 decimal places. Periods of time when the player is out of range of the tracker are excluded.
+- `headVelocityDegPerSecSD`: Standard deviation of head yaw velocity (left-right rotation) measured in degrees per second. Rounded to 2 decimal places. Periods of time when the player is out of range of the tracker are excluded.
