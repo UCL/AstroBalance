@@ -31,11 +31,11 @@ Data is saved to `StarCollectorScores.csv`, with one row per played game. Values
 - `endTime`: the game end time in format HH:MM:ss (local time - see startTime description)
 - `gameCompleted`: whether this game was completed. If they exited early, this will be false.
 - `timeLimitSeconds`: the time limit set for this game in seconds
-- `gameDurationSeconds`: how long the game was played in seconds. If the game was played through to completion this will be equal to timeLimitSeconds; if they exited early, it will be less.
+- `gameDurationSeconds`: how long the game was played (rounded to the nearest second). If the game was played through to completion this will be equal to timeLimitSeconds; if they exited early, it will be less.
 - `nStarsCollected`: the number of stars collected during the game
-- `percentStarsCollected`: the percent of all stars collected during the game.
+- `percentStarsCollected`: the percent of all stars collected during the game, rounded to 2 decimal places.
 - `adaptiveLevel`: an integer (1 or above) representing the current difficulty level. Every time the game time limit is increased, this level increases by one.
 - `finalStarFallSpeed`: Speed of falling stars (unity units per second) at the end of the game.
-- `headVelocityDegPerSecMean`: Mean head yaw velocity (left-right rotation) measured in degrees per second. 
-- `headVelocityDegPerSecPeak`: Peak head yaw velocity (left-right rotation) measured in degrees per second.
-- `headVelocityDegPerSecSD`: Standard deviation of head yaw velocity (left-right rotation) measured in degrees per second.
+- `headVelocityDegPerSecMean`: Mean head yaw velocity (left-right rotation) measured in degrees per second. Rounded to 2 decimal places. 
+- `headVelocityDegPerSecPeak`: Peak head yaw velocity (left-right rotation) measured in degrees per second. Rounded to 2 decimal places. 
+- `headVelocityDegPerSecSD`: Standard deviation of head yaw velocity (left-right rotation) measured in degrees per second. Rounded to 2 decimal places. 
