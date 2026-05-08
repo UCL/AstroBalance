@@ -33,8 +33,8 @@ Data is saved to `ZeroGravityScores.csv`, with one row per pose. This means ther
 - `gameCompleted`: whether this game was completed. If they exited early, this will be false.
 - `poseType`: the name of the pose (this is the same as the filename of the displayed pose image png)
 - `poseTimeLimitSeconds`: the time limit in seconds for each pose
-- `poseDurationSeconds`: how long the pose was displayed in seconds. If they completed the pose, this will be equal to poseTimeLimitSeconds; if they exited early, it will be less.
+- `poseDurationSeconds`: the number of seconds the player tried this pose (rounded to the nearest second). If they completed the pose, this will be equal to poseTimeLimitSeconds; if they exited early, it will be less.
 - `meanSwayVelocityCmPerSec`:
-- `balanceStabilityScore`: the balance stability score for this pose (this is equal to the displayed score increase shown while playing the game). Currently, 5 points are awarded per second the player stays in bounds.
+- `balanceStabilityScore`: the balance stability score for this pose (this is equal to the displayed score increase shown while playing the game). Currently, 5 points are awarded per second the player stays in bounds. If the player exited before scoring for this pose started, this value will be left blank.
 - `poseCompletedSuccessfully`: ??
-- `falls`: the number of falls while holding this pose. A 'fall' is counted each time the player's head moves out of bounds - for example, if they move too far left or right (in the game, this causes the sway line to change colour from white to black), or the tracker can no longer detect the player (for example, if they step backwards too far).
+- `falls`: the number of falls while holding this pose. A 'fall' is counted each time the player's head moves out of bounds - for example, if they move too far left or right (in the game, this causes the sway line to change colour from white to black), or the tracker can no longer detect the player (for example, if they step backwards too far). If the player exited before scoring for this pose started, this value will be left blank.

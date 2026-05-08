@@ -48,6 +48,7 @@ public class ZeroGravityManager : MonoBehaviour
     private List<ZeroGravityData> gameData = new List<ZeroGravityData>(); // Each item is data on a single pose
     private string gameStartTime; // the overall game start time, in the format needed for the save data
     private string saveFilename = "ZeroGravityScores";
+    private bool displayingPose = false; // true during initial display of a pose (before player starts being scored)
 
     /// <summary>
     /// Keep track of which timers are currently active, and
@@ -101,7 +102,7 @@ public class ZeroGravityManager : MonoBehaviour
 
         if (poseAvatar.GetCurrentSpriteIndex() >= 0)
         {
-            CreateCompletedPoseSaveData();
+            CreatePoseSaveData();
         }
         currentPoseScore = 0;
 
@@ -111,6 +112,7 @@ public class ZeroGravityManager : MonoBehaviour
             EndGame();
         }
 
+        displayingPose = true;
         yield return new WaitForSeconds(poseDisplaySeconds);
         poseCountdownTimer.gameObject.SetActive(true);
         poseCountdownTimer.StartCountdown(poseCountdownSeconds);
@@ -123,6 +125,7 @@ public class ZeroGravityManager : MonoBehaviour
     private void HoldPose()
     {
         activeTimer = ActiveTimer.None;
+        displayingPose = false;
 
         poseCountdownTimer.gameObject.SetActive(false);
         poseHoldTimer.gameObject.SetActive(true);
@@ -166,6 +169,12 @@ public class ZeroGravityManager : MonoBehaviour
         // partial game's data
         if (gameActive)
         {
+            // If we haven't saved data for the current pose yet:
+            if ((poseAvatar.GetCurrentSpriteIndex() + 1) != gameData.Count())
+            {
+                CreatePoseSaveData();
+            }
+
             SaveGameData(false);
         }
     }
@@ -175,15 +184,29 @@ public class ZeroGravityManager : MonoBehaviour
         return gameData.Count() == 0 ? 1 : gameData.Last().poseNumber + 1;
     }
 
-    private void CreateCompletedPoseSaveData()
+    private void CreatePoseSaveData()
     {
         ZeroGravityData poseData = new ZeroGravityData();
         poseData.poseNumber = GetNextPoseNumber();
         poseData.poseType = poseAvatar.GetCurrentSpriteName();
         poseData.poseTimeLimitSeconds = poseHoldSeconds;
-        poseData.poseDurationSeconds = poseHoldSeconds;
-        poseData.balanceStabilityScore = currentPoseScore;
-        poseData.falls = swayLine.GetNTimesOutOfRange();
+
+        // If the pose is being displayed, but the player hasn't started to be scored yet
+        if (displayingPose)
+        {
+            poseData.poseDurationSeconds = 0;
+            poseData.balanceStabilityScore = null;
+            poseData.meanSwayVelocityCmPerSec = null;
+            poseData.falls = null;
+        }
+        else
+        {
+            poseData.poseDurationSeconds = MathsUtilities.RoundToNearestInt(
+                poseHoldTimer.GetElapsedTime()
+            );
+            poseData.balanceStabilityScore = currentPoseScore;
+            poseData.falls = swayLine.GetNTimesOutOfRange();
+        }
         gameData.Add(poseData);
     }
 
