@@ -80,7 +80,7 @@ public class StarCollectorManager : MonoBehaviour
 
     private float bufferWindowStart; // start time of buffer update window
     private bool outOfRangeInWindow = false; // whether the player went out of range of the tracker during this window
-    private HeadAngleBuffer headYawBuffer;
+    private HeadPoseBuffer headPoseBuffer;
     private List<float> headYawVelocities = new List<float>();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -94,7 +94,7 @@ public class StarCollectorManager : MonoBehaviour
         score = 0;
         scoreText.text = score.ToString();
 
-        headYawBuffer = new HeadAngleBuffer(maxNItemsInBuffer, minNItemsForVelocity);
+        headPoseBuffer = new HeadPoseBuffer(maxNItemsInBuffer, minNItemsForVelocity);
         timer.StartCountdown(timeLimit);
 
         speedWindowStart = Time.time;
@@ -155,10 +155,10 @@ public class StarCollectorManager : MonoBehaviour
             return;
         }
 
-        // Keep track of head yaw angles on every update
-        UpdateHeadYawBuffer();
+        // Keep track of head poses on every update
+        UpdateHeadPoseBuffer();
 
-        // Every 'samplingIntervalSeconds', record the velocity averaged over that time period
+        // Every 'samplingIntervalSeconds', record the yaw velocity averaged over that time period
         if (Time.time - bufferWindowStart >= samplingIntervalSeconds)
         {
             RecordHeadVelocity();
@@ -179,9 +179,9 @@ public class StarCollectorManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Add latest head yaw angle to buffer
+    /// Add latest head pose to buffer
     /// </summary>
-    private void UpdateHeadYawBuffer()
+    private void UpdateHeadPoseBuffer()
     {
         // If the player goes out of range of the tracker
         if (!tracker.isPlayerDetected())
@@ -191,8 +191,7 @@ public class StarCollectorManager : MonoBehaviour
         else
         {
             HeadPose headPose = tracker.getHeadPose();
-            HeadYawItem headYaw = new HeadYawItem(headPose);
-            headYawBuffer.addIfNew(headYaw);
+            headPoseBuffer.addIfNew(new HeadPoseItem(headPose));
         }
     }
 
@@ -205,7 +204,7 @@ public class StarCollectorManager : MonoBehaviour
         // (otherwise, if they've been out of range for a while, we may be calculating the speed of quite old data in the buffer)
         if (!outOfRangeInWindow)
         {
-            float headVelocity = headYawBuffer.getSpeed(samplingIntervalSeconds);
+            float headVelocity = headPoseBuffer.getSpeed(samplingIntervalSeconds, HeadPoseAxis.Yaw);
 
             // If there aren't enough recorded head yaw angles yet, the returned velocity is zero.
             // We don't want to include these readings in the overall averages.

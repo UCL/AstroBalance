@@ -39,7 +39,7 @@ class HeadPoseBuffer : TobiiBuffer<HeadPoseItem>
     /// The average speed of the buffer over the given time period. For Roll / Pitch / Yaw: in degrees per second.
     /// For X / Y / Z: in mm per second.
     /// </returns>
-    public float GetSpeed(float speedTime, HeadPoseAxis axis)
+    public float getSpeed(float speedTime, HeadPoseAxis axis)
     {
         float averageSpeed = 0f;
         if (!hasEnoughData)
