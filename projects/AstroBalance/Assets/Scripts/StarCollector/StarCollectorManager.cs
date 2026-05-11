@@ -58,11 +58,11 @@ public class StarCollectorManager : MonoBehaviour
 
     [
         SerializeField,
-        Tooltip("The minimum number of head yaw readings needed to calculate a head velocity")
+        Tooltip("The minimum number of head yaw readings needed to calculate a head speed")
     ]
-    private int minNItemsForVelocity = 5;
+    private int minNItemsForSpeed = 5;
 
-    [SerializeField, Tooltip("The number of seconds to calculate head yaw velocity over")]
+    [SerializeField, Tooltip("The number of seconds to calculate head yaw speed over")]
     private float samplingIntervalSeconds = 0.5f;
 
     private TextMeshProUGUI winText;
@@ -81,7 +81,7 @@ public class StarCollectorManager : MonoBehaviour
     private float bufferWindowStart; // start time of buffer update window
     private bool outOfRangeInWindow = false; // whether the player went out of range of the tracker during this window
     private HeadAngleBuffer headYawBuffer;
-    private List<float> headYawVelocities = new List<float>();
+    private List<float> headYawSpeeds = new List<float>();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -94,7 +94,7 @@ public class StarCollectorManager : MonoBehaviour
         score = 0;
         scoreText.text = score.ToString();
 
-        headYawBuffer = new HeadAngleBuffer(maxNItemsInBuffer, minNItemsForVelocity);
+        headYawBuffer = new HeadAngleBuffer(maxNItemsInBuffer, minNItemsForSpeed);
         timer.StartCountdown(timeLimit);
 
         speedWindowStart = Time.time;
@@ -158,10 +158,10 @@ public class StarCollectorManager : MonoBehaviour
         // Keep track of head yaw angles on every update
         UpdateHeadYawBuffer();
 
-        // Every 'samplingIntervalSeconds', record the velocity averaged over that time period
+        // Every 'samplingIntervalSeconds', record the speed averaged over that time period
         if (Time.time - bufferWindowStart >= samplingIntervalSeconds)
         {
-            RecordHeadVelocity();
+            RecordHeadSpeed();
         }
 
         // At end of time window, assess performance and update the difficulty
@@ -197,21 +197,21 @@ public class StarCollectorManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Record the latest head yaw velocity
+    /// Record the latest head yaw speed
     /// </summary>
-    private void RecordHeadVelocity()
+    private void RecordHeadSpeed()
     {
-        // Only record velocities if the player was in range of the tracker for the whole window.
+        // Only record speeds if the player was in range of the tracker for the whole window.
         // (otherwise, if they've been out of range for a while, we may be calculating the speed of quite old data in the buffer)
         if (!outOfRangeInWindow)
         {
-            float headVelocity = headYawBuffer.getSpeed(samplingIntervalSeconds);
+            float headSpeed = headYawBuffer.getSpeed(samplingIntervalSeconds);
 
-            // If there aren't enough recorded head yaw angles yet, the returned velocity is zero.
+            // If there aren't enough recorded head yaw angles yet, the returned speed is zero.
             // We don't want to include these readings in the overall averages.
-            if (headVelocity > 0)
+            if (headSpeed > 0)
             {
-                headYawVelocities.Add(headVelocity);
+                headYawSpeeds.Add(headSpeed);
             }
         }
 
@@ -326,25 +326,23 @@ public class StarCollectorManager : MonoBehaviour
             1 + Mathf.CeilToInt((timeLimit - minTimeLimit) / timeLimitIncrement);
         gameData.finalStarFallSpeed = starGenerator.GetStarSpeed();
 
-        if (headYawVelocities.Count() == 0)
+        if (headYawSpeeds.Count() == 0)
         {
-            gameData.headVelocityDegPerSecPeak = 0;
-            gameData.headVelocityDegPerSecMean = 0;
-            gameData.headVelocityDegPerSecSD = 0;
+            gameData.headSpeedDegPerSecPeak = 0;
+            gameData.headSpeedDegPerSecMean = 0;
+            gameData.headSpeedDegPerSecSD = 0;
         }
         else
         {
-            gameData.headVelocityDegPerSecPeak = MathsUtilities.RoundTo2DecimalPlaces(
-                headYawVelocities.Max()
+            gameData.headSpeedDegPerSecPeak = MathsUtilities.RoundTo2DecimalPlaces(
+                headYawSpeeds.Max()
             );
-            float average = headYawVelocities.Average();
-            gameData.headVelocityDegPerSecMean = MathsUtilities.RoundTo2DecimalPlaces(average);
+            float average = headYawSpeeds.Average();
+            gameData.headSpeedDegPerSecMean = MathsUtilities.RoundTo2DecimalPlaces(average);
             float standardDeviation = Mathf.Sqrt(
-                headYawVelocities.Average(v => Mathf.Pow(v - average, 2))
+                headYawSpeeds.Average(v => Mathf.Pow(v - average, 2))
             );
-            gameData.headVelocityDegPerSecSD = MathsUtilities.RoundTo2DecimalPlaces(
-                standardDeviation
-            );
+            gameData.headSpeedDegPerSecSD = MathsUtilities.RoundTo2DecimalPlaces(standardDeviation);
         }
 
         SaveGameData<StarCollectorData> saveData = new(saveFilename);
