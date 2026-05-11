@@ -337,11 +337,10 @@ public class StarCollectorManager : MonoBehaviour
             gameData.headSpeedDegPerSecPeak = MathsUtilities.RoundTo2DecimalPlaces(
                 headYawSpeeds.Max()
             );
-            float average = headYawSpeeds.Average();
-            gameData.headSpeedDegPerSecMean = MathsUtilities.RoundTo2DecimalPlaces(average);
-            float standardDeviation = Mathf.Sqrt(
-                headYawSpeeds.Average(v => Mathf.Pow(v - average, 2))
+            gameData.headSpeedDegPerSecMean = MathsUtilities.RoundTo2DecimalPlaces(
+                headYawSpeeds.Average()
             );
+            float standardDeviation = MathsUtilities.StandardDeviation(headYawSpeeds);
             gameData.headSpeedDegPerSecSD = MathsUtilities.RoundTo2DecimalPlaces(standardDeviation);
         }
 
