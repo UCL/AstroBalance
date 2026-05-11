@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Tobii.GameIntegration.Net;
 using UnityEngine;
 
@@ -46,6 +47,7 @@ public class SwayLine : MonoBehaviour
     private HeadPoseBuffer headPoseBuffer;
     private List<float> swayVelocities = new List<float>(); // recorded sway velocities while scoring is active
     private float timeOfNextVelocity; // time remaining on pose hold timer at next sway velocity measurement
+    private bool undetectedInWindow = false; // whether the tracker couldn't detect the player since the last velocity measurement
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -65,6 +67,7 @@ public class SwayLine : MonoBehaviour
         nTimesOutOfRange = 0;
         swayVelocities = new List<float>();
         headPoseBuffer = new HeadPoseBuffer(maxNItemsInBuffer, minNItemsForVelocity);
+        undetectedInWindow = false;
         this.timeIncrement = timeIncrement;
 
         // We base scoring on the pose hold timer so that everything stays in sync,
@@ -98,6 +101,15 @@ public class SwayLine : MonoBehaviour
         return nTimesOutOfRange;
     }
 
+    /// <summary>
+    /// Return the average sway velocity (in cm per second) while scoring was active.
+    /// This value is reset each time scoring is activated.
+    /// </summary>
+    public float GetMeanSwayVelocity()
+    {
+        return swayVelocities.Average();
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -105,11 +117,6 @@ public class SwayLine : MonoBehaviour
         {
             spriteRenderer.enabled = true;
             UpdateLinePosition();
-
-            if (scoringActive)
-            {
-                UpdateSwayVelocities();
-            }
         }
         else
         {
@@ -121,6 +128,11 @@ public class SwayLine : MonoBehaviour
             }
             headOutOfRange = true;
         }
+
+        if (scoringActive)
+        {
+            UpdateSwayVelocities();
+        }
     }
 
     /// <summary>
@@ -128,9 +140,16 @@ public class SwayLine : MonoBehaviour
     /// </summary>
     private void UpdateSwayVelocities()
     {
-        // Add latest head pose to buffer
-        HeadPose headPose = tracker.getHeadPose();
-        headPoseBuffer.addIfNew(new HeadPoseItem(headPose));
+        // If the player can't be detected by the tracker
+        if (!tracker.isPlayerDetected())
+        {
+            undetectedInWindow = true;
+        }
+        else
+        {
+            HeadPose headPose = tracker.getHeadPose();
+            headPoseBuffer.addIfNew(new HeadPoseItem(headPose));
+        }
 
         // Every 'samplingIntervalSeconds', record the head x velocity averaged over that time period
         if (poseHoldTimer.GetTimeRemaining() <= timeOfNextVelocity)
@@ -141,9 +160,11 @@ public class SwayLine : MonoBehaviour
             // We don't want to include these readings in the overall averages.
             if (swayVelocity > 0)
             {
-                swayVelocities.Add(swayVelocity);
+                // Record sway velocity in cm per second
+                swayVelocities.Add(swayVelocity / 10);
             }
 
+            undetectedInWindow = false;
             timeOfNextVelocity -= samplingIntervalSeconds;
         }
     }
