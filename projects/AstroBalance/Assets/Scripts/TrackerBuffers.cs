@@ -4,32 +4,25 @@ using System.Linq;
 using Tobii.GameIntegration.Net;
 
 /// <summary>
-/// Head rotation axes
+/// Head pose rotation and position axes
 /// </summary>
-enum RotationAxis
+enum HeadPoseAxis
 {
     Roll,
     Pitch,
     Yaw,
-}
-
-/// <summary>
-/// Position axes
-/// </summary>
-enum PositionAxis
-{
     X,
     Y,
     Z,
 }
 
 /// <summary>
-/// Holds a buffer for a head angle (pitch, yaw or roll).
+/// Holds a buffer for a head pose (position and rotation).
 /// </summary>
 class HeadPoseBuffer : TobiiBuffer<HeadPoseItem>
 {
     /// <summary>
-    /// Initializes a new instance of the HeadAngleBuffer class.
+    /// Initializes a new instance of the HeadPoseBuffer class.
     /// </summary>
     /// <param name="capacity">The maximum number of items that can be stored in the buffer.</param>
     /// <param name="minDataRequired">The minimum number of data points required to calculate a speed.</param>
@@ -38,86 +31,44 @@ class HeadPoseBuffer : TobiiBuffer<HeadPoseItem>
 
     /// <summary>
     /// Calculates the average speed of the buffer over a given time period.
-    /// Speed is calculated as the average change in angle divided by the total change in time
-    /// based on TimeStampMicroSeconds
+    /// Speed is calculated as the average change in angle (for roll / pitch / yaw) or position (X, Y, Z)
+    /// divided by the total change in time based on TimeStampMicroSeconds
     /// </summary>
     /// <param name="speedTime">The time period in seconds over which to calculate the average speed.</param>
-    /// <returns>The average speed of the buffer over the given time period (in degrees per second)</returns>
-    public float GetRotationSpeed(float speedTime, RotationAxis rotationAxis)
+    /// <returns>
+    /// The average speed of the buffer over the given time period. For Roll / Pitch / Yaw: in degrees per second.
+    /// For X / Y / Z: in mm per second.
+    /// </returns>
+    public float GetSpeed(float speedTime, HeadPoseAxis axis)
     {
         float averageSpeed = 0f;
         if (!hasEnoughData)
             return averageSpeed;
 
-        List<TimestampedValue> rotationValues = GetRotationValues(speedTime, rotationAxis);
-        return calculateAverageSpeed(rotationValues);
+        int timeInMicroseconds = (int)(speedTime * 1e6);
+        List<HeadPoseItem> headPoses = GetItems(timeInMicroseconds);
+
+        return calculateAverageSpeed(headPoses, axis);
     }
 
-    /// <summary>
-    /// Calculates the average speed of the buffer over a given time period.
-    /// Speed is calculated as the average change in position divided by the total change in time
-    /// based on TimeStampMicroSeconds
-    /// </summary>
-    /// <param name="speedTime">The time period in seconds over which to calculate the average speed.</param>
-    /// <returns>The average speed of the buffer over the given time period (in mm per second)</returns>
-    public float GetPositionSpeed(float speedTime, PositionAxis positionAxis)
+    private float calculateAverageSpeed(List<HeadPoseItem> headPoses, HeadPoseAxis axis)
     {
-        float averageSpeed = 0f;
-        if (!hasEnoughData)
-            return averageSpeed;
-
-        List<TimestampedValue> positionValues = GetPositionValues(speedTime, positionAxis);
-        return calculateAverageSpeed(positionValues);
-    }
-
-    private List<TimestampedValue> GetRotationValues(float timePeriod, RotationAxis rotationAxis)
-    {
-        int timeInMicroseconds = (int)(timePeriod * 1e6);
-        List<HeadPoseItem> headposes = GetItems(timeInMicroseconds);
-        List<TimestampedValue> rotationValues = new List<TimestampedValue>();
-
-        foreach (HeadPoseItem headpose in headposes)
-        {
-            TimestampedValue rotationValue = new();
-            rotationValue.value = headpose.GetRotation(rotationAxis);
-            rotationValue.TimeStampMicroSeconds = headpose.TimeStampMicroSeconds();
-        }
-
-        return rotationValues;
-    }
-
-    private List<TimestampedValue> GetPositionValues(float timePeriod, PositionAxis positionAxis)
-    {
-        int timeInMicroseconds = (int)(timePeriod * 1e6);
-        List<HeadPoseItem> headposes = GetItems(timeInMicroseconds);
-        List<TimestampedValue> positionValues = new List<TimestampedValue>();
-
-        foreach (HeadPoseItem headpose in headposes)
-        {
-            TimestampedValue positionValue = new();
-            positionValue.value = headpose.GetPosition(positionAxis);
-            positionValue.TimeStampMicroSeconds = headpose.TimeStampMicroSeconds();
-        }
-
-        return positionValues;
-    }
-
-    private float calculateAverageSpeed(List<TimestampedValue> signedPositions)
-    {
-        if (signedPositions.Count() < minDataRequired)
+        if (headPoses.Count() < minDataRequired)
         {
             return 0f;
         }
         float totalDistance = 0f;
-        for (int i = 0; i < signedPositions.Count() - 1; i++)
+        for (int i = 0; i < headPoses.Count() - 1; i++)
         {
-            totalDistance += Math.Abs(signedPositions[i + 1].value - signedPositions[i].value);
+            totalDistance += Math.Abs(
+                headPoses[i + 1].GetValue(axis) - headPoses[i].GetValue(axis)
+            );
         }
 
         double totalTime =
             (
-                signedPositions[0].TimeStampMicroSeconds
-                - signedPositions[signedPositions.Count() - 1].TimeStampMicroSeconds
+                headPoses[0].TimeStampMicroSeconds()
+                - headPoses[headPoses.Count() - 1].TimeStampMicroSeconds()
             ) / 1e6;
         float averageSpeed = (float)(totalDistance / totalTime);
 
@@ -259,36 +210,18 @@ class HeadPoseItem : ITimeStampMicroSeconds
 
     public long TimeStampMicroSeconds() => headPose.TimeStampMicroSeconds;
 
-    public float GetPosition(PositionAxis positionAxis)
+    public float GetValue(HeadPoseAxis axis)
     {
-        if (positionAxis == PositionAxis.X)
+        return axis switch
         {
-            return headPose.Position.X;
-        }
-        else if (positionAxis == PositionAxis.Y)
-        {
-            return headPose.Position.Y;
-        }
-        else
-        {
-            return headPose.Position.Z;
-        }
-    }
-
-    public float GetRotation(RotationAxis rotationAxis)
-    {
-        if (rotationAxis == RotationAxis.Yaw)
-        {
-            return headPose.Rotation.YawDegrees;
-        }
-        else if (rotationAxis == RotationAxis.Pitch)
-        {
-            return headPose.Rotation.PitchDegrees;
-        }
-        else
-        {
-            return headPose.Rotation.RollDegrees;
-        }
+            HeadPoseAxis.Roll => headPose.Rotation.RollDegrees,
+            HeadPoseAxis.Pitch => headPose.Rotation.PitchDegrees,
+            HeadPoseAxis.Yaw => headPose.Rotation.YawDegrees,
+            HeadPoseAxis.X => headPose.Position.X,
+            HeadPoseAxis.Y => headPose.Position.Y,
+            HeadPoseAxis.Z => headPose.Position.Z,
+            _ => throw new InvalidOperationException("Unknown head pose axis"),
+        };
     }
 }
 
