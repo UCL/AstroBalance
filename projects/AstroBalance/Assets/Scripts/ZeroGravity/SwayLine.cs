@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Tobii.GameIntegration.Net;
 using UnityEngine;
 
@@ -18,6 +19,21 @@ public class SwayLine : MonoBehaviour
     [SerializeField, Tooltip("Outside x range colour")]
     private Color outRangeColor = Color.black;
 
+    [
+        SerializeField,
+        Tooltip("Maximum number of head x position readings to keep in the buffer at one time")
+    ]
+    private int maxNItemsInBuffer = 100;
+
+    [
+        SerializeField,
+        Tooltip("The minimum number of head position readings needed to calculate a sway velocity")
+    ]
+    private int minNItemsForVelocity = 5;
+
+    [SerializeField, Tooltip("The number of seconds to calculate sway velocity over")]
+    private float samplingIntervalSeconds = 0.5f;
+
     private Tracker tracker;
     private SpriteRenderer spriteRenderer;
     private ZeroGravityManager gameManager;
@@ -26,6 +42,10 @@ public class SwayLine : MonoBehaviour
     private float timeOfNextScoreIncrease; // time remaining on pose hold timer at next score increase
     private bool headOutOfRange = false;
     private int nTimesOutOfRange = 0; // number of times the player's head has gone out of range while scoring is active
+
+    private HeadPoseBuffer headPoseBuffer;
+    private List<float> swayVelocities = new List<float>(); // recorded sway velocities while scoring is active
+    private float timeOfNextVelocity; // time remaining on pose hold timer at next sway velocity measurement
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -43,11 +63,15 @@ public class SwayLine : MonoBehaviour
     public void ActivateScoring(int timeLimit, float timeIncrement)
     {
         nTimesOutOfRange = 0;
+        swayVelocities = new List<float>();
+        headPoseBuffer = new HeadPoseBuffer(maxNItemsInBuffer, minNItemsForVelocity);
         this.timeIncrement = timeIncrement;
+
         // We base scoring on the pose hold timer so that everything stays in sync,
         // and exactly matches the displayed countdown times
         poseHoldTimer.StartCountdown(timeLimit);
         timeOfNextScoreIncrease = timeLimit - timeIncrement;
+        timeOfNextVelocity = timeLimit - samplingIntervalSeconds;
         scoringActive = true;
     }
 
@@ -81,6 +105,11 @@ public class SwayLine : MonoBehaviour
         {
             spriteRenderer.enabled = true;
             UpdateLinePosition();
+
+            if (scoringActive)
+            {
+                UpdateSwayVelocities();
+            }
         }
         else
         {
@@ -91,6 +120,31 @@ public class SwayLine : MonoBehaviour
                 nTimesOutOfRange++;
             }
             headOutOfRange = true;
+        }
+    }
+
+    /// <summary>
+    /// Update measurements of sway velocity (head x position velocity)
+    /// </summary>
+    private void UpdateSwayVelocities()
+    {
+        // Add latest head pose to buffer
+        HeadPose headPose = tracker.getHeadPose();
+        headPoseBuffer.addIfNew(new HeadPoseItem(headPose));
+
+        // Every 'samplingIntervalSeconds', record the head x velocity averaged over that time period
+        if (poseHoldTimer.GetTimeRemaining() <= timeOfNextVelocity)
+        {
+            float swayVelocity = headPoseBuffer.getSpeed(samplingIntervalSeconds, HeadPoseAxis.X);
+
+            // If there aren't enough recorded head x positions yet, the returned velocity is zero.
+            // We don't want to include these readings in the overall averages.
+            if (swayVelocity > 0)
+            {
+                swayVelocities.Add(swayVelocity);
+            }
+
+            timeOfNextVelocity -= samplingIntervalSeconds;
         }
     }
 
