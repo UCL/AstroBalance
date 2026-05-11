@@ -196,7 +196,6 @@ public class ZeroGravityManager : MonoBehaviour
         {
             poseData.poseDurationSeconds = 0;
             poseData.balanceStabilityScore = null;
-            poseData.meanSwayVelocityCmPerSec = null;
             poseData.falls = null;
         }
         else
@@ -205,7 +204,6 @@ public class ZeroGravityManager : MonoBehaviour
                 poseHoldTimer.GetElapsedTime()
             );
             poseData.balanceStabilityScore = currentPoseScore;
-            poseData.meanSwayVelocityCmPerSec = swayLine.GetMeanSwayVelocity();
             poseData.falls = swayLine.GetNTimesOutOfRange();
         }
         gameData.Add(poseData);
