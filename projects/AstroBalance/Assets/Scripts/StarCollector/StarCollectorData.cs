@@ -10,7 +10,7 @@ public class StarCollectorData : GameData
     public float percentStarsCollected;
     public int adaptiveLevel;
     public float finalStarFallSpeed;
-    public float headVelocityDegPerSecMean;
-    public float headVelocityDegPerSecPeak;
-    public float headVelocityDegPerSecSD;
+    public float headSpeedDegPerSecMean;
+    public float headSpeedDegPerSecPeak;
+    public float headSpeedDegPerSecSD;
 }
