@@ -68,7 +68,7 @@ public class ZeroGravityManager : MonoBehaviour
         scoreText = scoreDisplay.GetComponentInChildren<TextMeshProUGUI>();
 
         // Record game start time, so it can be used in all trial save data
-        StarMapData data = new();
+        ZeroGravityData data = new();
         data.LogEndTime();
         gameStartTime = data.startTime;
 
