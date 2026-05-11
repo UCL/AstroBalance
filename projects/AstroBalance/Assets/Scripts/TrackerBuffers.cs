@@ -174,15 +174,6 @@ interface ITimeStampMicroSeconds
 }
 
 /// <summary>
-/// A general class for a value with a timestamp
-/// </summary>
-class TimestampedValue
-{
-    public long TimeStampMicroSeconds;
-    public float value;
-}
-
-/// <summary>
 /// Wrapper for Tobii gazepoint data, implementing timestamp interface.
 /// </summary>
 class GazeItem : ITimeStampMicroSeconds
