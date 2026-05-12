@@ -108,6 +108,7 @@ public class LaunchControl : MonoBehaviour
     private GazeBuffer gazeBuffer;
 
     private string saveFilename = "RocketLaunchScores";
+    private bool gameActive = true;
 
     private TextMeshProUGUI winText;
 
@@ -316,16 +317,30 @@ public class LaunchControl : MonoBehaviour
 
     private void EndGame()
     {
-        winText.text = "Blast Off! Well Done.";
-        winScreen.SetActive(true);
-        SaveGameData();
-        this.enabled = false;
+        if (gameActive)
+        {
+            gameActive = false;
+            winText.text = "Blast Off! Well Done.";
+            winScreen.SetActive(true);
+            SaveGameData(true);
+            this.enabled = false;
+        }
     }
 
-    private void SaveGameData()
+    private void OnDestroy()
+    {
+        // If the scene is exited early (e.g. with the exit button), then save this
+        // partial game's data
+        if (gameActive)
+        {
+            SaveGameData(false);
+        }
+    }
+
+    private void SaveGameData(bool gameComplete)
     {
         // Update save data for this game
-        gameData.gameCompleted = true;
+        gameData.gameCompleted = gameComplete;
         gameData.pitch = usePitch;
         gameData.launchTimeSeconds = launchTime;
         gameData.LogEndTime();
@@ -334,7 +349,10 @@ public class LaunchControl : MonoBehaviour
         saveData.Save(gameData);
 
         // Update save data for this session
-        CaptureSessionData.MarkGameAsComplete("nCompleteRocketLaunchGames");
+        if (gameComplete)
+        {
+            CaptureSessionData.MarkGameAsComplete("nCompleteRocketLaunchGames");
+        }
     }
 
     private void incrementCountDownCode()
