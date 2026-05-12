@@ -40,7 +40,7 @@ Data is saved to `StarCollectorScores.csv`, with one row per played game. Values
 - `adaptiveLevel`: an integer (1 or above) representing the current difficulty level. Every time the game time limit is increased, this level increases by one.
 - `finalStarFallSpeed`: Speed of falling stars (unity units per second) at the end of the game.
 
-**Note**: all head speed measures below are calculated as follows. Every `samplingIntervalSeconds` (a configurable parameter in `StarCollectorManager`), all head yaw angle readings from that time period are summed together and divided by the total difference in time to give a speed in degrees per second.
+**Note**: all head speed measures below are calculated as follows. Every `samplingIntervalSeconds` (a configurable parameter in `StarCollectorManager`), the absolute differences of head yaw angle between consecutive readings in the time period are summed together and divided by the total difference in time to give a speed in degrees per second.
 If the player goes out of range at any point in those `samplingIntervalSeconds` (i.e. the tracker can no longer detect them), then that speed measurement is discarded. 
 
 At the end of the game, all sampled speed measurements are used to calculate the summary statistics below:
