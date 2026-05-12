@@ -82,7 +82,7 @@ public class SpaceWalkingManager : MonoBehaviour
 
     /// <summary>
     /// Load previous game data (if any), and choose time limit + whether head turns are active
-    /// for this game based on prior perfomance.
+    /// for this game based on prior performance.
     /// </summary>
     private void ChooseGameDifficulty()
     {

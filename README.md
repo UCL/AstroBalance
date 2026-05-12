@@ -14,6 +14,7 @@ You may need to [download the drivers](https://www.gaming.tobii.com/getstarted/)
 
 Documentation for each mini-game is provided under [`docs/`](/docs/) covering:
 - how to edit important values during play testing.
+- how adaptive difficulty works for each mini-game
 - the save data each mini-game produces
 
 ## Developing

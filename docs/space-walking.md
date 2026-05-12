@@ -28,6 +28,18 @@ The space walking mini-game scores the player on completed steps (up / down / le
   - Label text for the arrow
   - Colour of arrow fill
 
+## Adaptive difficulty
+
+Difficulty is increased between games by increasing the overall time limit, and adding head turns in between each step.
+
+Progression is as follows (all mentioned parameters are configurable on `SpaceWalkingManager`):
+- games start with a time limit of `minTimeLimit` and no head turns
+- a difficulty upgrade occurs when the player has completed `nGamesToUpgrade` games _in a row_ with:
+  - the same time limit 
+  - an average of `upgradeRate` steps per second (one step = one step out and back to the centre)
+- For each upgrade, the time limit is increased by `timeLimitIncrement` (up to a maximum of `maxTimeLimit`). After `maxTimeLimit` is reached, the next upgrade adds head turns between the steps.
+- From then on, all games use the `maxTimeLimit` and include head turns. 
+
 ## Save data
 
 Data is saved to `SpaceWalkingScores.csv`, with one row per played game. Values are:
