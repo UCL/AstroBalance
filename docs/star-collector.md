@@ -22,6 +22,32 @@ top of the screen.
 
 - **Ship**: values related to ship movement
   - The amount the ship moves per degree of head movement (X By Degrees)
+
+## Adaptive difficulty
+
+Difficulty is increased in two ways:
+- within each game the star fall speed adapts to player performance
+- between games, the overall game time limit increases
+
+### Within game (star speed)
+
+Note: all mentioned parameters can be adjusted on `StarGenerator` / `StarCollectorManager`.
+
+- Every game, stars start falling at the same rate of `baseStarSpeed`.
+- Every `difficultyWindowSeconds`, the star fall speed either increases or decreases by `speedIncrement`:
+  - If the player collects more than `speedUpgradePercent` of the stars that fell in the last `difficultyWindowSeconds`, it increases.
+  - Otherwise it decreases.
+- Star speed is capped between `minStarSpeed` and `maxStarSpeed`.
+
+### Between games (time limit)
+
+Progression is as follows (all mentioned parameters are configurable on `StarCollectorManager`):
+- games start with a time limit of `minTimeLimit`
+- a difficulty upgrade occurs when the player has completed `nGamesToUpgrade` games _in a row_ with:
+  - the same time limit 
+  - more than `timeLimitUpgradePercent` of all stars in the game collected
+- For each upgrade, the time limit is increased by `timeLimitIncrement` (up to a maximum of `maxTimeLimit`).
+- From then on, all games use the `maxTimeLimit`. 
   
 ## Save data
 
