@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Tobii.GameIntegration.Net;
 using UnityEngine;
 
 public class StarCollectorManager : MonoBehaviour
@@ -49,17 +50,38 @@ public class StarCollectorManager : MonoBehaviour
     ]
     private int timeLimitUpgradePercent = 60;
 
+    [
+        SerializeField,
+        Tooltip("Maximum number of head yaw readings to keep in the buffer at one time")
+    ]
+    private int maxNItemsInBuffer = 100;
+
+    [
+        SerializeField,
+        Tooltip("The minimum number of head yaw readings needed to calculate a head speed")
+    ]
+    private int minNItemsForSpeed = 5;
+
+    [SerializeField, Tooltip("The number of seconds to calculate head yaw speed over")]
+    private float samplingIntervalSeconds = 0.5f;
+
     private TextMeshProUGUI winText;
+    private Tracker tracker;
     private int timeLimit;
     private int score; // stars collected over whole game
     private int missed; // stars missed over whole game
     private bool gameActive = true;
 
-    private float windowStart;
+    private float speedWindowStart; // start time of speed upgrade window
     private int scoreInTimeWindow = 0; // stars collected in time window
     private int missedInTimeWindow = 0; // stars missed in time window
     private string saveFilename = "StarCollectorScores";
     private StarCollectorData gameData;
+
+    private float bufferWindowStart; // start time of buffer update window
+    private bool outOfRangeInWindow = false; // whether the player went out of range of the tracker during this window
+    private HeadAngleBuffer headYawBuffer;
+    private List<float> headYawSpeeds = new List<float>();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -67,12 +89,16 @@ public class StarCollectorManager : MonoBehaviour
         ChooseGameTimeLimit();
 
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
+        tracker = FindFirstObjectByType<Tracker>();
         gameData = new StarCollectorData();
         score = 0;
         scoreText.text = score.ToString();
+
+        headYawBuffer = new HeadAngleBuffer(maxNItemsInBuffer, minNItemsForSpeed);
         timer.StartCountdown(timeLimit);
 
-        windowStart = Time.time;
+        speedWindowStart = Time.time;
+        bufferWindowStart = Time.time;
     }
 
     /// <summary>
@@ -129,9 +155,18 @@ public class StarCollectorManager : MonoBehaviour
             return;
         }
 
+        // Keep track of head yaw angles on every update
+        UpdateHeadYawBuffer();
+
+        // Every 'samplingIntervalSeconds', record the speed averaged over that time period
+        if (Time.time - bufferWindowStart >= samplingIntervalSeconds)
+        {
+            RecordHeadSpeed();
+        }
+
         // At end of time window, assess performance and update the difficulty
         // of the game
-        if (Time.time - windowStart >= difficultyWindowSeconds)
+        if (Time.time - speedWindowStart >= difficultyWindowSeconds)
         {
             UpdateDifficulty();
         }
@@ -141,6 +176,47 @@ public class StarCollectorManager : MonoBehaviour
         {
             EndGame();
         }
+    }
+
+    /// <summary>
+    /// Add latest head yaw angle to buffer
+    /// </summary>
+    private void UpdateHeadYawBuffer()
+    {
+        // If the player goes out of range of the tracker
+        if (!tracker.isPlayerDetected())
+        {
+            outOfRangeInWindow = true;
+        }
+        else
+        {
+            HeadPose headPose = tracker.getHeadPose();
+            HeadYawItem headYaw = new HeadYawItem(headPose);
+            headYawBuffer.addIfNew(headYaw);
+        }
+    }
+
+    /// <summary>
+    /// Record the latest head yaw speed
+    /// </summary>
+    private void RecordHeadSpeed()
+    {
+        // Only record speeds if the player was in range of the tracker for the whole window.
+        // (otherwise, if they've been out of range for a while, we may be calculating the speed of quite old data in the buffer)
+        if (!outOfRangeInWindow)
+        {
+            float headSpeed = headYawBuffer.getSpeed(samplingIntervalSeconds);
+
+            // If there aren't enough recorded head yaw angles yet, the returned speed is zero.
+            // We don't want to include these readings in the overall averages.
+            if (headSpeed > 0)
+            {
+                headYawSpeeds.Add(headSpeed);
+            }
+        }
+
+        outOfRangeInWindow = false;
+        bufferWindowStart = Time.time;
     }
 
     /// <summary>
@@ -164,7 +240,7 @@ public class StarCollectorManager : MonoBehaviour
             starGenerator.DecreaseSpeed();
         }
 
-        windowStart = Time.time;
+        speedWindowStart = Time.time;
         scoreInTimeWindow = 0;
         missedInTimeWindow = 0;
     }
@@ -220,26 +296,63 @@ public class StarCollectorManager : MonoBehaviour
             winScreen.SetActive(true);
 
             // Save game details to file
-            SaveGameData();
+            SaveGameData(true);
         }
     }
 
-    private void SaveGameData()
+    private void OnDestroy()
     {
-        float totalStars = score + missed;
-        float percentCollected = ((float)score / totalStars) * 100;
+        // If the scene is exited early (e.g. with the exit button), then save this
+        // partial game's data
+        if (gameActive)
+        {
+            SaveGameData(false);
+        }
+    }
 
+    private void SaveGameData(bool gameComplete)
+    {
         // Update save data for this game
-        gameData.gameCompleted = true;
+        gameData.gameCompleted = gameComplete;
         gameData.timeLimitSeconds = timeLimit;
-        gameData.nStarsCollected = score;
-        gameData.percentStarsCollected = percentCollected;
+        gameData.gameDurationSeconds = MathsUtilities.RoundToNearestInt(timer.GetElapsedTime());
         gameData.LogEndTime();
 
+        float totalStars = score + missed;
+        float percentCollected = ((float)score / totalStars) * 100;
+        gameData.nStarsCollected = score;
+        gameData.percentStarsCollected = MathsUtilities.RoundTo2DecimalPlaces(percentCollected);
+        gameData.adaptiveLevel =
+            1 + Mathf.CeilToInt((timeLimit - minTimeLimit) / timeLimitIncrement);
+        gameData.finalStarFallSpeed = starGenerator.GetStarSpeed();
+
+        if (headYawSpeeds.Count() == 0)
+        {
+            gameData.headSpeedDegPerSecPeak = 0;
+            gameData.headSpeedDegPerSecMean = 0;
+            gameData.headSpeedDegPerSecSD = 0;
+        }
+        else
+        {
+            gameData.headSpeedDegPerSecPeak = MathsUtilities.RoundTo2DecimalPlaces(
+                headYawSpeeds.Max()
+            );
+            gameData.headSpeedDegPerSecMean = MathsUtilities.RoundTo2DecimalPlaces(
+                headYawSpeeds.Average()
+            );
+            float standardDeviation = MathsUtilities.StandardDeviation(headYawSpeeds);
+            gameData.headSpeedDegPerSecSD = MathsUtilities.RoundTo2DecimalPlaces(standardDeviation);
+        }
+
         SaveGameData<StarCollectorData> saveData = new(saveFilename);
+        gameData.sessionNumber = CaptureSessionData.CurrentSessionNumber();
+        gameData.gameNumber = saveData.GetNextGameNumber();
         saveData.Save(gameData);
 
         // Update save data for this session
-        CaptureSessionData.MarkGameAsComplete("nCompleteStarCollectorGames");
+        if (gameComplete)
+        {
+            CaptureSessionData.MarkGameAsComplete("nCompleteStarCollectorGames");
+        }
     }
 }

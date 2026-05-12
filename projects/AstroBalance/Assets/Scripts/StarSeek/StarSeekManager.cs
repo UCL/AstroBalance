@@ -157,18 +157,9 @@ public class StarSeekManager : MonoBehaviour
         // Update save data for this game
         gameData.gameCompleted = gameComplete;
         gameData.timeLimitSeconds = timeLimit;
-
-        float remainingTime = timer.GetTimeRemaining();
-        if (remainingTime > 0)
-        {
-            gameData.gameDurationSeconds = Mathf.FloorToInt(timeLimit - remainingTime + 0.5f);
-        }
-        else
-        {
-            gameData.gameDurationSeconds = timeLimit;
-        }
-
+        gameData.gameDurationSeconds = MathsUtilities.RoundToNearestInt(timer.GetElapsedTime());
         gameData.LogEndTime();
+
         gameData.nStarsCollected = score;
         gameData.adaptiveLevel =
             1 + Mathf.CeilToInt((timeLimit - minTimeLimit) / timeLimitIncrement);

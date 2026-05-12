@@ -67,6 +67,7 @@ public class CountdownTimer : MonoBehaviour
     {
         UpdateTimerText(0);
         timerRunning = false;
+        timeRemaining = 0;
     }
 
     /// <summary>
@@ -74,7 +75,15 @@ public class CountdownTimer : MonoBehaviour
     /// </summary>
     public float GetTimeRemaining()
     {
-        return timeRemaining;
+        return timeRemaining < 0 ? 0 : timeRemaining;
+    }
+
+    /// <summary>
+    /// Get elapsed time in seconds (time limit - time remaining)
+    /// </summary>
+    public float GetElapsedTime()
+    {
+        return timeLimit - GetTimeRemaining();
     }
 
     /// <summary>
