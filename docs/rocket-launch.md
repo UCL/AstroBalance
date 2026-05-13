@@ -17,6 +17,10 @@ then a timer decrements until launch time is achieved.
     - Gaze Tolerance - the allowable gaze standard deviation to be steady. Smaller number will require steadier gaze. This may be reduced by the adaptive difficulty settings below.
     - Target Object if this is set you are required to look at that object, if not gaze can be anywhere on screen but must be steady.
 
+  - **Adaptive difficulty variables**
+    - Max previous games: The maximum number of previous games to retrieve to determine experience based difficulty
+    - Adaptive difficulty: integer describing level of adaptive difficulty - higher numbers are more difficult.
+
   - **User Interface Items**:
     - Count down sprites: A list of sprites to use for the count down code display.
     - Instructions Text: A text box to place the instruction text.
