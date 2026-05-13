@@ -363,7 +363,9 @@ public class LaunchControl : MonoBehaviour
         TimeSpan gameDuration = DateTime
             .Parse(gameData.endTime)
             .Subtract(DateTime.Parse(gameData.startTime));
-        gameData.gameDurationSeconds = gameDuration.Seconds;
+        gameData.gameDurationSeconds = MathsUtilities.RoundToNearestInt(
+            (float)gameDuration.TotalSeconds
+        );
 
         SaveGameData<RocketLaunchData> saveData = new(saveFilename);
         gameData.sessionNumber = CaptureSessionData.CurrentSessionNumber();
