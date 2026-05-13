@@ -49,4 +49,4 @@ Data is saved to `RocketLaunchScores.csv`, with one row per played game. Values 
 - `gameCompleted`: whether this game was completed. If they exited early, this will be false.
 - `headMovementPlane`: the direction of head movement - either 'pitch' (up-down movement) or 'yaw' (left-right movement).
 - `launchTimeSeconds`: the number of seconds the player had to keep their eyes steady on the target while moving their head at the required speed to launch the rocket. Rounded to 2 decimal places.
-- `gameDurationSeconds`: how long the game was played (rounded to the nearest second). If the game was played through to completion this will be equal to timeLimitSeconds; if they exited early, it will be less.
+- `gameDurationSeconds`: how long the game was played (rounded to the nearest second). If the player exited before the game finished, this will be less than launchTimeSeconds; if they played the game through to completion it will be longer than launchTimeSeconds (as this includes time when the player wasn't looking at the target / wasn't moving their head fast enough etc.)
