@@ -35,3 +35,17 @@ then a timer decrements until launch time is achieved.
 
 - **SmokeController**: Attached to ground left/right emitter.
   - Smoke Emission Scale: A larger value will increase the amount of smoke emitted for a given head speed.
+
+
+## Adaptive difficulty
+
+Difficulty is increased between games by reducing the size of the gaze target, reducing the gaze tolerance, and increasing the overall launch time (explained below). Note: all parameters mentioned below can be adjusted on `LaunchControl`. 
+
+At the start of each game, a scaling factor is calculated as: 
+
+`adaptiveDifficulty` * ( (`maxPreviousGames` + `nGames`) / `maxPreviousGames`) 
+
+`nGames` is the total number of rocket launch games completed by the player so far (up to a maximum of `maxPreviousGames`). The scaling factor is then applied:
+- the size of the gaze target (the box displaying the launch code numbers) is divided by the scaling factor. This makes it smaller after more games have been played.
+- the gaze tolerance (i.e. the tolerance in unity coordinates that gaze needs to stay within) is divided by the scaling factor. This means the player must keep their gaze closer to the target after more games have been played.
+- the launch time is multiplied by the scaling factor. This means the player must move their head while looking at the target for longer to launch the rocket.
