@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -357,6 +358,13 @@ public class LaunchControl : MonoBehaviour
         gameData.minimumHeadSpeed = MathsUtilities.RoundTo2DecimalPlaces(minimumSpeed);
         gameData.LogEndTime();
 
+        // There's no overall timer for this game, so we instead use the logged start / end
+        // time (HH:mm:ss) to estimate the game duration.
+        TimeSpan gameDuration = DateTime
+            .Parse(gameData.endTime)
+            .Subtract(DateTime.Parse(gameData.startTime));
+        gameData.gameDurationSeconds = gameDuration.Seconds;
+
         SaveGameData<RocketLaunchData> saveData = new(saveFilename);
         gameData.sessionNumber = CaptureSessionData.CurrentSessionNumber();
         gameData.gameNumber = saveData.GetNextGameNumber();
@@ -371,7 +379,9 @@ public class LaunchControl : MonoBehaviour
 
     private void incrementCountDownCode()
     {
-        Sprite newCountDownSprite = countDownSprites[Random.Range(0, countDownSprites.Count)];
+        Sprite newCountDownSprite = countDownSprites[
+            UnityEngine.Random.Range(0, countDownSprites.Count)
+        ];
         // remove the number from the list to avoid selected a repeat number next time.
         countDownSprites.Remove(newCountDownSprite);
         if (countDownSprite != null)
