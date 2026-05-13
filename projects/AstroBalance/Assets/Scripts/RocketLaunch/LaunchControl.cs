@@ -133,14 +133,15 @@ public class LaunchControl : MonoBehaviour
         gazeTolerance /= adaptiveDifficulty;
         launchTime *= adaptiveDifficulty;
 
-        if (lastGameData.Count() == 0)
+        if (lastGameData.Count() == 0 || lastGameData.Last().headMovementPlane == "yaw")
         {
             usePitch = true;
         }
         else
         {
-            usePitch = !lastGameData.Last().pitch;
+            usePitch = false;
         }
+
         headPoseBuffer = new HeadPoseBuffer(headPoseBufferCapacity, minDataRequired);
         instructionsText.text = usePitch
             ? "Nod your head and repeat the code to launch the rocket!"
@@ -341,11 +342,21 @@ public class LaunchControl : MonoBehaviour
     {
         // Update save data for this game
         gameData.gameCompleted = gameComplete;
-        gameData.pitch = usePitch;
+        if (usePitch)
+        {
+            gameData.headMovementPlane = "pitch";
+        }
+        else
+        {
+            gameData.headMovementPlane = "yaw";
+        }
+
         gameData.launchTimeSeconds = launchTime;
         gameData.LogEndTime();
 
         SaveGameData<RocketLaunchData> saveData = new(saveFilename);
+        gameData.sessionNumber = CaptureSessionData.CurrentSessionNumber();
+        gameData.gameNumber = saveData.GetNextGameNumber();
         saveData.Save(gameData);
 
         // Update save data for this session

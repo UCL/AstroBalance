@@ -4,6 +4,7 @@
 [System.Serializable]
 public class RocketLaunchData : GameData
 {
-    public bool pitch; // true if head pitch was used, false if yaw was used
+    public string headMovementPlane;
+    public int gameDurationSeconds;
     public float launchTimeSeconds;
 }
