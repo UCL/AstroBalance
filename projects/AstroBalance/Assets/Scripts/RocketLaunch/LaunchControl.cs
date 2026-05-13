@@ -20,16 +20,16 @@ public class LaunchControl : MonoBehaviour
     [SerializeField, Tooltip("The time in seconds to measure head speed over.")]
     private float speedTime = 2.0f;
 
-    [SerializeField, Tooltip("The minimum head speed required to reduce the launch timer.")]
-    private float minimumSpeed = 20;
+    [SerializeField, Tooltip("The minimum head pitch speed required to reduce the launch timer.")]
+    private float minimumSpeedPitch = 20;
 
     [
         SerializeField,
         Tooltip(
-            "A pitch/yaw scale factor, as in general I can shake my head faster than I can nod."
+            "The minimum head yaw speed required to reduce the launch timer. This is set higher than for pitch, as in general I can shake my head faster than I can nod"
         )
     ]
-    private float shakeSpeedReduction = 0.5f;
+    private float minimumSpeedYaw = 40;
 
     [Header("Steady Gaze Variables")]
     [SerializeField, Tooltip("Time between new random numbers in seconds.")]
@@ -96,10 +96,11 @@ public class LaunchControl : MonoBehaviour
     // head speed parameters
     private HeadPoseBuffer headPoseBuffer;
     private bool usePitch; //true if we're using pitch speed, false if we're using yaw speed.
+    private float minimumSpeed; // minimum head speed required for this game
+    private float headSpeed; // current head speed
     private RocketLaunchData gameData;
     private float rocketSpeed;
     private int minDataRequired = 2; // we need at least 2 data points to calculate a speed or steadiness
-    private float headSpeed;
     private float mouseToGazeScale = 10f; // if we're debugging using the mouse the reported speeds are much higher than with gaze.
 
     // gaze steadiness paraemeters
@@ -136,10 +137,12 @@ public class LaunchControl : MonoBehaviour
         if (lastGameData.Count() == 0 || lastGameData.Last().headMovementPlane == "yaw")
         {
             usePitch = true;
+            minimumSpeed = minimumSpeedPitch;
         }
         else
         {
             usePitch = false;
+            minimumSpeed = minimumSpeedYaw;
         }
 
         headPoseBuffer = new HeadPoseBuffer(headPoseBufferCapacity, minDataRequired);
@@ -183,10 +186,8 @@ public class LaunchControl : MonoBehaviour
             else
             {
                 headSpeed =
-                    (
-                        headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Yaw)
-                        - headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Pitch)
-                    ) * shakeSpeedReduction;
+                    headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Yaw)
+                    - headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Pitch);
             }
             headSpeed = Mathf.Max(0, headSpeed); // Clamp to zero to avoid negative speeds
 
@@ -352,6 +353,8 @@ public class LaunchControl : MonoBehaviour
         }
 
         gameData.launchTimeSeconds = MathsUtilities.RoundTo2DecimalPlaces(launchTime);
+        gameData.gazeTolerance = MathsUtilities.RoundTo2DecimalPlaces(gazeTolerance);
+        gameData.minimumHeadSpeed = MathsUtilities.RoundTo2DecimalPlaces(minimumSpeed);
         gameData.LogEndTime();
 
         SaveGameData<RocketLaunchData> saveData = new(saveFilename);

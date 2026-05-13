@@ -7,4 +7,6 @@ public class RocketLaunchData : GameData
     public string headMovementPlane;
     public int gameDurationSeconds;
     public float launchTimeSeconds;
+    public float minimumHeadSpeed;
+    public float gazeTolerance;
 }
