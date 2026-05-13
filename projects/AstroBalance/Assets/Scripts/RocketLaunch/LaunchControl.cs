@@ -147,7 +147,7 @@ public class LaunchControl : MonoBehaviour
             ? "Nod your head and repeat the code to launch the rocket!"
             : "Shake your head and repeat the code to launch the rocket!";
         gameData = new RocketLaunchData();
-        timeToLaunch = (float)launchTime * adaptiveDifficulty;
+        timeToLaunch = launchTime;
         gazeBuffer = new GazeBuffer(gazeBufferCapacity, minDataRequired);
         incrementCountDownCode();
     }
