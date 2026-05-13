@@ -351,7 +351,7 @@ public class LaunchControl : MonoBehaviour
             gameData.headMovementPlane = "yaw";
         }
 
-        gameData.launchTimeSeconds = launchTime;
+        gameData.launchTimeSeconds = MathsUtilities.RoundTo2DecimalPlaces(launchTime);
         gameData.LogEndTime();
 
         SaveGameData<RocketLaunchData> saveData = new(saveFilename);

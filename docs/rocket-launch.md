@@ -35,3 +35,18 @@ then a timer decrements until launch time is achieved.
 
 - **SmokeController**: Attached to ground left/right emitter.
   - Smoke Emission Scale: A larger value will increase the amount of smoke emitted for a given head speed.
+
+
+## Save data
+
+Data is saved to `RocketLaunchScores.csv`, with one row per played game. Values are:
+
+- `gameNumber`: a unique id per played rocket launch game
+- `sessionNumber`: the session this game was played in (corresponds to sessionNumber in [`SessionSummary.csv`](./session-summary.md))
+- `date`: the date of the game session in format YYYY-MM-DD
+- `startTime`: the game start time in format HH:MM:ss. This is the local time (e.g. if your computer is set to UK time - this is UK time).
+- `endTime`: the game end time in format HH:MM:ss (local time - see startTime description)
+- `gameCompleted`: whether this game was completed. If they exited early, this will be false.
+- `headMovementPlane`: the direction of head movement - either 'pitch' (up-down movement) or 'yaw' (left-right movement).
+- `launchTimeSeconds`: the number of seconds the player had to keep their eyes steady on the target while moving their head at the required speed to launch the rocket. Rounded to 2 decimal places.
+- `gameDurationSeconds`: how long the game was played (rounded to the nearest second). If the game was played through to completion this will be equal to timeLimitSeconds; if they exited early, it will be less.
