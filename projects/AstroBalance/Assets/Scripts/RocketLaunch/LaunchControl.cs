@@ -20,16 +20,16 @@ public class LaunchControl : MonoBehaviour
     [SerializeField, Tooltip("The time in seconds to measure head speed over.")]
     private float speedTime = 2.0f;
 
-    [SerializeField, Tooltip("The minimum head speed required to reduce the launch timer.")]
-    private float minimumSpeed = 20;
+    [SerializeField, Tooltip("The minimum head pitch speed required to reduce the launch timer.")]
+    private float minimumSpeedPitch = 20;
 
     [
         SerializeField,
         Tooltip(
-            "A pitch/yaw scale factor, as in general I can shake my head faster than I can nod."
+            "The minimum head yaw speed required to reduce the launch timer. Usually set higher than pitch, as in I can shake my head faster than I can nod"
         )
     ]
-    private float shakeSpeedReduction = 0.5f;
+    private float minimumSpeedYaw = 40;
 
     [Header("Steady Gaze Variables")]
     [SerializeField, Tooltip("Time between new random numbers in seconds.")]
@@ -96,6 +96,7 @@ public class LaunchControl : MonoBehaviour
     // head speed parameters
     private HeadPoseBuffer headPoseBuffer;
     private bool usePitch; //true if we're using pitch speed, false if we're using yaw speed.
+    private float minimumSpeed; // minimum head speed required for this game
     private RocketLaunchData gameData;
     private float rocketSpeed;
     private int minDataRequired = 2; // we need at least 2 data points to calculate a speed or steadiness
@@ -140,6 +141,8 @@ public class LaunchControl : MonoBehaviour
         {
             usePitch = !lastGameData.Last().pitch;
         }
+        minimumSpeed = usePitch ? minimumSpeedPitch : minimumSpeedYaw;
+
         headPoseBuffer = new HeadPoseBuffer(headPoseBufferCapacity, minDataRequired);
         instructionsText.text = usePitch
             ? "Nod your head and repeat the code to launch the rocket!"
@@ -181,10 +184,8 @@ public class LaunchControl : MonoBehaviour
             else
             {
                 headSpeed =
-                    (
-                        headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Yaw)
-                        - headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Pitch)
-                    ) * shakeSpeedReduction;
+                    headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Yaw)
+                    - headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Pitch);
             }
             headSpeed = Mathf.Max(0, headSpeed); // Clamp to zero to avoid negative speeds
 
