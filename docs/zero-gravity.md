@@ -19,6 +19,10 @@ The zero gravity mini-game asks the player to copy various poses, and awards poi
 - **PoseAvatar**: values related to display of poses
   - Sprites for each pose
   - Text explanations for each pose
+
+## Adaptive difficulty
+
+Zero gravity has no adaptive difficulty. The poses, time limits and so on are the same for every game.
   
 ## Save data
 
