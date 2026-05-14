@@ -43,7 +43,7 @@ then a timer decrements until launch time is achieved.
 
 ## Adaptive difficulty
 
-Difficulty is increased between games by reducing the size of the gaze target, reducing the gaze tolerance, and increasing the overall launch time (explained below). Note: all parameters mentioned below can be adjusted on `LaunchControl`. 
+Difficulty is increased between games by reducing the size of the gaze target, reducing the gaze tolerance, and increasing the overall launch time (explained below). The intention is that the gaze tolerance should always match the size of the gaze target, however this hasn't been verified through play testing yet. Note: all parameters mentioned below can be adjusted on `LaunchControl`. 
 
 At the start of each game, a scaling factor is calculated as: 
 
