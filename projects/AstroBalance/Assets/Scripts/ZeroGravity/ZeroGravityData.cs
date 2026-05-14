@@ -1,8 +1,13 @@
 /// <summary>
-/// Save data for a single zero gravity session
+/// Save data for a single zero gravity pose
 /// </summary>
 [System.Serializable]
 public class ZeroGravityData : GameData
 {
-    public int score; // overall score for staying still in poses
+    public int poseNumber;
+    public string poseType;
+    public int poseTimeLimitSeconds;
+    public int poseDurationSeconds;
+    public int? balanceStabilityScore; // null if the player exited before pose scoring started
+    public int? falls; // null if the player exited before pose scoring started
 }

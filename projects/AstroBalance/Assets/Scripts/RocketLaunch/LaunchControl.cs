@@ -94,8 +94,7 @@ public class LaunchControl : MonoBehaviour
     private float timeToLaunch;
 
     // head speed parameters
-    private HeadAngleBuffer headPitchBuffer;
-    private HeadAngleBuffer headYawBuffer;
+    private HeadPoseBuffer headPoseBuffer;
     private bool usePitch; //true if we're using pitch speed, false if we're using yaw speed.
     private RocketLaunchData gameData;
     private float rocketSpeed;
@@ -141,8 +140,7 @@ public class LaunchControl : MonoBehaviour
         {
             usePitch = !lastGameData.Last().pitch;
         }
-        headPitchBuffer = new HeadAngleBuffer(headPoseBufferCapacity, minDataRequired);
-        headYawBuffer = new HeadAngleBuffer(headPoseBufferCapacity, minDataRequired);
+        headPoseBuffer = new HeadPoseBuffer(headPoseBufferCapacity, minDataRequired);
         instructionsText.text = usePitch
             ? "Nod your head and repeat the code to launch the rocket!"
             : "Shake your head and repeat the code to launch the rocket!";
@@ -176,13 +174,17 @@ public class LaunchControl : MonoBehaviour
 
             if (usePitch)
             {
-                headSpeed = headPitchBuffer.getSpeed(speedTime) - headYawBuffer.getSpeed(speedTime);
+                headSpeed =
+                    headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Pitch)
+                    - headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Yaw);
             }
             else
             {
                 headSpeed =
-                    (headYawBuffer.getSpeed(speedTime) - headPitchBuffer.getSpeed(speedTime))
-                    * shakeSpeedReduction;
+                    (
+                        headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Yaw)
+                        - headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Pitch)
+                    ) * shakeSpeedReduction;
             }
             headSpeed = Mathf.Max(0, headSpeed); // Clamp to zero to avoid negative speeds
 
@@ -274,10 +276,8 @@ public class LaunchControl : MonoBehaviour
             gazeItem.gazePoint.X = worldGaze.x;
             gazeItem.gazePoint.Y = worldGaze.y;
         }
-        HeadPitchItem headPitch = new HeadPitchItem(headPose);
-        HeadYawItem headYaw = new HeadYawItem(headPose);
-        headPitchBuffer.addIfNew(headPitch);
-        headYawBuffer.addIfNew(headYaw);
+
+        headPoseBuffer.addIfNew(new HeadPoseItem(headPose));
         gazeBuffer.addIfNew(gazeItem);
 
         return gazeItem;

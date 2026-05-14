@@ -4,53 +4,71 @@ using System.Linq;
 using Tobii.GameIntegration.Net;
 
 /// <summary>
-/// Holds a buffer for a head angle (pitch, yaw or roll).
+/// Head pose rotation and position axes
 /// </summary>
-class HeadAngleBuffer : TobiiBuffer<HeadAngleItem>
+enum HeadPoseAxis
+{
+    Roll,
+    Pitch,
+    Yaw,
+    X,
+    Y,
+    Z,
+}
+
+/// <summary>
+/// Holds a buffer for a head pose (position and rotation).
+/// </summary>
+class HeadPoseBuffer : TobiiBuffer<HeadPoseItem>
 {
     /// <summary>
-    /// Initializes a new instance of the HeadAngleBuffer class.
+    /// Initializes a new instance of the HeadPoseBuffer class.
     /// </summary>
     /// <param name="capacity">The maximum number of items that can be stored in the buffer.</param>
     /// <param name="minDataRequired">The minimum number of data points required to calculate a speed.</param>
-    public HeadAngleBuffer(int capacity, int minDataRequired)
+    public HeadPoseBuffer(int capacity, int minDataRequired)
         : base(capacity, minDataRequired) { }
 
     /// <summary>
     /// Calculates the average speed of the buffer over a given time period.
-    /// Speed is calculated as the average change in angle returned by GetAngle
-    /// Divided by the total change in time returned by TimeStampMicroSeconds
+    /// Speed is calculated as the average change in angle (for roll / pitch / yaw) or position (X, Y, Z)
+    /// divided by the total change in time based on TimeStampMicroSeconds
     /// </summary>
     /// <param name="speedTime">The time period in seconds over which to calculate the average speed.</param>
-    /// <returns>The average speed of the buffer over the given time period (in degrees per second)</returns>
-    public float getSpeed(float speedTime)
+    /// <returns>
+    /// The average speed of the buffer over the given time period. For Roll / Pitch / Yaw: in degrees per second.
+    /// For X / Y / Z: in mm per second.
+    /// </returns>
+    public float getSpeed(float speedTime, HeadPoseAxis axis)
     {
         float averageSpeed = 0f;
         if (!hasEnoughData)
             return averageSpeed;
 
         int timeInMicroseconds = (int)(speedTime * 1e6);
-        List<HeadAngleItem> headAngles = GetItems(timeInMicroseconds);
+        List<HeadPoseItem> headPoses = GetItems(timeInMicroseconds);
 
-        return calculateAverageSpeed(headAngles);
+        return calculateAverageSpeed(headPoses, axis);
     }
 
-    private float calculateAverageSpeed(List<HeadAngleItem> headAngles)
+    private float calculateAverageSpeed(List<HeadPoseItem> headPoses, HeadPoseAxis axis)
     {
-        if (headAngles.Count() < minDataRequired)
+        if (headPoses.Count() < minDataRequired)
         {
             return 0f;
         }
         float totalDistance = 0f;
-        for (int i = 0; i < headAngles.Count() - 1; i++)
+        for (int i = 0; i < headPoses.Count() - 1; i++)
         {
-            totalDistance += Math.Abs(headAngles[i + 1].GetAngle() - headAngles[i].GetAngle());
+            totalDistance += Math.Abs(
+                headPoses[i + 1].GetValue(axis) - headPoses[i].GetValue(axis)
+            );
         }
 
         double totalTime =
             (
-                headAngles[0].TimeStampMicroSeconds()
-                - headAngles[headAngles.Count() - 1].TimeStampMicroSeconds()
+                headPoses[0].TimeStampMicroSeconds()
+                - headPoses[headPoses.Count() - 1].TimeStampMicroSeconds()
             ) / 1e6;
         float averageSpeed = (float)(totalDistance / totalTime);
 
@@ -172,45 +190,29 @@ class GazeItem : ITimeStampMicroSeconds
 /// <summary>
 /// Wrapper for Tobii headpose data, implementing timestamp interface.
 /// </summary>
-abstract class HeadAngleItem : ITimeStampMicroSeconds
+class HeadPoseItem : ITimeStampMicroSeconds
 {
     protected HeadPose headPose;
 
-    public HeadAngleItem(HeadPose headPose)
+    public HeadPoseItem(HeadPose headPose)
     {
         this.headPose = headPose;
     }
 
     public long TimeStampMicroSeconds() => headPose.TimeStampMicroSeconds;
 
-    public abstract float GetAngle();
-}
-
-/// <summary>
-/// Wrapper for Tobii head pose pitch data, returning pitch angle.
-/// </summary>
-class HeadPitchItem : HeadAngleItem
-{
-    public HeadPitchItem(HeadPose headPose)
-        : base(headPose) { }
-
-    public override float GetAngle()
+    public float GetValue(HeadPoseAxis axis)
     {
-        return headPose.Rotation.PitchDegrees;
-    }
-}
-
-/// <summary>
-/// Wrapper for Tobii head pose yaw data, returning yaw angle.
-/// </summary>
-class HeadYawItem : HeadAngleItem
-{
-    public HeadYawItem(HeadPose headPose)
-        : base(headPose) { }
-
-    public override float GetAngle()
-    {
-        return headPose.Rotation.YawDegrees;
+        return axis switch
+        {
+            HeadPoseAxis.Roll => headPose.Rotation.RollDegrees,
+            HeadPoseAxis.Pitch => headPose.Rotation.PitchDegrees,
+            HeadPoseAxis.Yaw => headPose.Rotation.YawDegrees,
+            HeadPoseAxis.X => headPose.Position.X,
+            HeadPoseAxis.Y => headPose.Position.Y,
+            HeadPoseAxis.Z => headPose.Position.Z,
+            _ => throw new InvalidOperationException("Unknown head pose axis"),
+        };
     }
 }
 
