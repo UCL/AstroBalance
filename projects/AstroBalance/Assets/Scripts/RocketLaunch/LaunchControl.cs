@@ -263,8 +263,9 @@ public class LaunchControl : MonoBehaviour
             headPose.Rotation.RollDegrees = 0f;
             headPose.TimeStampMicroSeconds = (long)(Time.timeSinceLevelLoad * 1000000);
 
-            gazeItem.gazePoint.X = mousePos.x;
-            gazeItem.gazePoint.Y = mousePos.y;
+            Vector3 mousePoseWorld = Camera.main.ScreenToWorldPoint(mousePos);
+            gazeItem.gazePoint.X = mousePoseWorld.x;
+            gazeItem.gazePoint.Y = mousePoseWorld.y;
             gazeItem.gazePoint.TimeStampMicroSeconds = (long)(Time.timeSinceLevelLoad * 1000000);
         }
         else
