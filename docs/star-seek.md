@@ -21,6 +21,18 @@ The star seek mini-game uses gaze + head position to collect stars that appear a
   - Time required to collect a star (with both gaze + head pose crosshair aligned)
   - Level of bloom (glow) for a star with a single or double lock
 
+## Adaptive difficulty
+
+Difficulty is increased between games by increasing the overall time limit.
+
+Progression is as follows (all mentioned parameters are configurable on `StarSeekManager`):
+- games start with a time limit of `minTimeLimit`
+- a difficulty upgrade occurs when the player has completed `nGamesToUpgrade` games _in a row_ with:
+  - the same time limit 
+  - an average of `timeLimitUpgradeRate` stars collected per second
+- For each upgrade, the time limit is increased by `timeLimitIncrement` (up to a maximum of `maxTimeLimit`).
+- From then on, all games use the `maxTimeLimit`. 
+
 ## Save data
 
 Data is saved to `StarSeekScores.csv`, with one row per played game. Values are:

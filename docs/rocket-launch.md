@@ -17,6 +17,10 @@ then a timer decrements until launch time is achieved.
     - Gaze Tolerance - the allowable gaze standard deviation to be steady. Smaller number will require steadier gaze. This may be reduced by the adaptive difficulty settings below.
     - Target Object if this is set you are required to look at that object, if not gaze can be anywhere on screen but must be steady.
 
+  - **Adaptive difficulty variables**
+    - Max previous games: The maximum number of previous games to retrieve to determine experience based difficulty
+    - Adaptive difficulty: integer describing level of adaptive difficulty - higher numbers are more difficult.
+
   - **User Interface Items**:
     - Count down sprites: A list of sprites to use for the count down code display.
     - Instructions Text: A text box to place the instruction text.
@@ -28,7 +32,7 @@ then a timer decrements until launch time is achieved.
     - Use Mouse For Tracker: Can be used for debugging when no Tobii eye tracker is available.
     - Gaze and Speed Status Text: Text boxes where we can write debugging information to screen.
 
-- **FlameController**: Attached to the flame object, which is a child of the rocker object.
+- **FlameController**: Attached to the flame object, which is a child of the rocket object.
   - Flicker Amplitude and frequency. At rest the flame will flicker slightly to match the aesthetics of other levels. Amplitude and frequency can be altered.
   - Flame Speed Scale: The size of the flame will increase as the head speed increases. Increasing the scale will create a bigger flame.
   - Flame Speed move: As the flame grows we also need to move it down relative to the rocket in order to prevent the flame appearing to come out of the top of the rocket. Faster head speeds or a larger flame speed scale will require a larger value for flame speed move.
@@ -36,6 +40,18 @@ then a timer decrements until launch time is achieved.
 - **SmokeController**: Attached to ground left/right emitter.
   - Smoke Emission Scale: A larger value will increase the amount of smoke emitted for a given head speed.
 
+## Adaptive difficulty
+
+Difficulty is increased between games by reducing the size of the gaze target, reducing the gaze tolerance, and increasing the overall launch time (explained below). The intention is that the gaze tolerance should always match the size of the gaze target, however this hasn't been verified through play testing yet. Note: all parameters mentioned below can be adjusted on `LaunchControl`. 
+
+At the start of each game, a scaling factor is calculated as: 
+
+`adaptiveDifficulty` * ( (`maxPreviousGames` + `nGames`) / `maxPreviousGames`) 
+
+`nGames` is the total number of rocket launch games completed by the player so far (up to a maximum of `maxPreviousGames`). The scaling factor is then applied:
+- the size of the gaze target (the box displaying the launch code numbers) is divided by the scaling factor. This makes it smaller after more games have been played.
+- the gaze tolerance (i.e. the tolerance in unity coordinates that gaze needs to stay within) is divided by the scaling factor. This means the player must keep their gaze closer to the target after more games have been played.
+- the launch time is multiplied by the scaling factor. This means the player must move their head while looking at the target for longer to launch the rocket.
 
 ## Save data
 

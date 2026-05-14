@@ -20,6 +20,28 @@ or opposite order.
   - Colour for correct selection
   - Colour for incorrect selection
 
+## Adaptive difficulty
+
+Difficulty is increased in two ways:
+- within each game, the length of the sequence adapts to player performance
+- between games, the size of the constellation may increase
+
+### Within game (sequence length)
+
+Note: all mentioned parameters can be adjusted on `Constellation`.
+
+- Every game, the first sequence contains `minSequenceLength` stars.
+- On each correct guess, the length of the sequence increases by one star (up to a maximum of the number of stars in the constellation).
+- If the player repeats a sequence of a certain length incorrectly `maxIncorrectSequence` times, the sequence length is reduced by one star.
+- If the sequence length has been reduced, the game will end the next time the player correctly repeats a sequence.
+
+### Between games (constellation size)
+
+Progression is as follows (all mentioned parameters are configurable on `StarMapManager`):
+- games start with the small constellation (5 stars total)
+- if the player completes a total of `maxScoreGames` _in a row_ with the maximum score (i.e. they repeated a sequence of length == the number of stars in the small constellation), the size is upgraded to the large constellation (10 stars)
+- From then on, all games use the large constellation. 
+
 ## Save data
 
 Data is saved to `StarMapScores.csv`, with one row per trial (i.e. one row per attempt at repeating a sequence of stars). This means there may be _multiple_ rows per played game. Values are:
