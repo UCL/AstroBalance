@@ -26,7 +26,7 @@ public class LaunchControl : MonoBehaviour
     [
         SerializeField,
         Tooltip(
-            "The minimum head yaw speed required to reduce the launch timer. Usually set higher than pitch, as in I can shake my head faster than I can nod"
+            "The minimum head yaw speed required to reduce the launch timer. Usually set higher than pitch, as I can shake my head faster than I can nod"
         )
     ]
     private float minimumSpeedYaw = 40;
