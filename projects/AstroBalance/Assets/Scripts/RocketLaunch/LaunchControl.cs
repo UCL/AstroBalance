@@ -27,7 +27,7 @@ public class LaunchControl : MonoBehaviour
     [
         SerializeField,
         Tooltip(
-            "The minimum head yaw speed required to reduce the launch timer. This is set higher than for pitch, as in general I can shake my head faster than I can nod"
+            "The minimum head yaw speed required to reduce the launch timer. Usually set higher than pitch, as I can shake my head faster than I can nod"
         )
     ]
     private float minimumSpeedYaw = 40;
@@ -42,7 +42,12 @@ public class LaunchControl : MonoBehaviour
     [SerializeField, Tooltip("The time in seconds that the gaze should be steady for.")]
     private float gazeTime = 3.0f;
 
-    [SerializeField, Tooltip("The tolerance in unity coordinates that gaze needs to stay within.")]
+    [
+        SerializeField,
+        Tooltip(
+            "The tolerance in unity coordinates that gaze needs to stay within (the targetObject is scaled to match)"
+        )
+    ]
     private float gazeTolerance = 3.0f;
 
     [SerializeField, Tooltip("The game object the user is supposed to look at.")]
@@ -114,8 +119,8 @@ public class LaunchControl : MonoBehaviour
 
     private TextMeshProUGUI winText;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    // Awake is called once when the script instance is loaded
+    void Awake()
     {
         rocketSpeed = 0f;
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
@@ -131,7 +136,6 @@ public class LaunchControl : MonoBehaviour
 
         adaptiveDifficulty *=
             ((float)maxPreviousGames + (float)lastGameData.Count()) / (float)maxPreviousGames;
-        targetObject.GetComponent<SpriteRenderer>().transform.localScale /= adaptiveDifficulty;
         gazeTolerance /= adaptiveDifficulty;
         launchTime *= adaptiveDifficulty;
 
@@ -145,15 +149,43 @@ public class LaunchControl : MonoBehaviour
             usePitch = false;
             minimumSpeed = minimumSpeedYaw;
         }
+        minimumSpeed = usePitch ? minimumSpeedPitch : minimumSpeedYaw;
+
+        InitialiseTarget();
 
         headPoseBuffer = new HeadPoseBuffer(headPoseBufferCapacity, minDataRequired);
         instructionsText.text = usePitch
             ? "Nod your head and repeat the code to launch the rocket!"
             : "Shake your head and repeat the code to launch the rocket!";
-        gameData = new RocketLaunchData();
         timeToLaunch = launchTime;
         gazeBuffer = new GazeBuffer(gazeBufferCapacity, minDataRequired);
+    }
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private void Start()
+    {
+        gameData = new RocketLaunchData();
+    }
+
+    /// <summary>
+    /// Initialise sprite of target, and scale size to match gaze tolerance
+    /// </summary>
+    private void InitialiseTarget()
+    {
+        targetObject.SetActive(false);
         incrementCountDownCode();
+
+        // Match width and height of target to gaze tolerance
+        Renderer targetRenderer = targetObject.transform.GetComponent<Renderer>();
+        float targetObjectWidth = targetRenderer.bounds.extents.x;
+        float targetObjectHeight = targetRenderer.bounds.extents.y;
+        Vector3 targetScale = targetRenderer.transform.localScale;
+        targetScale.Scale(
+            new Vector3(gazeTolerance / targetObjectWidth, gazeTolerance / targetObjectWidth, 1)
+        );
+        targetRenderer.transform.localScale = targetScale;
+
+        targetObject.SetActive(true);
     }
 
     // Update is called once per frame
@@ -200,16 +232,8 @@ public class LaunchControl : MonoBehaviour
                 // use centre of bounds in case the target object is not centred
                 targetX = targetObject.transform.GetComponent<Renderer>().bounds.center.x;
                 targetY = targetObject.transform.GetComponent<Renderer>().bounds.center.y;
-                Vector2 gazeTol = new Vector2(
-                    targetObject.transform.GetComponent<Renderer>().bounds.extents.x,
-                    targetObject.transform.GetComponent<Renderer>().bounds.extents.y
-                );
-                gazeIsSteady = gazeBuffer.gazeSteady(
-                    gazeTime,
-                    gazeTolerance * gazeTol.magnitude,
-                    targetX,
-                    targetY
-                );
+
+                gazeIsSteady = gazeBuffer.gazeSteady(gazeTime, gazeTolerance, targetX, targetY);
             }
             else
             {
@@ -247,6 +271,11 @@ public class LaunchControl : MonoBehaviour
     public float HeadSpeed
     {
         get => headSpeed;
+    }
+
+    public GameObject TargetObject
+    {
+        get => targetObject;
     }
 
     /// <summary>

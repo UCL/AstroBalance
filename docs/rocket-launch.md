@@ -10,12 +10,12 @@ then a timer decrements until launch time is achieved.
   - Launch time: The starting launch time in seconds. May be increased by adaptive difficulty features below.
   - **Head Movement Variables**: Determine the amount of head movement required to decrement the timer.
     - Head Pose Buffer Capacity (n) and speed time (s): head speed is measured as the average change in pitch or yaw over the time period speed time. The buffer will need to be sufficiently large to support the time based on game frame rate.
-    - Shake Speed Reduction: Because it is possible (for me at least) to shake my head quicker than I can nod, there is a scaling factor between the head speeds required for shaking or nodding. Setting to 0.5 for example means that the player must shake their head twice as fast as nodding to achieve the same effect. 
+    - Minimum head speed (pitch or yaw) required to reduce the launch timer. The yaw speed is set higher than pitch, because it is possible (for me at least) to shake my head quicker than I can nod.
   - **Steady Gaze Variables**: Determine how steady the gave must be to decrement the timer.
     - Timer Duration: How long (in seconds) the player must maintain a steady gaze to increment the count down code display.
     - Gaze Pose Buffer Capacity (n) and gaze time (s), gaze steadiness is measured as the standard deviation of gaze over gaze time seconds. The buffer will need to be sufficiently large to support the time based on game frame rate.
     - Gaze Tolerance - the allowable gaze standard deviation to be steady. Smaller number will require steadier gaze. This may be reduced by the adaptive difficulty settings below.
-    - Target Object if this is set you are required to look at that object, if not gaze can be anywhere on screen but must be steady.
+    - Target Object - if this is set you are required to look at that object, if not gaze can be anywhere on screen but must be steady. The size of the target object will be matched to the gaze tolerance.
 
   - **Adaptive difficulty variables**
     - Max previous games: The maximum number of previous games to retrieve to determine experience based difficulty
@@ -42,15 +42,14 @@ then a timer decrements until launch time is achieved.
 
 ## Adaptive difficulty
 
-Difficulty is increased between games by reducing the size of the gaze target, reducing the gaze tolerance, and increasing the overall launch time (explained below). The intention is that the gaze tolerance should always match the size of the gaze target, however this hasn't been verified through play testing yet. Note: all parameters mentioned below can be adjusted on `LaunchControl`. 
+Difficulty is increased between games by reducing the gaze tolerance, and increasing the overall launch time (explained below). Note: all parameters mentioned below can be adjusted on `LaunchControl`. 
 
 At the start of each game, a scaling factor is calculated as: 
 
 `adaptiveDifficulty` * ( (`maxPreviousGames` + `nGames`) / `maxPreviousGames`) 
 
 `nGames` is the total number of rocket launch games completed by the player so far (up to a maximum of `maxPreviousGames`). The scaling factor is then applied:
-- the size of the gaze target (the box displaying the launch code numbers) is divided by the scaling factor. This makes it smaller after more games have been played.
-- the gaze tolerance (i.e. the tolerance in unity coordinates that gaze needs to stay within) is divided by the scaling factor. This means the player must keep their gaze closer to the target after more games have been played.
+- the gaze tolerance (i.e. the tolerance in unity coordinates that gaze needs to stay within) is divided by the scaling factor. This will also scale the gaze target (the box displaying the launch code numbers) to match. This means the player must keep their gaze closer to the target after more games have been played.
 - the launch time is multiplied by the scaling factor. This means the player must move their head while looking at the target for longer to launch the rocket.
 
 ## Save data

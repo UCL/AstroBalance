@@ -1,12 +1,10 @@
 using System.Collections;
-using TMPro;
-using Tobii.GameIntegration.Net;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LaunchProgressRing : MonoBehaviour
 {
-    [SerializeField, Tooltip("Arrow fill colour")]
+    [SerializeField, Tooltip("Ring fill colour")]
     private Color fillColor = Color.red;
 
     LaunchControl countdownController;
@@ -30,6 +28,33 @@ public class LaunchProgressRing : MonoBehaviour
         }
 
         fillImage.color = fillColor;
+
+        FitToCountdown();
+    }
+
+    /// <summary>
+    /// Fit the progress ring position and size to the countdown target
+    /// </summary>
+    private void FitToCountdown()
+    {
+        GameObject targetObject = countdownController.TargetObject;
+        fillImage.transform.position = Camera.main.WorldToScreenPoint(
+            targetObject.transform.position
+        );
+
+        Renderer targetRenderer = targetObject.transform.GetComponent<Renderer>();
+        float targetObjectWidth = 2 * targetRenderer.bounds.extents.x;
+        float targetObjectHeight = 2 * targetRenderer.bounds.extents.y;
+
+        // length of 1 unity world unit in this screen space
+        float scalingFactor = Vector3.Distance(
+            Camera.main.WorldToScreenPoint(new Vector3(0, 0, 0)),
+            Camera.main.WorldToScreenPoint(new Vector3(1, 0, 0))
+        );
+        float requiredWidth = (targetObjectWidth * scalingFactor) / fillImage.canvas.scaleFactor;
+        float requiredHeight = (targetObjectHeight * scalingFactor) / fillImage.canvas.scaleFactor;
+
+        fillImage.rectTransform.sizeDelta = new Vector2(requiredWidth, requiredHeight);
     }
 
     // Update is called once per frame
