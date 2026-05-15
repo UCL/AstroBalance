@@ -44,7 +44,7 @@ public class LaunchControl : MonoBehaviour
     [
         SerializeField,
         Tooltip(
-            "The tolerance in unity coordinates that gaze needs to stay within (the size of the targetObject is scaled to match)"
+            "The tolerance in unity coordinates that gaze needs to stay within (the targetObject is scaled to match)"
         )
     ]
     private float gazeTolerance = 3.0f;
@@ -117,8 +117,8 @@ public class LaunchControl : MonoBehaviour
 
     private TextMeshProUGUI winText;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    // Awake is called once when the script instance is loaded
+    void Awake()
     {
         rocketSpeed = 0f;
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
@@ -153,9 +153,14 @@ public class LaunchControl : MonoBehaviour
         instructionsText.text = usePitch
             ? "Nod your head and repeat the code to launch the rocket!"
             : "Shake your head and repeat the code to launch the rocket!";
-        gameData = new RocketLaunchData();
         timeToLaunch = launchTime;
         gazeBuffer = new GazeBuffer(gazeBufferCapacity, minDataRequired);
+    }
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private void Start()
+    {
+        gameData = new RocketLaunchData();
     }
 
     /// <summary>
@@ -262,6 +267,11 @@ public class LaunchControl : MonoBehaviour
     public float HeadSpeed
     {
         get => headSpeed;
+    }
+
+    public GameObject TargetObject
+    {
+        get => targetObject;
     }
 
     /// <summary>
