@@ -9,4 +9,8 @@ public class RocketLaunchData : GameData
     public float launchTimeSeconds;
     public float minimumHeadSpeed;
     public float gazeTolerance;
+    public float headSpeedDegPerSecMean;
+    public float headSpeedDegPerSecPeak;
+    public float headSpeedDegPerSecMedian;
+    public float headSpeedDegPerSecSD;
 }

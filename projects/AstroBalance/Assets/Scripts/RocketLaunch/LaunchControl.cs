@@ -32,6 +32,15 @@ public class LaunchControl : MonoBehaviour
     ]
     private float minimumSpeedYaw = 40;
 
+    [SerializeField, Tooltip("The interval between head speed samples for the save data.")]
+    private float samplingIntervalSeconds = 0.5f;
+
+    [
+        SerializeField,
+        Tooltip("The minimum number of head pose readings used to calculate a head speed")
+    ]
+    private int minNItemsForSpeed = 5;
+
     [Header("Steady Gaze Variables")]
     [SerializeField, Tooltip("Time between new random numbers in seconds.")]
     private float timerDuration = 1.0F;
@@ -49,6 +58,9 @@ public class LaunchControl : MonoBehaviour
         )
     ]
     private float gazeTolerance = 3.0f;
+
+    [SerializeField, Tooltip("The minimum number of gaze points used to calculate steadiness")]
+    private int minNItemsForGaze = 2;
 
     [SerializeField, Tooltip("The game object the user is supposed to look at.")]
     private GameObject targetObject;
@@ -106,10 +118,11 @@ public class LaunchControl : MonoBehaviour
     private float headSpeed; // current head speed
     private RocketLaunchData gameData;
     private float rocketSpeed;
-    private int minDataRequired = 2; // we need at least 2 data points to calculate a speed or steadiness
     private float mouseToGazeScale = 10f; // if we're debugging using the mouse the reported speeds are much higher than with gaze.
     bool outOfRange = false; // whether the player is out of range of the tracker
     float secondsSinceLastOutOfRange = 0; // number of seconds elapsed since the player was last out of range
+    private List<float> headSpeedSamples = new List<float>(); // Samples for save data
+    private float timeToNextSample;
 
     // gaze steadiness paraemeters
     private float timeToSpriteChange;
@@ -155,12 +168,13 @@ public class LaunchControl : MonoBehaviour
 
         InitialiseTarget();
 
-        headPoseBuffer = new HeadPoseBuffer(headPoseBufferCapacity, minDataRequired);
+        headPoseBuffer = new HeadPoseBuffer(headPoseBufferCapacity, minNItemsForSpeed);
         instructionsText.text = usePitch
             ? "Nod your head and repeat the code to launch the rocket!"
             : "Shake your head and repeat the code to launch the rocket!";
         timeToLaunch = launchTime;
-        gazeBuffer = new GazeBuffer(gazeBufferCapacity, minDataRequired);
+        timeToNextSample = samplingIntervalSeconds;
+        gazeBuffer = new GazeBuffer(gazeBufferCapacity, minNItemsForGaze);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -210,9 +224,24 @@ public class LaunchControl : MonoBehaviour
         else
         {
             GazeItem gazeItem = AddToBuffers();
-
             CheckIfPlayerIsOutOfRange();
-            CalculateHeadSpeed();
+
+            // Take sample of head speed for save data
+            if (timeToNextSample <= 0)
+            {
+                float speedSample = CalculateHeadSpeed(samplingIntervalSeconds, false);
+                if (speedSample > 0)
+                {
+                    headSpeedSamples.Add(speedSample);
+                }
+                timeToNextSample = samplingIntervalSeconds;
+            }
+            else
+            {
+                timeToNextSample -= Time.deltaTime;
+            }
+
+            headSpeed = CalculateHeadSpeed(speedTime, true);
             bool gazeIsSteady = CalculateGazeSteady();
 
             writeDebugInformation(headSpeed, gazeItem, gazeIsSteady);
@@ -271,27 +300,39 @@ public class LaunchControl : MonoBehaviour
         }
     }
 
-    private void CalculateHeadSpeed()
+    /// <summary>
+    /// Calculate the current head speed
+    /// </summary>
+    /// <param name="timeSeconds">The number of seconds of data to use</param>
+    /// <param name="compensateOtherAxis">If True, the speed of movement in the perpendicular axis will be subtracted.
+    /// (e.g. if this game is using Pitch, then the returned speed will be headPitchSpeed - headYawSpeed)</param>
+    private float CalculateHeadSpeed(float timeSeconds, bool compensateOtherAxis)
     {
-        if (outOfRange || secondsSinceLastOutOfRange < speedTime)
+        if (outOfRange || secondsSinceLastOutOfRange < timeSeconds)
         {
-            headSpeed = 0;
-            return;
+            return 0;
         }
 
+        HeadPoseAxis axis;
+        HeadPoseAxis perpendicularAxis;
         if (usePitch)
         {
-            headSpeed =
-                headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Pitch)
-                - headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Yaw);
+            axis = HeadPoseAxis.Pitch;
+            perpendicularAxis = HeadPoseAxis.Yaw;
         }
         else
         {
-            headSpeed =
-                headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Yaw)
-                - headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Pitch);
+            axis = HeadPoseAxis.Yaw;
+            perpendicularAxis = HeadPoseAxis.Pitch;
         }
-        headSpeed = Mathf.Max(0, headSpeed); // Clamp to zero to avoid negative speeds
+
+        float currentSpeed = headPoseBuffer.getSpeed(timeSeconds, axis);
+        if (compensateOtherAxis)
+        {
+            currentSpeed -= headPoseBuffer.getSpeed(timeSeconds, perpendicularAxis);
+        }
+
+        return Mathf.Max(0, currentSpeed); // Clamp to zero to avoid negative speeds
     }
 
     private bool CalculateGazeSteady()
@@ -449,6 +490,27 @@ public class LaunchControl : MonoBehaviour
         gameData.gameDurationSeconds = MathsUtilities.RoundToNearestInt(
             (float)gameDuration.TotalSeconds
         );
+
+        if (headSpeedSamples.Count() == 0)
+        {
+            gameData.headSpeedDegPerSecPeak = 0;
+            gameData.headSpeedDegPerSecMean = 0;
+            gameData.headSpeedDegPerSecMedian = 0;
+            gameData.headSpeedDegPerSecSD = 0;
+        }
+        else
+        {
+            gameData.headSpeedDegPerSecPeak = MathsUtilities.RoundTo2DecimalPlaces(
+                headSpeedSamples.Max()
+            );
+            gameData.headSpeedDegPerSecMean = MathsUtilities.RoundTo2DecimalPlaces(
+                headSpeedSamples.Average()
+            );
+            float median = MathsUtilities.Median(headSpeedSamples);
+            gameData.headSpeedDegPerSecMedian = MathsUtilities.RoundTo2DecimalPlaces(median);
+            float standardDeviation = MathsUtilities.StandardDeviation(headSpeedSamples);
+            gameData.headSpeedDegPerSecSD = MathsUtilities.RoundTo2DecimalPlaces(standardDeviation);
+        }
 
         SaveGameData<RocketLaunchData> saveData = new(saveFilename);
         gameData.sessionNumber = CaptureSessionData.CurrentSessionNumber();
