@@ -108,6 +108,8 @@ public class LaunchControl : MonoBehaviour
     private float rocketSpeed;
     private int minDataRequired = 2; // we need at least 2 data points to calculate a speed or steadiness
     private float mouseToGazeScale = 10f; // if we're debugging using the mouse the reported speeds are much higher than with gaze.
+    bool outOfRange = false; // whether the player is out of range of the tracker
+    float secondsSinceLastOutOfRange = 0; // number of seconds elapsed since the player was last out of range
 
     // gaze steadiness paraemeters
     private float timeToSpriteChange;
@@ -208,39 +210,12 @@ public class LaunchControl : MonoBehaviour
         else
         {
             GazeItem gazeItem = AddToBuffers();
-            bool gazeIsSteady = false;
 
-            if (usePitch)
-            {
-                headSpeed =
-                    headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Pitch)
-                    - headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Yaw);
-            }
-            else
-            {
-                headSpeed =
-                    headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Yaw)
-                    - headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Pitch);
-            }
-            headSpeed = Mathf.Max(0, headSpeed); // Clamp to zero to avoid negative speeds
+            CheckIfPlayerIsOutOfRange();
+            CalculateHeadSpeed();
+            bool gazeIsSteady = CalculateGazeSteady();
 
-            // gaze steadiness
-            float targetX = 0f;
-            float targetY = 0f;
-            if (targetObject != null)
-            {
-                // use centre of bounds in case the target object is not centred
-                targetX = targetObject.transform.GetComponent<Renderer>().bounds.center.x;
-                targetY = targetObject.transform.GetComponent<Renderer>().bounds.center.y;
-
-                gazeIsSteady = gazeBuffer.gazeSteady(gazeTime, gazeTolerance, targetX, targetY);
-            }
-            else
-            {
-                gazeIsSteady = gazeBuffer.gazeSteady(gazeTime, gazeTolerance);
-            }
-
-            writeDebugInformation(headSpeed, gazeItem, targetX, targetY, gazeIsSteady);
+            writeDebugInformation(headSpeed, gazeItem, gazeIsSteady);
 
             if (timeToSpriteChange > 0)
             {
@@ -276,6 +251,88 @@ public class LaunchControl : MonoBehaviour
     public GameObject TargetObject
     {
         get => targetObject;
+    }
+
+    private void CheckIfPlayerIsOutOfRange()
+    {
+        if (!tracker.isPlayerDetected())
+        {
+            outOfRange = true;
+            secondsSinceLastOutOfRange = 0;
+        }
+        else
+        {
+            // If they are already detected as in-range, increase the timer
+            if (!outOfRange)
+            {
+                secondsSinceLastOutOfRange += Time.deltaTime;
+            }
+            outOfRange = false;
+        }
+    }
+
+    private void CalculateHeadSpeed()
+    {
+        if (outOfRange || secondsSinceLastOutOfRange < speedTime)
+        {
+            headSpeed = 0;
+            return;
+        }
+
+        if (usePitch)
+        {
+            headSpeed =
+                headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Pitch)
+                - headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Yaw);
+        }
+        else
+        {
+            headSpeed =
+                headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Yaw)
+                - headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Pitch);
+        }
+        headSpeed = Mathf.Max(0, headSpeed); // Clamp to zero to avoid negative speeds
+    }
+
+    private bool CalculateGazeSteady()
+    {
+        bool gazeIsSteady = false;
+        if (outOfRange || secondsSinceLastOutOfRange < gazeTime)
+        {
+            return gazeIsSteady;
+        }
+
+        if (targetObject != null)
+        {
+            Vector2 targetCentre = GetTargetCentre();
+            gazeIsSteady = gazeBuffer.gazeSteady(
+                gazeTime,
+                gazeTolerance,
+                targetCentre.x,
+                targetCentre.y
+            );
+        }
+        else
+        {
+            gazeIsSteady = gazeBuffer.gazeSteady(gazeTime, gazeTolerance);
+        }
+
+        return gazeIsSteady;
+    }
+
+    private Vector2 GetTargetCentre()
+    {
+        float targetX = 0f;
+        float targetY = 0f;
+
+        if (targetObject is not null)
+        {
+            // use centre of bounds in case the target object is not centred
+            targetX = targetObject.transform.GetComponent<Renderer>().bounds.center.x;
+            targetY = targetObject.transform.GetComponent<Renderer>().bounds.center.y;
+        }
+
+        return new Vector2(targetX, targetY);
     }
 
     /// <summary>
@@ -317,13 +374,7 @@ public class LaunchControl : MonoBehaviour
         return gazeItem;
     }
 
-    private void writeDebugInformation(
-        float headSpeed,
-        GazeItem gazeItem,
-        float targetX,
-        float targetY,
-        bool gazeIsSteady
-    )
+    private void writeDebugInformation(float headSpeed, GazeItem gazeItem, bool gazeIsSteady)
     {
         if (speedStatusText != null)
         {
@@ -333,11 +384,13 @@ public class LaunchControl : MonoBehaviour
         if (gazeStatusText != null)
         {
             string steadyText = gazeIsSteady ? "Gaze is steady" : "Gaze is not steady";
+            Vector2 targetCentre = GetTargetCentre();
+
             gazeStatusText.text =
                 "Look here -> "
-                + targetX
+                + targetCentre.x
                 + ", "
-                + targetY
+                + targetCentre.y
                 + "\n"
                 + "Looking here -> "
                 + gazeItem.gazePoint.X
