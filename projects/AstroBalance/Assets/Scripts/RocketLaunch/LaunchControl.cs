@@ -292,6 +292,10 @@ public class LaunchControl : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Take samples for head speed / gaze steady for the save data.
+    /// Windows including out of range time are excluded.
+    /// </summary>
     private void SampleForSaveData()
     {
         if (timeToNextSample > 0)
@@ -520,6 +524,7 @@ public class LaunchControl : MonoBehaviour
             gameData.headSpeedDegPerSecMedian = 0;
             gameData.headSpeedDegPerSecSD = 0;
             gameData.percentTimeAbove40DegPerSec = 0;
+            gameData.percentTimeGazeOnTarget = 0;
             gameData.timeInAdaptationWindow1 = 0;
             gameData.timeInAdaptationWindow2 = 0;
             gameData.timeInAdaptationWindow3 = 0;

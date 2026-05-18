@@ -21,10 +21,14 @@ then a timer decrements until launch time is achieved.
     - Max previous games: The maximum number of previous games to retrieve to determine experience based difficulty
     - Adaptive difficulty: integer describing level of adaptive difficulty - higher numbers are more difficult.
 
+  - **Save data variables**
+    - Sampling interval: the interval in seconds between samples for the save data. 
+
   - **User Interface Items**:
     - Count down sprites: A list of sprites to use for the count down code display.
     - Instructions Text: A text box to place the instruction text.
     - Win Screen: Screen to show a successful launch.
+  
   - **Launch Speed Variables**: Control rocket behaviour at launch.
     - acceleration: The acceleration of the rocket when it launches.
   
@@ -72,7 +76,7 @@ Data is saved to `RocketLaunchScores.csv`, with one row per played game. Values 
 
 - Head speed: the absolute differences of head angle between consecutive readings in the time period are summed together and divided by the total difference in time to give a speed in degrees per second.
 
-- Gaze steady: a boolean value (either true or false). It will be true if the average distance between all gaze positions in the time period and the centre of the target is less than `gazeTolerance`.
+- Gaze steady: a boolean value (either true or false). It will be true if gaze positions in the time period are (on average) less than `gazeTolerance` from the centre of the target.
 
 If the player goes out of range at any point in those `samplingIntervalSeconds` (i.e. the tracker can no longer detect them), then the samples for that time period are discarded. 
 
