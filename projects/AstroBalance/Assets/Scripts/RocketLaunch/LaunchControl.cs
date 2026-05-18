@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using Tobii.GameIntegration.Net;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
 /// <summary>
@@ -32,9 +33,6 @@ public class LaunchControl : MonoBehaviour
     ]
     private float minimumSpeedYaw = 40;
 
-    [SerializeField, Tooltip("The interval between head speed samples for the save data.")]
-    private float samplingIntervalSeconds = 0.5f;
-
     [
         SerializeField,
         Tooltip("The minimum number of head pose readings used to calculate a head speed")
@@ -60,7 +58,7 @@ public class LaunchControl : MonoBehaviour
     private float gazeTolerance = 3.0f;
 
     [SerializeField, Tooltip("The minimum number of gaze points used to calculate steadiness")]
-    private int minNItemsForGaze = 2;
+    private int minNItemsForGaze = 5;
 
     [SerializeField, Tooltip("The game object the user is supposed to look at.")]
     private GameObject targetObject;
@@ -80,6 +78,10 @@ public class LaunchControl : MonoBehaviour
         Range(1, 10)
     ]
     private float adaptiveDifficulty;
+
+    [Header("Save data Variables")]
+    [SerializeField, Tooltip("The interval between samples for the save data.")]
+    private float samplingIntervalSeconds = 0.5f;
 
     [Header("User Interface Items")]
     [SerializeField, Tooltip("Sprites to display on the countdown.")]
@@ -119,15 +121,21 @@ public class LaunchControl : MonoBehaviour
     private RocketLaunchData gameData;
     private float rocketSpeed;
     private float mouseToGazeScale = 10f; // if we're debugging using the mouse the reported speeds are much higher than with gaze.
-    bool outOfRange = false; // whether the player is out of range of the tracker
-    float secondsSinceLastOutOfRange = 0; // number of seconds elapsed since the player was last out of range
-    private List<float> headSpeedSamples = new List<float>(); // Samples for save data
-    private float timeToNextSample;
 
-    // gaze steadiness paraemeters
+    // gaze steadiness parameters
     private float timeToSpriteChange;
     private Sprite countDownSprite = null;
     private GazeBuffer gazeBuffer;
+
+    // Sampling for save data parameters
+    private List<float> headSpeedSamples = new List<float>();
+    private int nSamplesGazeSteady = 0;
+    private int nSamplesGazeNotSteady = 0;
+    private float timeToNextSample;
+
+    // track when the player is in or out of range of the tracker
+    bool outOfRange = false;
+    float secondsSinceLastOutOfRange = 0;
 
     private string saveFilename = "RocketLaunchScores";
     private bool gameActive = true;
@@ -157,12 +165,10 @@ public class LaunchControl : MonoBehaviour
         if (lastGameData.Count() == 0 || lastGameData.Last().headMovementPlane == "yaw")
         {
             usePitch = true;
-            minimumSpeed = minimumSpeedPitch;
         }
         else
         {
             usePitch = false;
-            minimumSpeed = minimumSpeedYaw;
         }
         minimumSpeed = usePitch ? minimumSpeedPitch : minimumSpeedYaw;
 
@@ -225,24 +231,10 @@ public class LaunchControl : MonoBehaviour
         {
             GazeItem gazeItem = AddToBuffers();
             CheckIfPlayerIsOutOfRange();
-
-            // Take sample of head speed for save data
-            if (timeToNextSample <= 0)
-            {
-                float speedSample = CalculateHeadSpeed(samplingIntervalSeconds, false);
-                if (speedSample > 0)
-                {
-                    headSpeedSamples.Add(speedSample);
-                }
-                timeToNextSample = samplingIntervalSeconds;
-            }
-            else
-            {
-                timeToNextSample -= Time.deltaTime;
-            }
+            SampleForSaveData();
 
             headSpeed = CalculateHeadSpeed(speedTime, true);
-            bool gazeIsSteady = CalculateGazeSteady();
+            bool gazeIsSteady = CalculateGazeSteady(gazeTime);
 
             writeDebugInformation(headSpeed, gazeItem, gazeIsSteady);
 
@@ -300,6 +292,36 @@ public class LaunchControl : MonoBehaviour
         }
     }
 
+    private void SampleForSaveData()
+    {
+        if (timeToNextSample > 0)
+        {
+            timeToNextSample -= Time.deltaTime;
+            return;
+        }
+
+        if (!outOfRange && secondsSinceLastOutOfRange >= samplingIntervalSeconds)
+        {
+            float speedSample = CalculateHeadSpeed(samplingIntervalSeconds, false);
+            if (speedSample > 0)
+            {
+                headSpeedSamples.Add(speedSample);
+            }
+
+            bool gazeSample = CalculateGazeSteady(samplingIntervalSeconds);
+            if (gazeSample)
+            {
+                nSamplesGazeSteady++;
+            }
+            else
+            {
+                nSamplesGazeNotSteady++;
+            }
+        }
+
+        timeToNextSample = samplingIntervalSeconds;
+    }
+
     /// <summary>
     /// Calculate the current head speed
     /// </summary>
@@ -335,10 +357,10 @@ public class LaunchControl : MonoBehaviour
         return Mathf.Max(0, currentSpeed); // Clamp to zero to avoid negative speeds
     }
 
-    private bool CalculateGazeSteady()
+    private bool CalculateGazeSteady(float timeSeconds)
     {
         bool gazeIsSteady = false;
-        if (outOfRange || secondsSinceLastOutOfRange < gazeTime)
+        if (outOfRange || secondsSinceLastOutOfRange < timeSeconds)
         {
             return gazeIsSteady;
         }
@@ -347,7 +369,7 @@ public class LaunchControl : MonoBehaviour
         {
             Vector2 targetCentre = GetTargetCentre();
             gazeIsSteady = gazeBuffer.gazeSteady(
-                gazeTime,
+                timeSeconds,
                 gazeTolerance,
                 targetCentre.x,
                 targetCentre.y
@@ -355,7 +377,7 @@ public class LaunchControl : MonoBehaviour
         }
         else
         {
-            gazeIsSteady = gazeBuffer.gazeSteady(gazeTime, gazeTolerance);
+            gazeIsSteady = gazeBuffer.gazeSteady(timeSeconds, gazeTolerance);
         }
 
         return gazeIsSteady;
@@ -551,6 +573,11 @@ public class LaunchControl : MonoBehaviour
                 (nSamplesAbove40DegPerSec / headSpeedSamples.Count()) * 100;
             gameData.percentTimeAbove40DegPerSec = MathsUtilities.RoundTo2DecimalPlaces(
                 percentTimeAbove40DegPerSec
+            );
+            float percentTimeGazeOnTarget =
+                (nSamplesGazeSteady / (nSamplesGazeSteady + nSamplesGazeNotSteady)) * 100;
+            gameData.percentTimeGazeOnTarget = MathsUtilities.RoundTo2DecimalPlaces(
+                percentTimeGazeOnTarget
             );
 
             gameData.timeInAdaptationWindow1 = MathsUtilities.RoundTo2DecimalPlaces(
