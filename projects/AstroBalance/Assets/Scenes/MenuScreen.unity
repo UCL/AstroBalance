@@ -1547,7 +1547,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 92, y: 200}
+  m_AnchoredPosition: {x: 199, y: 200}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1261177602
@@ -1570,8 +1570,8 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 314.66, y: 109.29}
-  m_Spacing: {x: 50.2, y: 244.2}
+  m_CellSize: {x: 112.9, y: 109.29}
+  m_Spacing: {x: 250, y: 244.2}
   m_Constraint: 1
   m_ConstraintCount: 3
 --- !u!1001 &1430290392
@@ -1833,15 +1833,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8509521613847157901, guid: 4042f1b811f48174b8dc42598ee8c145, type: 3}
       propertyPath: m_Colors.m_HighlightedColor.b
-      value: 0.074893214
+      value: 0.07450981
       objectReference: {fileID: 0}
     - target: {fileID: 8509521613847157901, guid: 4042f1b811f48174b8dc42598ee8c145, type: 3}
       propertyPath: m_Colors.m_HighlightedColor.g
-      value: 0.41645262
+      value: 0.41568628
       objectReference: {fileID: 0}
     - target: {fileID: 8509521613847157901, guid: 4042f1b811f48174b8dc42598ee8c145, type: 3}
       propertyPath: m_Colors.m_HighlightedColor.r
-      value: 0.9339623
+      value: 0.93333334
       objectReference: {fileID: 0}
     - target: {fileID: 8509521613847157901, guid: 4042f1b811f48174b8dc42598ee8c145, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
