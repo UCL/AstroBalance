@@ -512,6 +512,20 @@ public class LaunchControl : MonoBehaviour
             gameData.headSpeedDegPerSecSD = MathsUtilities.RoundTo2DecimalPlaces(standardDeviation);
         }
 
+        int nSamplesAbove40DegPerSec = 0;
+        foreach (float headSpeed in headSpeedSamples)
+        {
+            if (headSpeed > 40)
+            {
+                nSamplesAbove40DegPerSec++;
+            }
+        }
+        float percentTimeAbove40DegPerSec =
+            (nSamplesAbove40DegPerSec / headSpeedSamples.Count()) * 100;
+        gameData.percentTimeAbove40DegPerSec = MathsUtilities.RoundTo2DecimalPlaces(
+            percentTimeAbove40DegPerSec
+        );
+
         SaveGameData<RocketLaunchData> saveData = new(saveFilename);
         gameData.sessionNumber = CaptureSessionData.CurrentSessionNumber();
         gameData.gameNumber = saveData.GetNextGameNumber();

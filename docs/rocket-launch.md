@@ -65,3 +65,5 @@ Data is saved to `RocketLaunchScores.csv`, with one row per played game. Values 
 - `headMovementPlane`: the direction of head movement - either 'pitch' (up-down movement) or 'yaw' (left-right movement).
 - `launchTimeSeconds`: the number of seconds the player had to keep their eyes steady on the target while moving their head at the required speed to launch the rocket. Rounded to 2 decimal places.
 - `gameDurationSeconds`: how long the game was played (rounded to the nearest second). If the player exited before the game finished, this will be less than launchTimeSeconds; if they played the game through to completion it will be longer than launchTimeSeconds (as this includes time when the player wasn't looking at the target / wasn't moving their head fast enough etc.)
+- `minimumHeadSpeed`: the minimum head speed required (while looking at the target) to reduce the launch timer.
+- `gazeTolerance`: the maximum number of unity units the gaze can be from the centre of the target, and still be counted as 'on target'. Rounded to 2 decimal places.
