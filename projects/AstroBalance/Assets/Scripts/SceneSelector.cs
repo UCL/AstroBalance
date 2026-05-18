@@ -11,6 +11,11 @@ public class SceneSelector : MonoBehaviour
         SceneManager.LoadScene("Scenes/MenuScreen");
     }
 
+    public void LoadBadgesScreen()
+    {
+        SceneManager.LoadScene("Scenes/BadgesScreen");
+    }
+
     public void LoadStarCollector()
     {
         SceneManager.LoadScene("Scenes/StarCollector");
