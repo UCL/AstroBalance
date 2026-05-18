@@ -497,6 +497,11 @@ public class LaunchControl : MonoBehaviour
             gameData.headSpeedDegPerSecMean = 0;
             gameData.headSpeedDegPerSecMedian = 0;
             gameData.headSpeedDegPerSecSD = 0;
+            gameData.percentTimeAbove40DegPerSec = 0;
+            gameData.timeInAdaptationWindow1 = 0;
+            gameData.timeInAdaptationWindow2 = 0;
+            gameData.timeInAdaptationWindow3 = 0;
+            gameData.timeInAdaptationWindow4 = 0;
         }
         else
         {
@@ -510,21 +515,57 @@ public class LaunchControl : MonoBehaviour
             gameData.headSpeedDegPerSecMedian = MathsUtilities.RoundTo2DecimalPlaces(median);
             float standardDeviation = MathsUtilities.StandardDeviation(headSpeedSamples);
             gameData.headSpeedDegPerSecSD = MathsUtilities.RoundTo2DecimalPlaces(standardDeviation);
-        }
 
-        int nSamplesAbove40DegPerSec = 0;
-        foreach (float headSpeed in headSpeedSamples)
-        {
-            if (headSpeed > 40)
+            int nSamplesAbove40DegPerSec = 0;
+            int nSamplesAdaptationWindow1 = 0;
+            int nSamplesAdaptationWindow2 = 0;
+            int nSamplesAdaptationWindow3 = 0;
+            int nSamplesAdaptationWindow4 = 0;
+
+            foreach (float headSpeed in headSpeedSamples)
             {
-                nSamplesAbove40DegPerSec++;
+                if (headSpeed > 40)
+                {
+                    nSamplesAbove40DegPerSec++;
+                }
+
+                if (headSpeed >= 60 && headSpeed < 90)
+                {
+                    nSamplesAdaptationWindow1++;
+                }
+                else if (headSpeed >= 90 && headSpeed < 130)
+                {
+                    nSamplesAdaptationWindow2++;
+                }
+                else if (headSpeed >= 130 && headSpeed < 180)
+                {
+                    nSamplesAdaptationWindow3++;
+                }
+                else if (headSpeed >= 180)
+                {
+                    nSamplesAdaptationWindow4++;
+                }
             }
+
+            float percentTimeAbove40DegPerSec =
+                (nSamplesAbove40DegPerSec / headSpeedSamples.Count()) * 100;
+            gameData.percentTimeAbove40DegPerSec = MathsUtilities.RoundTo2DecimalPlaces(
+                percentTimeAbove40DegPerSec
+            );
+
+            gameData.timeInAdaptationWindow1 = MathsUtilities.RoundTo2DecimalPlaces(
+                nSamplesAdaptationWindow1 * samplingIntervalSeconds
+            );
+            gameData.timeInAdaptationWindow2 = MathsUtilities.RoundTo2DecimalPlaces(
+                nSamplesAdaptationWindow2 * samplingIntervalSeconds
+            );
+            gameData.timeInAdaptationWindow3 = MathsUtilities.RoundTo2DecimalPlaces(
+                nSamplesAdaptationWindow3 * samplingIntervalSeconds
+            );
+            gameData.timeInAdaptationWindow4 = MathsUtilities.RoundTo2DecimalPlaces(
+                nSamplesAdaptationWindow4 * samplingIntervalSeconds
+            );
         }
-        float percentTimeAbove40DegPerSec =
-            (nSamplesAbove40DegPerSec / headSpeedSamples.Count()) * 100;
-        gameData.percentTimeAbove40DegPerSec = MathsUtilities.RoundTo2DecimalPlaces(
-            percentTimeAbove40DegPerSec
-        );
 
         SaveGameData<RocketLaunchData> saveData = new(saveFilename);
         gameData.sessionNumber = CaptureSessionData.CurrentSessionNumber();
