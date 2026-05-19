@@ -365,6 +365,10 @@ public class LaunchControl : MonoBehaviour
         return Mathf.Max(0, currentSpeed); // Clamp to zero to avoid negative speeds
     }
 
+    /// <summary>
+    /// Calculate whether the gaze is steady
+    /// </summary>
+    /// <param name="timeSeconds">The number of seconds of data to use</param>
     private bool CalculateGazeSteady(float timeSeconds)
     {
         bool gazeIsSteady = false;
