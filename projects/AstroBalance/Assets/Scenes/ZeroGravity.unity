@@ -1824,10 +1824,66 @@ PrefabInstance:
       propertyPath: m_Name
       value: PoseAvatar
       objectReference: {fileID: 0}
+    - target: {fileID: 3382129523991492618, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
+      propertyPath: m_Size.x
+      value: 1.21
+      objectReference: {fileID: 0}
+    - target: {fileID: 3382129523991492618, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
+      propertyPath: m_Size.y
+      value: 2.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 3382129523991492618, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 960911798503854051, guid: 40feea59a5acf3a4cb35a6b3899212ef, type: 3}
     - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
       propertyPath: poseText
       value: 
       objectReference: {fileID: 897678168}
+    - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
+      propertyPath: sprites.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
+      propertyPath: 'sprites.Array.data[0]'
+      value: 
+      objectReference: {fileID: 21300000, guid: 8b01fc998def2804492a7f96f90e3330, type: 3}
+    - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
+      propertyPath: 'sprites.Array.data[1]'
+      value: 
+      objectReference: {fileID: 21300000, guid: d6b54598a1d5dc743bdcec74142a6744, type: 3}
+    - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
+      propertyPath: 'sprites.Array.data[2]'
+      value: 
+      objectReference: {fileID: 960911798503854051, guid: 40feea59a5acf3a4cb35a6b3899212ef, type: 3}
+    - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
+      propertyPath: 'sprites.Array.data[3]'
+      value: 
+      objectReference: {fileID: 21300000, guid: f0ccb4fe4b32bd04f8805e877a4644b1, type: 3}
+    - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
+      propertyPath: 'sprites.Array.data[4]'
+      value: 
+      objectReference: {fileID: 21300000, guid: 40873e95939c58b4797f7177767514b6, type: 3}
+    - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
+      propertyPath: 'sprites.Array.data[5]'
+      value: 
+      objectReference: {fileID: -6804575650906184243, guid: 839cd4c7e6c506a4981988c84cb09e4a, type: 3}
+    - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
+      propertyPath: poseExplanations.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
+      propertyPath: 'poseExplanations.Array.data[3]'
+      value: Stand with your left foot in front of your right (heel to toe)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
+      propertyPath: 'poseExplanations.Array.data[4]'
+      value: Stand with your right foot in front of your left (heel to toe)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
+      propertyPath: 'poseExplanations.Array.data[5]'
+      value: Stand on a cushion with both feet
+      objectReference: {fileID: 0}
     - target: {fileID: 7658384438030379020, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.02
