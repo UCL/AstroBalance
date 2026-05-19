@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -72,5 +74,33 @@ public class CaptureSessionData : MonoBehaviour
     {
         SaveData<SessionData> sessionData = new(saveFilename);
         return sessionData.GetCurrentSessionNumber();
+    }
+
+    /// <summary>
+    /// Create a summary of all sessions so far.
+    /// This includes the overall total number of complete games played per mini-game.
+    /// </summary>
+    public static SummaryData SummaryOfAllSessions()
+    {
+        SummaryData summary = new SummaryData();
+        SaveData<SessionData> sessionData = new(saveFilename);
+
+        IEnumerable<SessionData> allSessions = sessionData.GetAll();
+        if (allSessions.Count() == 0)
+        {
+            return summary;
+        }
+
+        foreach (SessionData session in allSessions)
+        {
+            summary.nCompleteRocketLaunchGames += session.nCompleteRocketLaunchGames;
+            summary.nCompleteStarCollectorGames += session.nCompleteStarCollectorGames;
+            summary.nCompleteStarSeekGames += session.nCompleteStarSeekGames;
+            summary.nCompleteStarMapGames += session.nCompleteStarMapGames;
+            summary.nCompleteSpaceWalkGames += session.nCompleteSpaceWalkGames;
+            summary.nCompleteZeroGravityGames += session.nCompleteZeroGravityGames;
+        }
+
+        return summary;
     }
 }

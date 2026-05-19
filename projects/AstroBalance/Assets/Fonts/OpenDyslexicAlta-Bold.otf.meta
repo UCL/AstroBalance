@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 41e07159a8fee5241ba4ccac6e926bfd
+guid: a00b01bfdf67e474dab8d746cb34757c
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - OpenDyslexic
+  - OpenDyslexicAlta
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

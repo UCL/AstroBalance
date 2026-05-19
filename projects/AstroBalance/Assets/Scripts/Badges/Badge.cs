@@ -31,12 +31,6 @@ public class Badge : MonoBehaviour
     [SerializeField, Tooltip("Number of complete games required for gold")]
     private int nGamesGold = 30;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Awake()
-    {
-        badgeImage.sprite = defaultSprite;
-    }
-
     public void SetCompleteGames(int nGames)
     {
         if (nGames >= nGamesGold)

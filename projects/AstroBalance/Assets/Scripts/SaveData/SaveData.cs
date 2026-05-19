@@ -137,6 +137,26 @@ public class SaveData<T>
         return lastN;
     }
 
+    public IEnumerable<T> GetAll()
+    {
+        List<T> allItems = new List<T>();
+        if (!saveFileExists)
+        {
+            return allItems;
+        }
+
+        IEnumerable<string> csvLines = File.ReadLines(dataPath);
+        string header = csvLines.First();
+
+        for (int i = 1; i < csvLines.Count(); i++)
+        {
+            T data = CsvToData(header, csvLines.ElementAt(i));
+            allItems.Add(data);
+        }
+
+        return allItems;
+    }
+
     /// <summary>
     /// Get current session number.
     /// </summary>
