@@ -303,6 +303,26 @@ PrefabInstance:
       propertyPath: m_text
       value: Space Walking
       objectReference: {fileID: 0}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: goldSprite
+      value: 
+      objectReference: {fileID: 8440584349221289215, guid: e7a269b16e981e246ab76d6f7e1695b4, type: 3}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: bronzeSprite
+      value: 
+      objectReference: {fileID: 5099013046065647650, guid: 8a1f1fd43c9679b48a333929201c7bb2, type: 3}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: silverSprite
+      value: 
+      objectReference: {fileID: 8079124950932751357, guid: c7b6456ed3026244a917f040299a048f, type: 3}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: defaultSprite
+      value: 
+      objectReference: {fileID: -5521400981943615559, guid: 26f0952fc7a4db44aaaa6823270d18f4, type: 3}
+    - target: {fileID: 7286956548174229872, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -5521400981943615559, guid: 26f0952fc7a4db44aaaa6823270d18f4, type: 3}
     - target: {fileID: 8886063686736674348, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
       propertyPath: m_Name
       value: SpaceWalkBadge
@@ -409,6 +429,26 @@ PrefabInstance:
       propertyPath: m_text
       value: Mission Star Seek
       objectReference: {fileID: 0}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: goldSprite
+      value: 
+      objectReference: {fileID: 6620396210769549787, guid: cc3897827db3fa144bf2ab122175571a, type: 3}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: bronzeSprite
+      value: 
+      objectReference: {fileID: -4010012932375454330, guid: 7de10ee1da37f3745a03ff11b600d202, type: 3}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: silverSprite
+      value: 
+      objectReference: {fileID: -2096408780296062506, guid: 35d318ac2ab19c44ab704bb8091f9279, type: 3}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: defaultSprite
+      value: 
+      objectReference: {fileID: 8438946272859989914, guid: 1bee47260ec8f7f4f9af47d6c87bd22f, type: 3}
+    - target: {fileID: 7286956548174229872, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 8438946272859989914, guid: 1bee47260ec8f7f4f9af47d6c87bd22f, type: 3}
     - target: {fileID: 8886063686736674348, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
       propertyPath: m_Name
       value: StarSeekBadge
@@ -981,6 +1021,26 @@ PrefabInstance:
       propertyPath: m_text
       value: "Zero \nGravity"
       objectReference: {fileID: 0}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: goldSprite
+      value: 
+      objectReference: {fileID: 5090556915510033633, guid: 766cb4b0b2576f3499371143c81a8439, type: 3}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: bronzeSprite
+      value: 
+      objectReference: {fileID: -3686693545938459508, guid: 29d21e8a677f6544eb7f72693da24d64, type: 3}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: silverSprite
+      value: 
+      objectReference: {fileID: 4529801433523617589, guid: e7795593c1b0ced42b772a8c30f01677, type: 3}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: defaultSprite
+      value: 
+      objectReference: {fileID: 1928875585362892596, guid: 775c933ff07898947ab30c0819b12bf3, type: 3}
+    - target: {fileID: 7286956548174229872, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1928875585362892596, guid: 775c933ff07898947ab30c0819b12bf3, type: 3}
     - target: {fileID: 8886063686736674348, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
       propertyPath: m_Name
       value: ZeroGravityBadge
@@ -1205,6 +1265,26 @@ PrefabInstance:
       propertyPath: m_text
       value: Mission Star Map
       objectReference: {fileID: 0}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: goldSprite
+      value: 
+      objectReference: {fileID: 1710205335735440941, guid: 021d3ebf108390744a30cd5ecc7259c7, type: 3}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: bronzeSprite
+      value: 
+      objectReference: {fileID: 5528217113482245298, guid: 74178bfc58587734d9f9eb6515f1a1b5, type: 3}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: silverSprite
+      value: 
+      objectReference: {fileID: -3269308081111395560, guid: 8ed7fc5d3d528cb42883395ab7247255, type: 3}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: defaultSprite
+      value: 
+      objectReference: {fileID: -8508260682767721122, guid: a62c728b7dee0e544a152ae478e9cf0c, type: 3}
+    - target: {fileID: 7286956548174229872, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -8508260682767721122, guid: a62c728b7dee0e544a152ae478e9cf0c, type: 3}
     - target: {fileID: 8886063686736674348, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
       propertyPath: m_Name
       value: StarMapBadge
@@ -1311,6 +1391,26 @@ PrefabInstance:
       propertyPath: m_text
       value: Star Collector
       objectReference: {fileID: 0}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: goldSprite
+      value: 
+      objectReference: {fileID: -2573922313455719199, guid: 376ebd252f4577945b511afccfc7080b, type: 3}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: bronzeSprite
+      value: 
+      objectReference: {fileID: 3054885971510875032, guid: 852d08262b6581e41aee83ccfc47d2c3, type: 3}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: silverSprite
+      value: 
+      objectReference: {fileID: 968666156555953805, guid: f978b3df8a6603f4abf84604e1e71600, type: 3}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: defaultSprite
+      value: 
+      objectReference: {fileID: -7731222111402433890, guid: 2bcd040cbf7fc5b4791abeeb2723b6fd, type: 3}
+    - target: {fileID: 7286956548174229872, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -7731222111402433890, guid: 2bcd040cbf7fc5b4791abeeb2723b6fd, type: 3}
     - target: {fileID: 8886063686736674348, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
       propertyPath: m_Name
       value: StarCollectorBadge
@@ -1597,6 +1697,22 @@ PrefabInstance:
       propertyPath: m_text
       value: "Rocket \nShip"
       objectReference: {fileID: 0}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: goldSprite
+      value: 
+      objectReference: {fileID: 4808943423502551256, guid: cbfe121289291e04cb09442ee4ba592c, type: 3}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: bronzeSprite
+      value: 
+      objectReference: {fileID: 4242501602245943780, guid: 38f4d130096d0964c9a0045674d793ba, type: 3}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: silverSprite
+      value: 
+      objectReference: {fileID: 2433034415734192327, guid: 1e812280dc58c2647adb454407d83974, type: 3}
+    - target: {fileID: 4303806656748085353, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
+      propertyPath: defaultSprite
+      value: 
+      objectReference: {fileID: 8744940433289680214, guid: 639386754a693954c9a8a355721db097, type: 3}
     - target: {fileID: 8886063686736674348, guid: d29d7cc767c7a1940820cdaa4d9e7f65, type: 3}
       propertyPath: m_Name
       value: RocketLaunchBadge
