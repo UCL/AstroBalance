@@ -375,6 +375,9 @@ MonoBehaviour:
   difficultyWindowSeconds: 10
   speedUpgradePercent: 60
   timeLimitUpgradePercent: 60
+  maxNItemsInBuffer: 100
+  minNItemsForSpeed: 5
+  samplingIntervalSeconds: 0.5
 --- !u!4 &847101234
 Transform:
   m_ObjectHideFlags: 0
@@ -566,6 +569,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 61125f32186bebb4aadc71f1810d8ebd, type: 3}
+--- !u!224 &1178398766 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3060515120221018932, guid: 61125f32186bebb4aadc71f1810d8ebd, type: 3}
+  m_PrefabInstance: {fileID: 1178398765}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1260672149
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1313,8 +1321,9 @@ RectTransform:
   m_Children:
   - {fileID: 1839649832}
   - {fileID: 1898818218}
-  - {fileID: 1260672150}
   - {fileID: 1932805937}
+  - {fileID: 1260672150}
+  - {fileID: 1178398766}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
