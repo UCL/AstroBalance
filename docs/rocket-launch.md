@@ -72,25 +72,27 @@ Data is saved to `RocketLaunchScores.csv`, with one row per played game. Values 
 - `minimumHeadSpeed`: the minimum head speed required (while looking at the target) to reduce the launch timer.
 - `gazeTolerance`: the maximum number of unity units the gaze can be from the centre of the target, and still be counted as 'on target'. Rounded to 2 decimal places.
 
-**Note**: all measures below are calculated as follows. Every `samplingIntervalSeconds` (a configurable parameter in `LaunchControl`), both a head speed and gaze steady sample are taken. 
-
-- Head speed: the absolute differences of head angle between consecutive readings in the time period are summed together and divided by the total difference in time to give a speed in degrees per second.
+**Note**: all measures below are calculated as follows. Every `samplingIntervalSeconds` (a configurable parameter in `LaunchControl`), a gaze steady sample is taken: 
 
 - Gaze steady: a boolean value (either true or false). It will be true if gaze positions in the time period are (on average) less than `gazeTolerance` from the centre of the target.
 
-If the player goes out of range at any point in those `samplingIntervalSeconds` (i.e. the tracker can no longer detect them), then the samples for that time period are discarded. 
+If `gaze steady = true`, a head speed sample is also taken:
+
+- Head speed: the absolute differences of head angle between consecutive readings in the time period are summed together and divided by the total difference in time to give a speed in degrees per second.
+
+If the player goes out of range at any point in those `samplingIntervalSeconds` (i.e. the tracker can no longer detect them), then all samples for that time period are discarded. 
 
 At the end of the game, all samples are used to calculate the summary statistics below:
 
-- `headSpeedDegPerSecMean`: Mean head rotation speed measured in degrees per second (on `headMovementPlane` - either pitch or yaw). Rounded to 2 decimal places. 
-- `headSpeedDegPerSecPeak`: Peak head head rotation speed measured in degrees per second (on `headMovementPlane` - either pitch or yaw). Rounded to 2 decimal places. 
-- `headSpeedDegPerSecMedian`: Median head rotation speed measured in degrees per second (on `headMovementPlane` - either pitch or yaw). Rounded to 2 decimal places. 
-- `headSpeedDegPerSecSD`: Standard deviation of head rotation speed measured in degrees per second (on `headMovementPlane` - either pitch or yaw). Rounded to 2 decimal places.
-- `percentTimeAbove40DegPerSec` - percentage of time with head speed over 40 degrees per second. Rounded to 2 decimal places.
-- `percentTimeGazeOnTarget` - percentage of time with gaze on target (this is the percentage of samples with `gaze steady = true` as described above). Rounded to 2 decimal places.
+- `headSpeedDegPerSecMean`: Mean head rotation speed while the gaze is on target, measured in degrees per second. Rounded to 2 decimal places. 
+- `headSpeedDegPerSecPeak`: Peak head head rotation speed while the gaze is on target, measured in degrees per second. Rounded to 2 decimal places. 
+- `headSpeedDegPerSecMedian`: Median head rotation speed while the gaze is on target, measured in degrees per second. Rounded to 2 decimal places. 
+- `headSpeedDegPerSecSD`: Standard deviation of head rotation speed while the gaze is on target, measured in degrees per second. Rounded to 2 decimal places.
+- `percentTimeAbove40DegPerSec` - the % of on-target time, that the head speed was over 40 degrees per second. (this is the % of speed samples that were >40 - speed samples are _only_ taken when the gaze is on target). Rounded to 2 decimal places.
+- `percentTimeGazeOnTarget` - the % of time with gaze on target (this is the % of samples with `gaze steady = true` as described above). Rounded to 2 decimal places.
 
 For the adaptation window values below, this is calculated as the number of speed samples in the given range multiplied by the sampling interval in seconds:
-- `timeInAdaptationWindow1` - number of seconds with `60 <= head speed < 90` degrees per second. Rounded to 2 decimal places.
-- `timeInAdaptationWindow2` - number of seconds with `90 <= head speed < 130` degrees per second. Rounded to 2 decimal places.
-- `timeInAdaptationWindow3` - number of seconds with `130 <= head speed < 180` degrees per second. Rounded to 2 decimal places.
-- `timeInAdaptationWindow4` - number of seconds with `head speed > 180` degrees per second. Rounded to 2 decimal places.
+- `timeInAdaptationWindow1` - number of seconds with `60 <= head speed < 90` degrees per second and gaze on target. Rounded to 2 decimal places.
+- `timeInAdaptationWindow2` - number of seconds with `90 <= head speed < 130` degrees per second and gaze on target. Rounded to 2 decimal places.
+- `timeInAdaptationWindow3` - number of seconds with `130 <= head speed < 180` degrees per second and gaze on target. Rounded to 2 decimal places.
+- `timeInAdaptationWindow4` - number of seconds with `head speed > 180` degrees per second and gaze on target. Rounded to 2 decimal places.

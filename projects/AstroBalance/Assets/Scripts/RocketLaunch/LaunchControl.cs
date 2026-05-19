@@ -306,16 +306,17 @@ public class LaunchControl : MonoBehaviour
 
         if (!outOfRange && secondsSinceLastOutOfRange >= samplingIntervalSeconds)
         {
-            float speedSample = CalculateHeadSpeed(samplingIntervalSeconds, false);
-            if (speedSample > 0)
-            {
-                headSpeedSamples.Add(speedSample);
-            }
-
             bool gazeSample = CalculateGazeSteady(samplingIntervalSeconds);
             if (gazeSample)
             {
                 nSamplesGazeSteady++;
+
+                // Only record head speeds while the player's gaze is on target
+                float speedSample = CalculateHeadSpeed(samplingIntervalSeconds, false);
+                if (speedSample > 0)
+                {
+                    headSpeedSamples.Add(speedSample);
+                }
             }
             else
             {
