@@ -23,6 +23,7 @@ then a timer decrements until launch time is achieved.
 
   - **Save data variables**
     - Sampling interval: the interval in seconds between samples for the save data. 
+    - Write sampled speed: whether to write sampled speeds for this game to a text file (rocket-speeds.txt)
 
   - **User Interface Items**:
     - Count down sprites: A list of sprites to use for the count down code display.

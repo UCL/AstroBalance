@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using TMPro;
 using Tobii.GameIntegration.Net;
-using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
 /// <summary>
@@ -82,6 +82,9 @@ public class LaunchControl : MonoBehaviour
     [Header("Save data Variables")]
     [SerializeField, Tooltip("The interval between samples for the save data.")]
     private float samplingIntervalSeconds = 0.5f;
+
+    [SerializeField, Tooltip("Whether to write sampled speeds to a file called rocket-speeds.txt")]
+    private bool writeSampledSpeeds = false;
 
     [Header("User Interface Items")]
     [SerializeField, Tooltip("Sprites to display on the countdown.")]
@@ -576,12 +579,12 @@ public class LaunchControl : MonoBehaviour
             }
 
             float percentTimeAbove40DegPerSec =
-                (nSamplesAbove40DegPerSec / headSpeedSamples.Count()) * 100;
+                ((float)nSamplesAbove40DegPerSec / headSpeedSamples.Count()) * 100;
             gameData.percentTimeAbove40DegPerSec = MathsUtilities.RoundTo2DecimalPlaces(
                 percentTimeAbove40DegPerSec
             );
             float percentTimeGazeOnTarget =
-                (nSamplesGazeSteady / (nSamplesGazeSteady + nSamplesGazeNotSteady)) * 100;
+                ((float)nSamplesGazeSteady / (nSamplesGazeSteady + nSamplesGazeNotSteady)) * 100;
             gameData.percentTimeGazeOnTarget = MathsUtilities.RoundTo2DecimalPlaces(
                 percentTimeGazeOnTarget
             );
@@ -604,6 +607,13 @@ public class LaunchControl : MonoBehaviour
         gameData.sessionNumber = CaptureSessionData.CurrentSessionNumber();
         gameData.gameNumber = saveData.GetNextGameNumber();
         saveData.Save(gameData);
+
+        if (writeSampledSpeeds)
+        {
+            string filePath = Path.Combine(Application.persistentDataPath, "rocket-speeds.txt");
+            IEnumerable<string> lines = headSpeedSamples.Select(v => v.ToString());
+            File.WriteAllLines(filePath, lines);
+        }
 
         // Update save data for this session
         if (gameComplete)
