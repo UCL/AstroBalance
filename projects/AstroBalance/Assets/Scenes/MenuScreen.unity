@@ -896,9 +896,9 @@ RectTransform:
   - {fileID: 665810859}
   m_Father: {fileID: 932648614}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 198, y: 193}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -612, y: 193}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1261177602
@@ -1115,19 +1115,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 616433927022445915, guid: 03b9a3ddf372e9643b2e03ecad87536e, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 616433927022445915, guid: 03b9a3ddf372e9643b2e03ecad87536e, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 616433927022445915, guid: 03b9a3ddf372e9643b2e03ecad87536e, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 616433927022445915, guid: 03b9a3ddf372e9643b2e03ecad87536e, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 616433927022445915, guid: 03b9a3ddf372e9643b2e03ecad87536e, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1167,11 +1167,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 616433927022445915, guid: 03b9a3ddf372e9643b2e03ecad87536e, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -810
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 616433927022445915, guid: 03b9a3ddf372e9643b2e03ecad87536e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 540
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 616433927022445915, guid: 03b9a3ddf372e9643b2e03ecad87536e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
