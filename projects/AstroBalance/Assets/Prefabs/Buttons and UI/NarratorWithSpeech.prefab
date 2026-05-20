@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Select a game to get started!
+  m_text: Insert text here...
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0b0c08722e0bcaa48a705caae2820cbb, type: 2}
   m_sharedMaterial: {fileID: -4871106711699383227, guid: 0b0c08722e0bcaa48a705caae2820cbb, type: 2}
@@ -131,7 +131,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: -513.1344}
+  m_margin: {x: 15.225891, y: 0, z: 17.401337, w: -513.1344}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -162,16 +162,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3952449723203723033}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: 0.14298476, w: 0.98972493}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3.94, y: 3.94, z: 3.94}
+  m_LocalScale: {x: -4.75, y: 4.75, z: 4.75}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 616433927022445915}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 16.441}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 507, y: -327}
+  m_AnchoredPosition: {x: 581, y: -307}
   m_SizeDelta: {x: 82.5546, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &857070899417507267
@@ -202,7 +202,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6833324258485665494, guid: 30c4488dd94b0644997fb8ad7795517d, type: 3}
+  m_Sprite: {fileID: 2298396853756637699, guid: 261920d5e3ae6704591716655586645a, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -239,15 +239,15 @@ RectTransform:
   m_GameObject: {fileID: 6565310599307532364}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 7.74, y: 7.74, z: 7.74}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 7.44, y: 7.04, z: 7.44}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 616433927022445915}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 576, y: 123}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 578, y: 167}
+  m_SizeDelta: {x: 54.34, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5069509004141192299
 CanvasRenderer:
@@ -297,7 +297,7 @@ GameObject:
   m_Component:
   - component: {fileID: 616433927022445915}
   m_Layer: 5
-  m_Name: NarratorWithSpeechbox
+  m_Name: NarratorWithSpeech
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
