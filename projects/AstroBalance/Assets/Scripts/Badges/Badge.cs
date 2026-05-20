@@ -10,6 +10,9 @@ public class Badge : MonoBehaviour
     [SerializeField, Tooltip("Game number text")]
     private TextMeshProUGUI gameNumberText;
 
+    [SerializeField, Tooltip("Badge title text")]
+    private TextMeshProUGUI badgeTitleText;
+
     [SerializeField, Tooltip("Default badge sprite")]
     private Sprite defaultSprite;
 
@@ -36,18 +39,22 @@ public class Badge : MonoBehaviour
         if (nGames >= nGamesGold)
         {
             badgeImage.sprite = goldSprite;
+            badgeTitleText.text = "Captain";
         }
         else if (nGames >= nGamesSilver)
         {
             badgeImage.sprite = silverSprite;
+            badgeTitleText.text = "Ensign";
         }
         else if (nGames >= nGamesBronze)
         {
             badgeImage.sprite = bronzeSprite;
+            badgeTitleText.text = "Cadet";
         }
         else
         {
             badgeImage.sprite = defaultSprite;
+            badgeTitleText.text = "Recruit";
         }
 
         gameNumberText.text = nGames.ToString();
