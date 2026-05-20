@@ -279,7 +279,7 @@ public class LaunchControl : MonoBehaviour
 
     private void SetPlayerIsOutOfRangeFlag()
     {
-        if (!tracker.isPlayerDetected())
+        if (!useMouseForTracker && !tracker.isPlayerDetected())
         {
             outOfRange = true;
             secondsSinceLastOutOfRange = 0;
