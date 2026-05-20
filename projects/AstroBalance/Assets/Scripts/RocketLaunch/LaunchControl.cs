@@ -233,7 +233,7 @@ public class LaunchControl : MonoBehaviour
         else
         {
             GazeItem gazeItem = AddToBuffers();
-            CheckIfPlayerIsOutOfRange();
+            SetPlayerIsOutOfRangeFlag();
             SampleForSaveData();
 
             headSpeed = CalculateHeadSpeed(speedTime, true);
@@ -277,7 +277,7 @@ public class LaunchControl : MonoBehaviour
         get => targetObject;
     }
 
-    private void CheckIfPlayerIsOutOfRange()
+    private void SetPlayerIsOutOfRangeFlag()
     {
         if (!tracker.isPlayerDetected())
         {
