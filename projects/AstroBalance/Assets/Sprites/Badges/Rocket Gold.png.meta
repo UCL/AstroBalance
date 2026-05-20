@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d0034d86cc9588f47b3a8b4395c07b2f
+guid: e9c9835951841da439da38a7f3442a4c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7815349190114458812
-    second: MissionStar Seek Menu_0
+      213: -8381571496154864897
+    second: Rocket Gold_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: MissionStar Seek Menu_0
+      name: Rocket Gold_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 625
-        height: 604
+        width: 87
+        height: 193
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: cbcb8605ea2b57c60800000000000000
-      internalID: 7815349190114458812
+      spriteID: ff26628b12daeab80800000000000000
+      internalID: -8381571496154864897
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      MissionStar Seek Menu_0: 7815349190114458812
+      Rocket Gold_0: -8381571496154864897
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -103,10 +103,10 @@ TextureImporter:
       name: Logout Button_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 239
-        height: 238
+        x: 1
+        y: 2
+        width: 236
+        height: 236
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

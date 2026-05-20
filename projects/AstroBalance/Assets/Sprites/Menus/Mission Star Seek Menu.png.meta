@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 35ec95e1e3e54e34298df787a7a706a1
+guid: b8899893341ec2c4aaef517fc48999cd
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 292323212757013556
-    second: Speech Bubble 01_0
+      213: -1308979789366192661
+    second: Mission Star Seek Menu_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Speech Bubble 01_0
+      name: Mission Star Seek Menu_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 626
-        height: 1176
+        width: 625
+        height: 604
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4349bf7c96a8e0400800000000000000
-      internalID: 292323212757013556
+      spriteID: be599ac11d195dde0800000000000000
+      internalID: -1308979789366192661
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Speech Bubble 01_0: 292323212757013556
+      Mission Star Seek Menu_0: -1308979789366192661
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

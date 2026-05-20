@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 3c4ae845ef4d6f9419b87847e6a8e5bd
+guid: e03af9558057fbd4b8a89142c5fed35c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -688537746570268897
-    second: Astrobalance whiteout 01_0
+      213: 6228618926152490498
+    second: congratulations_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Astrobalance whiteout 01_0
+      name: congratulations_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 2374
-        height: 318
+        width: 2741
+        height: 1821
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f1f2b394192d176f0800000000000000
-      internalID: -688537746570268897
+      spriteID: 20e1896a9ef707650800000000000000
+      internalID: 6228618926152490498
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Astrobalance whiteout 01_0: -688537746570268897
+      congratulations_0: 6228618926152490498
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

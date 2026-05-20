@@ -65,10 +65,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Explanation text...
+  m_text: Select a game to get started!
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: b4f83a62cef5fb54eadea0e448f01344, type: 2}
-  m_sharedMaterial: {fileID: 8204479805125555220, guid: b4f83a62cef5fb54eadea0e448f01344, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0b0c08722e0bcaa48a705caae2820cbb, type: 2}
+  m_sharedMaterial: {fileID: -4871106711699383227, guid: 0b0c08722e0bcaa48a705caae2820cbb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -277,7 +277,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 292323212757013556, guid: 35ec95e1e3e54e34298df787a7a706a1, type: 3}
+  m_Sprite: {fileID: 4237124487023628585, guid: 61a58c919c2ca4c4daf3595c454d8520, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1

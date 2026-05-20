@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 30c4488dd94b0644997fb8ad7795517d
+guid: 6ffa2c7b48a488d4493892bc7fe1700f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6833324258485665494
-    second: Narrator 02_0
+      213: 5047184907881723847
+    second: Data Button_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Narrator 02_0
+      name: Data Button_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 541
-        height: 757
+        y: 3
+        width: 238
+        height: 237
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a2107e99ac72b21a0800000000000000
-      internalID: -6833324258485665494
+      spriteID: 7c7b00ebee33b0640800000000000000
+      internalID: 5047184907881723847
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Narrator 02_0: -6833324258485665494
+      Data Button_0: 5047184907881723847
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
