@@ -4,6 +4,19 @@
 [System.Serializable]
 public class RocketLaunchData : GameData
 {
-    public bool pitch; // true if head pitch was used, false if yaw was used
+    public string headMovementPlane;
+    public int gameDurationSeconds;
     public float launchTimeSeconds;
+    public float minimumHeadSpeed;
+    public float gazeTolerance;
+    public float headSpeedDegPerSecMean;
+    public float headSpeedDegPerSecPeak;
+    public float headSpeedDegPerSecMedian;
+    public float headSpeedDegPerSecSD;
+    public float percentTimeAbove40DegPerSec;
+    public float percentTimeGazeOnTarget;
+    public float timeInAdaptationWindow1;
+    public float timeInAdaptationWindow2;
+    public float timeInAdaptationWindow3;
+    public float timeInAdaptationWindow4;
 }

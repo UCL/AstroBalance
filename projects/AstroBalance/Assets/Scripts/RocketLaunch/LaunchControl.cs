@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using TMPro;
 using Tobii.GameIntegration.Net;
@@ -31,6 +33,12 @@ public class LaunchControl : MonoBehaviour
     ]
     private float minimumSpeedYaw = 40;
 
+    [
+        SerializeField,
+        Tooltip("The minimum number of head pose readings used to calculate a head speed")
+    ]
+    private int minNItemsForSpeed = 5;
+
     [Header("Steady Gaze Variables")]
     [SerializeField, Tooltip("Time between new random numbers in seconds.")]
     private float timerDuration = 1.0F;
@@ -48,6 +56,9 @@ public class LaunchControl : MonoBehaviour
         )
     ]
     private float gazeTolerance = 3.0f;
+
+    [SerializeField, Tooltip("The minimum number of gaze points used to calculate steadiness")]
+    private int minNItemsForGaze = 5;
 
     [SerializeField, Tooltip("The game object the user is supposed to look at.")]
     private GameObject targetObject;
@@ -67,6 +78,13 @@ public class LaunchControl : MonoBehaviour
         Range(1, 10)
     ]
     private float adaptiveDifficulty;
+
+    [Header("Save data Variables")]
+    [SerializeField, Tooltip("The interval between samples for the save data.")]
+    private float samplingIntervalSeconds = 0.5f;
+
+    [SerializeField, Tooltip("Whether to write sampled speeds to a file called rocket-speeds.txt")]
+    private bool writeSampledSpeeds = false;
 
     [Header("User Interface Items")]
     [SerializeField, Tooltip("Sprites to display on the countdown.")]
@@ -102,18 +120,28 @@ public class LaunchControl : MonoBehaviour
     private HeadPoseBuffer headPoseBuffer;
     private bool usePitch; //true if we're using pitch speed, false if we're using yaw speed.
     private float minimumSpeed; // minimum head speed required for this game
+    private float headSpeed; // current head speed
     private RocketLaunchData gameData;
     private float rocketSpeed;
-    private int minDataRequired = 2; // we need at least 2 data points to calculate a speed or steadiness
-    private float headSpeed;
     private float mouseToGazeScale = 10f; // if we're debugging using the mouse the reported speeds are much higher than with gaze.
 
-    // gaze steadiness paraemeters
+    // gaze steadiness parameters
     private float timeToSpriteChange;
     private Sprite countDownSprite = null;
     private GazeBuffer gazeBuffer;
 
+    // Sampling for save data parameters
+    private List<float> headSpeedSamples = new List<float>();
+    private int nSamplesGazeSteady = 0;
+    private int nSamplesGazeNotSteady = 0;
+    private float timeToNextSample;
+
+    // track when the player is in or out of range of the tracker
+    bool outOfRange = false;
+    float secondsSinceLastOutOfRange = 0;
+
     private string saveFilename = "RocketLaunchScores";
+    private bool gameActive = true;
 
     private TextMeshProUGUI winText;
 
@@ -137,24 +165,25 @@ public class LaunchControl : MonoBehaviour
         gazeTolerance /= adaptiveDifficulty;
         launchTime *= adaptiveDifficulty;
 
-        if (lastGameData.Count() == 0)
+        if (lastGameData.Count() == 0 || lastGameData.Last().headMovementPlane == "yaw")
         {
             usePitch = true;
         }
         else
         {
-            usePitch = !lastGameData.Last().pitch;
+            usePitch = false;
         }
         minimumSpeed = usePitch ? minimumSpeedPitch : minimumSpeedYaw;
 
         InitialiseTarget();
 
-        headPoseBuffer = new HeadPoseBuffer(headPoseBufferCapacity, minDataRequired);
+        headPoseBuffer = new HeadPoseBuffer(headPoseBufferCapacity, minNItemsForSpeed);
         instructionsText.text = usePitch
             ? "Nod your head and repeat the code to launch the rocket!"
             : "Shake your head and repeat the code to launch the rocket!";
         timeToLaunch = launchTime;
-        gazeBuffer = new GazeBuffer(gazeBufferCapacity, minDataRequired);
+        timeToNextSample = samplingIntervalSeconds;
+        gazeBuffer = new GazeBuffer(gazeBufferCapacity, minNItemsForGaze);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -204,39 +233,13 @@ public class LaunchControl : MonoBehaviour
         else
         {
             GazeItem gazeItem = AddToBuffers();
-            bool gazeIsSteady = false;
+            SetPlayerIsOutOfRangeFlag();
+            SampleForSaveData();
 
-            if (usePitch)
-            {
-                headSpeed =
-                    headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Pitch)
-                    - headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Yaw);
-            }
-            else
-            {
-                headSpeed =
-                    headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Yaw)
-                    - headPoseBuffer.getSpeed(speedTime, HeadPoseAxis.Pitch);
-            }
-            headSpeed = Mathf.Max(0, headSpeed); // Clamp to zero to avoid negative speeds
+            headSpeed = CalculateHeadSpeed(speedTime, true);
+            bool gazeIsSteady = CalculateGazeSteady(gazeTime);
 
-            // gaze steadiness
-            float targetX = 0f;
-            float targetY = 0f;
-            if (targetObject != null)
-            {
-                // use centre of bounds in case the target object is not centred
-                targetX = targetObject.transform.GetComponent<Renderer>().bounds.center.x;
-                targetY = targetObject.transform.GetComponent<Renderer>().bounds.center.y;
-
-                gazeIsSteady = gazeBuffer.gazeSteady(gazeTime, gazeTolerance, targetX, targetY);
-            }
-            else
-            {
-                gazeIsSteady = gazeBuffer.gazeSteady(gazeTime, gazeTolerance);
-            }
-
-            writeDebugInformation(headSpeed, gazeItem, targetX, targetY, gazeIsSteady);
+            writeDebugInformation(headSpeed, gazeItem, gazeIsSteady);
 
             if (timeToSpriteChange > 0)
             {
@@ -272,6 +275,139 @@ public class LaunchControl : MonoBehaviour
     public GameObject TargetObject
     {
         get => targetObject;
+    }
+
+    private void SetPlayerIsOutOfRangeFlag()
+    {
+        if (!useMouseForTracker && !tracker.isPlayerDetected())
+        {
+            outOfRange = true;
+            secondsSinceLastOutOfRange = 0;
+        }
+        else
+        {
+            // If they are already detected as in-range, increase the timer
+            if (!outOfRange)
+            {
+                secondsSinceLastOutOfRange += Time.deltaTime;
+            }
+            outOfRange = false;
+        }
+    }
+
+    /// <summary>
+    /// Take samples for head speed / gaze steady for the save data.
+    /// Windows including out of range time are excluded.
+    /// </summary>
+    private void SampleForSaveData()
+    {
+        if (timeToNextSample > 0)
+        {
+            timeToNextSample -= Time.deltaTime;
+            return;
+        }
+
+        if (!outOfRange && secondsSinceLastOutOfRange >= samplingIntervalSeconds)
+        {
+            bool gazeSample = CalculateGazeSteady(samplingIntervalSeconds);
+            if (gazeSample)
+            {
+                nSamplesGazeSteady++;
+
+                // Only record head speeds while the player's gaze is on target
+                float speedSample = CalculateHeadSpeed(samplingIntervalSeconds, false);
+                if (speedSample > 0)
+                {
+                    headSpeedSamples.Add(speedSample);
+                }
+            }
+            else
+            {
+                nSamplesGazeNotSteady++;
+            }
+        }
+
+        timeToNextSample = samplingIntervalSeconds;
+    }
+
+    /// <summary>
+    /// Calculate the current head speed
+    /// </summary>
+    /// <param name="timeSeconds">The number of seconds of data to use</param>
+    /// <param name="compensateOtherAxis">If True, the speed of movement in the perpendicular axis will be subtracted.
+    /// (e.g. if this game is using Pitch, then the returned speed will be headPitchSpeed - headYawSpeed)</param>
+    private float CalculateHeadSpeed(float timeSeconds, bool compensateOtherAxis)
+    {
+        if (outOfRange || secondsSinceLastOutOfRange < timeSeconds)
+        {
+            return 0;
+        }
+
+        HeadPoseAxis axis;
+        HeadPoseAxis perpendicularAxis;
+        if (usePitch)
+        {
+            axis = HeadPoseAxis.Pitch;
+            perpendicularAxis = HeadPoseAxis.Yaw;
+        }
+        else
+        {
+            axis = HeadPoseAxis.Yaw;
+            perpendicularAxis = HeadPoseAxis.Pitch;
+        }
+
+        float currentSpeed = headPoseBuffer.getSpeed(timeSeconds, axis);
+        if (compensateOtherAxis)
+        {
+            currentSpeed -= headPoseBuffer.getSpeed(timeSeconds, perpendicularAxis);
+        }
+
+        return Mathf.Max(0, currentSpeed); // Clamp to zero to avoid negative speeds
+    }
+
+    /// <summary>
+    /// Calculate whether the gaze is steady
+    /// </summary>
+    /// <param name="timeSeconds">The number of seconds of data to use</param>
+    private bool CalculateGazeSteady(float timeSeconds)
+    {
+        bool gazeIsSteady = false;
+        if (outOfRange || secondsSinceLastOutOfRange < timeSeconds)
+        {
+            return gazeIsSteady;
+        }
+
+        if (targetObject != null)
+        {
+            Vector2 targetCentre = GetTargetCentre();
+            gazeIsSteady = gazeBuffer.gazeSteady(
+                timeSeconds,
+                gazeTolerance,
+                targetCentre.x,
+                targetCentre.y
+            );
+        }
+        else
+        {
+            gazeIsSteady = gazeBuffer.gazeSteady(timeSeconds, gazeTolerance);
+        }
+
+        return gazeIsSteady;
+    }
+
+    private Vector2 GetTargetCentre()
+    {
+        float targetX = 0f;
+        float targetY = 0f;
+
+        if (targetObject is not null)
+        {
+            // use centre of bounds in case the target object is not centred
+            targetX = targetObject.transform.GetComponent<Renderer>().bounds.center.x;
+            targetY = targetObject.transform.GetComponent<Renderer>().bounds.center.y;
+        }
+
+        return new Vector2(targetX, targetY);
     }
 
     /// <summary>
@@ -313,13 +449,7 @@ public class LaunchControl : MonoBehaviour
         return gazeItem;
     }
 
-    private void writeDebugInformation(
-        float headSpeed,
-        GazeItem gazeItem,
-        float targetX,
-        float targetY,
-        bool gazeIsSteady
-    )
+    private void writeDebugInformation(float headSpeed, GazeItem gazeItem, bool gazeIsSteady)
     {
         if (speedStatusText != null)
         {
@@ -329,11 +459,13 @@ public class LaunchControl : MonoBehaviour
         if (gazeStatusText != null)
         {
             string steadyText = gazeIsSteady ? "Gaze is steady" : "Gaze is not steady";
+            Vector2 targetCentre = GetTargetCentre();
+
             gazeStatusText.text =
                 "Look here -> "
-                + targetX
+                + targetCentre.x
                 + ", "
-                + targetY
+                + targetCentre.y
                 + "\n"
                 + "Looking here -> "
                 + gazeItem.gazePoint.X
@@ -346,30 +478,159 @@ public class LaunchControl : MonoBehaviour
 
     private void EndGame()
     {
-        winText.text = "Blast Off! Well Done.";
-        winScreen.SetActive(true);
-        SaveGameData();
-        this.enabled = false;
+        if (gameActive)
+        {
+            gameActive = false;
+            winText.text = "Blast Off! Well Done.";
+            winScreen.SetActive(true);
+            SaveGameData(true);
+            this.enabled = false;
+        }
     }
 
-    private void SaveGameData()
+    private void OnDestroy()
+    {
+        // If the scene is exited early (e.g. with the exit button), then save this
+        // partial game's data
+        if (gameActive)
+        {
+            SaveGameData(false);
+        }
+    }
+
+    private void SaveGameData(bool gameComplete)
     {
         // Update save data for this game
-        gameData.gameCompleted = true;
-        gameData.pitch = usePitch;
-        gameData.launchTimeSeconds = launchTime;
+        gameData.gameCompleted = gameComplete;
+        if (usePitch)
+        {
+            gameData.headMovementPlane = "pitch";
+        }
+        else
+        {
+            gameData.headMovementPlane = "yaw";
+        }
+
+        gameData.launchTimeSeconds = MathsUtilities.RoundTo2DecimalPlaces(launchTime);
+        gameData.gazeTolerance = MathsUtilities.RoundTo2DecimalPlaces(gazeTolerance);
+        gameData.minimumHeadSpeed = MathsUtilities.RoundTo2DecimalPlaces(minimumSpeed);
         gameData.LogEndTime();
 
+        // There's no overall timer for this game, so we instead use the logged start / end
+        // time (HH:mm:ss) to estimate the game duration.
+        TimeSpan gameDuration = DateTime
+            .Parse(gameData.endTime)
+            .Subtract(DateTime.Parse(gameData.startTime));
+        gameData.gameDurationSeconds = MathsUtilities.RoundToNearestInt(
+            (float)gameDuration.TotalSeconds
+        );
+
+        if (headSpeedSamples.Count() == 0)
+        {
+            gameData.headSpeedDegPerSecPeak = 0;
+            gameData.headSpeedDegPerSecMean = 0;
+            gameData.headSpeedDegPerSecMedian = 0;
+            gameData.headSpeedDegPerSecSD = 0;
+            gameData.percentTimeAbove40DegPerSec = 0;
+            gameData.percentTimeGazeOnTarget = 0;
+            gameData.timeInAdaptationWindow1 = 0;
+            gameData.timeInAdaptationWindow2 = 0;
+            gameData.timeInAdaptationWindow3 = 0;
+            gameData.timeInAdaptationWindow4 = 0;
+        }
+        else
+        {
+            gameData.headSpeedDegPerSecPeak = MathsUtilities.RoundTo2DecimalPlaces(
+                headSpeedSamples.Max()
+            );
+            gameData.headSpeedDegPerSecMean = MathsUtilities.RoundTo2DecimalPlaces(
+                headSpeedSamples.Average()
+            );
+            float median = MathsUtilities.Median(headSpeedSamples);
+            gameData.headSpeedDegPerSecMedian = MathsUtilities.RoundTo2DecimalPlaces(median);
+            float standardDeviation = MathsUtilities.StandardDeviation(headSpeedSamples);
+            gameData.headSpeedDegPerSecSD = MathsUtilities.RoundTo2DecimalPlaces(standardDeviation);
+
+            int nSamplesAbove40DegPerSec = 0;
+            int nSamplesAdaptationWindow1 = 0;
+            int nSamplesAdaptationWindow2 = 0;
+            int nSamplesAdaptationWindow3 = 0;
+            int nSamplesAdaptationWindow4 = 0;
+
+            foreach (float headSpeed in headSpeedSamples)
+            {
+                if (headSpeed > 40)
+                {
+                    nSamplesAbove40DegPerSec++;
+                }
+
+                if (headSpeed >= 60 && headSpeed < 90)
+                {
+                    nSamplesAdaptationWindow1++;
+                }
+                else if (headSpeed >= 90 && headSpeed < 130)
+                {
+                    nSamplesAdaptationWindow2++;
+                }
+                else if (headSpeed >= 130 && headSpeed < 180)
+                {
+                    nSamplesAdaptationWindow3++;
+                }
+                else if (headSpeed >= 180)
+                {
+                    nSamplesAdaptationWindow4++;
+                }
+            }
+
+            float percentTimeAbove40DegPerSec =
+                ((float)nSamplesAbove40DegPerSec / headSpeedSamples.Count()) * 100;
+            gameData.percentTimeAbove40DegPerSec = MathsUtilities.RoundTo2DecimalPlaces(
+                percentTimeAbove40DegPerSec
+            );
+            float percentTimeGazeOnTarget =
+                ((float)nSamplesGazeSteady / (nSamplesGazeSteady + nSamplesGazeNotSteady)) * 100;
+            gameData.percentTimeGazeOnTarget = MathsUtilities.RoundTo2DecimalPlaces(
+                percentTimeGazeOnTarget
+            );
+
+            gameData.timeInAdaptationWindow1 = MathsUtilities.RoundTo2DecimalPlaces(
+                nSamplesAdaptationWindow1 * samplingIntervalSeconds
+            );
+            gameData.timeInAdaptationWindow2 = MathsUtilities.RoundTo2DecimalPlaces(
+                nSamplesAdaptationWindow2 * samplingIntervalSeconds
+            );
+            gameData.timeInAdaptationWindow3 = MathsUtilities.RoundTo2DecimalPlaces(
+                nSamplesAdaptationWindow3 * samplingIntervalSeconds
+            );
+            gameData.timeInAdaptationWindow4 = MathsUtilities.RoundTo2DecimalPlaces(
+                nSamplesAdaptationWindow4 * samplingIntervalSeconds
+            );
+        }
+
         SaveGameData<RocketLaunchData> saveData = new(saveFilename);
+        gameData.sessionNumber = CaptureSessionData.CurrentSessionNumber();
+        gameData.gameNumber = saveData.GetNextGameNumber();
         saveData.Save(gameData);
 
+        if (writeSampledSpeeds)
+        {
+            string filePath = Path.Combine(Application.persistentDataPath, "rocket-speeds.txt");
+            IEnumerable<string> lines = headSpeedSamples.Select(v => v.ToString());
+            File.WriteAllLines(filePath, lines);
+        }
+
         // Update save data for this session
-        CaptureSessionData.MarkGameAsComplete("nCompleteRocketLaunchGames");
+        if (gameComplete)
+        {
+            CaptureSessionData.MarkGameAsComplete("nCompleteRocketLaunchGames");
+        }
     }
 
     private void incrementCountDownCode()
     {
-        Sprite newCountDownSprite = countDownSprites[Random.Range(0, countDownSprites.Count)];
+        Sprite newCountDownSprite = countDownSprites[
+            UnityEngine.Random.Range(0, countDownSprites.Count)
+        ];
         // remove the number from the list to avoid selected a repeat number next time.
         countDownSprites.Remove(newCountDownSprite);
         if (countDownSprite != null)
