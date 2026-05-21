@@ -1,5 +1,5 @@
 /// <summary>
-/// A summary of the total number of games played (over all session so far)
+/// A summary of the total number of games played (over all sessions so far)
 /// </summary>
 public class SummaryData
 {
