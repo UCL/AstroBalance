@@ -137,6 +137,10 @@ public class SaveData<T>
         return lastN;
     }
 
+    /// <summary>
+    /// Get a list of all save data items.
+    /// Data is stored in chronological order, from earliest to latest (most recent data in final position).
+    /// </summary>
     public IEnumerable<T> GetAll()
     {
         List<T> allItems = new List<T>();
