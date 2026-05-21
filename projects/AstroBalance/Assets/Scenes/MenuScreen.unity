@@ -443,7 +443,7 @@ PrefabInstance:
       objectReference: {fileID: -8806477473106953086, guid: c7ae1690eb65e5b4c951f5aa524c4666, type: 3}
     - target: {fileID: 5184778142140199134, guid: b2353e445d849774db6b73c94701775b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: LoadZeroGravity
+      value: LoadZeroGravityInstructions
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -738,7 +738,7 @@ PrefabInstance:
       objectReference: {fileID: 7147875224125825535, guid: 1951ef5cc52d26d498de0c96a8434dff, type: 3}
     - target: {fileID: 5184778142140199134, guid: b2353e445d849774db6b73c94701775b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: LoadStarCollector
+      value: LoadStarCollectorInstructions
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -923,7 +923,7 @@ PrefabInstance:
       objectReference: {fileID: -1308979789366192661, guid: b8899893341ec2c4aaef517fc48999cd, type: 3}
     - target: {fileID: 5184778142140199134, guid: b2353e445d849774db6b73c94701775b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: LoadStarSeek
+      value: LoadStarSeekInstructions
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1161,7 +1161,7 @@ PrefabInstance:
       objectReference: {fileID: -4209476480318507142, guid: 49005268bc53d73458d949a1b85be1bc, type: 3}
     - target: {fileID: 5184778142140199134, guid: b2353e445d849774db6b73c94701775b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: LoadStarMap
+      value: LoadStarMapInstructions
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1377,7 +1377,7 @@ PrefabInstance:
       objectReference: {fileID: -6507463025604279841, guid: c69865f6c9c6f4c41aaa322a8f777872, type: 3}
     - target: {fileID: 5184778142140199134, guid: b2353e445d849774db6b73c94701775b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: LoadSpaceWalking
+      value: LoadSpaceWalkingInstructions
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
