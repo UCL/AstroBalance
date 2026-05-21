@@ -28,7 +28,7 @@ public class Badge : MonoBehaviour
     [SerializeField, Tooltip("Number of complete games required for bronze")]
     private int nGamesBronze = 10;
 
-    [SerializeField, Tooltip("Nubmer of complete games required for silver")]
+    [SerializeField, Tooltip("Number of complete games required for silver")]
     private int nGamesSilver = 20;
 
     [SerializeField, Tooltip("Number of complete games required for gold")]
