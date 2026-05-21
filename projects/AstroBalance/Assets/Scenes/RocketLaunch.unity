@@ -11203,8 +11203,8 @@ RectTransform:
   - {fileID: 1103606205}
   - {fileID: 927586578}
   - {fileID: 1140538236}
-  - {fileID: 1147461948}
   - {fileID: 1698111909}
+  - {fileID: 1147461948}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -21435,6 +21435,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6756487744800615951, guid: 44011a8d7ccb3fd45b2bea995bb5d0b4, type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6791258303090292905, guid: 44011a8d7ccb3fd45b2bea995bb5d0b4, type: 3}
+      propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6791258303090292905, guid: 44011a8d7ccb3fd45b2bea995bb5d0b4, type: 3}

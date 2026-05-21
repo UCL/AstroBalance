@@ -3,8 +3,8 @@ guid: 638f9e01823b9d44b8a059eff6dd666c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -11100333286185379
-    second: Congratulations_0
+      213: 6228618926152490498
+    second: congratulations_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,12 +100,12 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Congratulations_0
+      name: congratulations_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 2736
+        width: 2730
         height: 1820
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d56a6914e4098dff0800000000000000
-      internalID: -11100333286185379
+      spriteID: 20e1896a9ef707650800000000000000
+      internalID: 6228618926152490498
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Congratulations_0: -11100333286185379
+      congratulations_0: 6228618926152490498
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
