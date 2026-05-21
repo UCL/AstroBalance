@@ -220,6 +220,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: NarratorWithSpeech
       objectReference: {fileID: 0}
+    - target: {fileID: 8050638244505329079, guid: 03b9a3ddf372e9643b2e03ecad87536e, type: 3}
+      propertyPath: m_fontSize
+      value: 38
+      objectReference: {fileID: 0}
+    - target: {fileID: 8050638244505329079, guid: 03b9a3ddf372e9643b2e03ecad87536e, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 38
+      objectReference: {fileID: 0}
+    - target: {fileID: 8050638244505329079, guid: 03b9a3ddf372e9643b2e03ecad87536e, type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
