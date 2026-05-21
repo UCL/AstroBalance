@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Select a game to get started!
+  m_text: Text here...
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0b0c08722e0bcaa48a705caae2820cbb, type: 2}
   m_sharedMaterial: {fileID: -4871106711699383227, guid: 0b0c08722e0bcaa48a705caae2820cbb, type: 2}
