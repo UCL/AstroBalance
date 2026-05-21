@@ -157,7 +157,7 @@ public class ZeroGravityManager : MonoBehaviour
         {
             gameActive = false;
 
-            winText.text = "Congratulations! \n \n You scored " + overallScore + " points";
+            winText.text = "Congratulations!\n\nYou scored " + overallScore + " points";
             winScreen.SetActive(true);
             SaveGameData(true);
         }

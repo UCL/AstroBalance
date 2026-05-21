@@ -231,7 +231,7 @@ public class SpaceWalkingManager : MonoBehaviour
             gameActive = false;
 
             headTurnScreen.gameObject.SetActive(false);
-            winText.text = "Congratulations! \n \n You completed " + stepScore + " steps";
+            winText.text = "Congratulations!\n\nYou completed " + stepScore + " steps";
             winScreen.SetActive(true);
             SaveGameData(true);
         }
