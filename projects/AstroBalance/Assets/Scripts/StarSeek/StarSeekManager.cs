@@ -136,7 +136,7 @@ public class StarSeekManager : MonoBehaviour
         {
             gameActive = false;
 
-            winText.text = "Congratulations! \n \n You collected " + score + " stars";
+            winText.text = "Congratulations!\n\nYou collected " + score + " stars";
             winScreen.SetActive(true);
             SaveGameData(true);
         }

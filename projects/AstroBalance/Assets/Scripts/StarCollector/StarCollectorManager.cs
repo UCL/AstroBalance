@@ -291,7 +291,7 @@ public class StarCollectorManager : MonoBehaviour
             gameActive = false;
             starGenerator.StopGeneration();
 
-            winText.text = "Congratulations! \n \n You collected " + score + " stars";
+            winText.text = "Congratulations!\n\nYou collected " + score + " stars";
             winScreen.SetActive(true);
 
             // Save game details to file

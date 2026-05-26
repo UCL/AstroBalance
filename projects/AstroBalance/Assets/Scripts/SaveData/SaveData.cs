@@ -138,6 +138,30 @@ public class SaveData<T>
     }
 
     /// <summary>
+    /// Get a list of all save data items.
+    /// Data is stored in chronological order, from earliest to latest (most recent data in final position).
+    /// </summary>
+    public IEnumerable<T> GetAll()
+    {
+        List<T> allItems = new List<T>();
+        if (!saveFileExists)
+        {
+            return allItems;
+        }
+
+        IEnumerable<string> csvLines = File.ReadLines(dataPath);
+        string header = csvLines.First();
+
+        for (int i = 1; i < csvLines.Count(); i++)
+        {
+            T data = CsvToData(header, csvLines.ElementAt(i));
+            allItems.Add(data);
+        }
+
+        return allItems;
+    }
+
+    /// <summary>
     /// Get current session number.
     /// </summary>
     public int GetCurrentSessionNumber()

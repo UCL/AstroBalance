@@ -29,6 +29,27 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ZeroGravity.unity
     guid: 2a376fea6300bca4aa070c255f1c6d0a
+  - enabled: 1
+    path: Assets/Scenes/BadgesScreen.unity
+    guid: defc78d5b974c2b4cb103f9ee5d977f1
+  - enabled: 1
+    path: Assets/Scenes/InstructionsRocketLaunch.unity
+    guid: 6dfe61c38172f644bb88a26f43a55229
+  - enabled: 1
+    path: Assets/Scenes/InstructionsSpaceWalk.unity
+    guid: 379b61b47b1636c469f38c814e368d86
+  - enabled: 1
+    path: Assets/Scenes/InstructionsStarCollector.unity
+    guid: e2f0c5b979c87ad4eb78cd9e1db78b40
+  - enabled: 1
+    path: Assets/Scenes/InstructionsStarSeek.unity
+    guid: b1e43c814c0a98f4ca699cf69d738056
+  - enabled: 1
+    path: Assets/Scenes/InstructionsStarMap.unity
+    guid: 910b3a4280090ca4a94648555d0fcf1c
+  - enabled: 1
+    path: Assets/Scenes/InstructionsZeroGravity.unity
+    guid: 4dbcdbfacf8194f489567774d6e36a49
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

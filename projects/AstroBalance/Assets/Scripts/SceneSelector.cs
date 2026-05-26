@@ -11,9 +11,19 @@ public class SceneSelector : MonoBehaviour
         SceneManager.LoadScene("Scenes/MenuScreen");
     }
 
+    public void LoadBadgesScreen()
+    {
+        SceneManager.LoadScene("Scenes/BadgesScreen");
+    }
+
     public void LoadStarCollector()
     {
         SceneManager.LoadScene("Scenes/StarCollector");
+    }
+
+    public void LoadStarCollectorInstructions()
+    {
+        SceneManager.LoadScene("Scenes/InstructionsStarCollector");
     }
 
     public void LoadRocketLaunch()
@@ -21,9 +31,19 @@ public class SceneSelector : MonoBehaviour
         SceneManager.LoadScene("Scenes/RocketLaunch");
     }
 
+    public void LoadRocketLaunchInstructions()
+    {
+        SceneManager.LoadScene("Scenes/InstructionsRocketLaunch");
+    }
+
     public void LoadStarSeek()
     {
         SceneManager.LoadScene("Scenes/StarSeek");
+    }
+
+    public void LoadStarSeekInstructions()
+    {
+        SceneManager.LoadScene("Scenes/InstructionsStarSeek");
     }
 
     public void LoadStarMap()
@@ -31,14 +51,29 @@ public class SceneSelector : MonoBehaviour
         SceneManager.LoadScene("Scenes/StarMap");
     }
 
+    public void LoadStarMapInstructions()
+    {
+        SceneManager.LoadScene("Scenes/InstructionsStarMap");
+    }
+
     public void LoadSpaceWalking()
     {
         SceneManager.LoadScene("Scenes/SpaceWalking");
     }
 
+    public void LoadSpaceWalkingInstructions()
+    {
+        SceneManager.LoadScene("Scenes/InstructionsSpaceWalk");
+    }
+
     public void LoadZeroGravity()
     {
         SceneManager.LoadScene("Scenes/ZeroGravity");
+    }
+
+    public void LoadZeroGravityInstructions()
+    {
+        SceneManager.LoadScene("Scenes/InstructionsZeroGravity");
     }
 
     public void LoadCurrentScene()

@@ -51,7 +51,7 @@ public class PoseAvatar : MonoBehaviour
     /// </summary>
     public string GetCurrentSpriteName()
     {
-        if (currentIndex >= 0)
+        if (currentIndex >= 0 && currentIndex < sprites.Length)
         {
             return sprites[currentIndex].texture.name;
         }

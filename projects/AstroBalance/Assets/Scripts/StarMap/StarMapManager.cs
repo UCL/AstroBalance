@@ -199,8 +199,7 @@ public class StarMapManager : MonoBehaviour
         {
             gameActive = false;
 
-            winText.text =
-                "Congratulations! \n \n You matched " + maxCorrectSequenceLength + " stars";
+            winText.text = "Congratulations!\n\nYou matched " + maxCorrectSequenceLength + " stars";
             winScreen.SetActive(true);
             SaveGameData(true);
         }

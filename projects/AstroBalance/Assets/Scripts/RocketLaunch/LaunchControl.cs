@@ -481,7 +481,7 @@ public class LaunchControl : MonoBehaviour
         if (gameActive)
         {
             gameActive = false;
-            winText.text = "Blast Off! Well Done.";
+            winText.text = "Blast Off!\nWell Done.";
             winScreen.SetActive(true);
             SaveGameData(true);
             this.enabled = false;
