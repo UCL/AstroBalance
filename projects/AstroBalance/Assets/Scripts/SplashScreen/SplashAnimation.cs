@@ -1,24 +1,21 @@
 using System.Collections;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class SplashAnimation : MonoBehaviour
 {
-    [SerializeField, Tooltip("Background game object")]
+    [SerializeField, Tooltip("Background sprite renderer")]
     private SpriteRenderer background;
 
-    [SerializeField, Tooltip("Rocket game object")]
+    [SerializeField, Tooltip("Rocket sprite renderer")]
     private SpriteRenderer rocket;
 
     [SerializeField, Tooltip("Speed to move the camera at")]
-    private float cameraMoveSpeed = 1f;
+    private float cameraMoveSpeed = 12f;
 
     [SerializeField, Tooltip("Seconds before camera move")]
-    private float holdSeconds = 2f;
+    private float holdSeconds = 1f;
 
-    [SerializeField, Tooltip("Speed to move the camera at")]
+    [SerializeField, Tooltip("Seconds to fade text in")]
     private float textFadeSeconds = 1f;
 
     private bool holdFinished = false;
@@ -98,6 +95,11 @@ public class SplashAnimation : MonoBehaviour
         canvas.interactable = true;
     }
 
+    /// <summary>
+    /// Translate an object up to a maximum y position.
+    /// </summary>
+    /// <param name="transform">The game object's transform</param>
+    /// <param name="maxY">The maximum y position</param>
     private void TranslateToMaxY(Transform transform, float maxY)
     {
         Vector3 yTranslate = Vector3.up * cameraMoveSpeed * Time.deltaTime;
