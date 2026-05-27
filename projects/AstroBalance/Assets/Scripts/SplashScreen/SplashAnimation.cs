@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -9,19 +10,25 @@ public class SplashAnimation : MonoBehaviour
     private SpriteRenderer background;
 
     [SerializeField, Tooltip("Rocket game object")]
-    private GameObject rocket;
+    private SpriteRenderer rocket;
 
     [SerializeField, Tooltip("Speed to move the camera at")]
     private float cameraMoveSpeed = 1f;
 
+    [SerializeField, Tooltip("Speed to move the camera at")]
+    private float textFadeSeconds = 1f;
+
     private Camera cam;
     private float maxCameraYPos;
+    private float maxRocketYPos;
+    private CanvasGroup canvas;
 
     void Awake()
     {
-        Vector3 backgroundScale = background.transform.localScale;
+        canvas = FindFirstObjectByType<CanvasGroup>();
+        canvas.alpha = 0f;
+        canvas.interactable = false;
         cam = Camera.main;
-        Vector3 cameraScale = cam.transform.localScale;
 
         // Match width of camera to width of background
         float requiredSize = background.bounds.size.x / (cam.aspect * 2f);
@@ -34,6 +41,9 @@ public class SplashAnimation : MonoBehaviour
 
         // Find max camera position (where aligned with top of background)
         maxCameraYPos = background.bounds.max.y - cam.orthographicSize;
+
+        // Find max rocket position (just beyond background)
+        maxRocketYPos = background.bounds.max.y + rocket.bounds.size.y;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -42,18 +52,48 @@ public class SplashAnimation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 camPosition = cam.transform.position;
+        TranslateToMaxY(cam.transform, maxCameraYPos);
+        TranslateToMaxY(rocket.transform, maxRocketYPos);
 
-        if (camPosition.y < maxCameraYPos)
+        bool moveFinished = (
+            cam.transform.position.y == maxCameraYPos
+            && rocket.transform.position.y == maxRocketYPos
+        );
+
+        if (canvas.alpha == 0 && moveFinished)
         {
-            Vector3 yTranslate = Vector3.up * cameraMoveSpeed * Time.deltaTime;
-            if ((camPosition + yTranslate).y > maxCameraYPos)
+            StartCoroutine(FadeInCanvas());
+        }
+    }
+
+    private IEnumerator FadeInCanvas()
+    {
+        float elapsedTime = 0f;
+        while (elapsedTime < textFadeSeconds)
+        {
+            elapsedTime += Time.deltaTime;
+            canvas.alpha = Mathf.Lerp(0, 1, elapsedTime / textFadeSeconds);
+            yield return null;
+        }
+
+        canvas.alpha = 1;
+        canvas.interactable = true;
+    }
+
+    private void TranslateToMaxY(Transform transform, float maxY)
+    {
+        Vector3 yTranslate = Vector3.up * cameraMoveSpeed * Time.deltaTime;
+        Vector3 position = transform.position;
+
+        if (position.y < maxY)
+        {
+            if ((position + yTranslate).y > maxY)
             {
-                cam.transform.position = new Vector3(camPosition.x, maxCameraYPos, camPosition.z);
+                transform.position = new Vector3(position.x, maxY, position.z);
             }
             else
             {
-                cam.transform.Translate(yTranslate, Space.World);
+                transform.Translate(yTranslate, Space.World);
             }
         }
     }

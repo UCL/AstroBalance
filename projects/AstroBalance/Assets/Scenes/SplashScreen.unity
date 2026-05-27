@@ -401,8 +401,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   background: {fileID: 1662310917}
-  rocket: {fileID: 1674623640}
+  rocket: {fileID: 1674623641}
   cameraMoveSpeed: 10
+  textFadeSeconds: 1
 --- !u!1 &1070356990
 GameObject:
   m_ObjectHideFlags: 0
@@ -575,15 +576,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 874057310613558636, guid: 2a67f8c2f3ae98b4494e56fce9b226d0, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 874057310613558636, guid: 2a67f8c2f3ae98b4494e56fce9b226d0, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 874057310613558636, guid: 2a67f8c2f3ae98b4494e56fce9b226d0, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 874057310613558636, guid: 2a67f8c2f3ae98b4494e56fce9b226d0, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -724,6 +725,7 @@ GameObject:
   - component: {fileID: 1618699521}
   - component: {fileID: 1618699520}
   - component: {fileID: 1618699519}
+  - component: {fileID: 1618699523}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -815,6 +817,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!225 &1618699523
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1618699518}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1634141272
 GameObject:
   m_ObjectHideFlags: 0
@@ -1013,7 +1027,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1849512104}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
