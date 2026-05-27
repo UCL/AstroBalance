@@ -357,6 +357,52 @@ RectTransform:
   m_AnchoredPosition: {x: -0.23444127, y: -1.05}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &811774794
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 811774795}
+  - component: {fileID: 811774796}
+  m_Layer: 0
+  m_Name: SplashAnimation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &811774795
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 811774794}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.87403584, y: -0.14477378, z: -9.939146}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &811774796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 811774794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31e6adfe2ee9bd948accf04601013936, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  background: {fileID: 1662310917}
+  rocket: {fileID: 1674623640}
 --- !u!1 &1070356990
 GameObject:
   m_ObjectHideFlags: 0
@@ -599,7 +645,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5077232239961546568, guid: e234436c96a1b9846bf0b38e3c01cad4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 20.03
+      value: 19.44
       objectReference: {fileID: 0}
     - target: {fileID: 5077232239961546568, guid: e234436c96a1b9846bf0b38e3c01cad4, type: 3}
       propertyPath: m_LocalPosition.z
@@ -836,6 +882,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &1662310917 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 5834000636859828842, guid: e234436c96a1b9846bf0b38e3c01cad4, type: 3}
+  m_PrefabInstance: {fileID: 1455289626}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1674623640
 GameObject:
   m_ObjectHideFlags: 0
@@ -1127,3 +1178,4 @@ SceneRoots:
   - {fileID: 4883881}
   - {fileID: 472020563}
   - {fileID: 1455289626}
+  - {fileID: 811774795}
