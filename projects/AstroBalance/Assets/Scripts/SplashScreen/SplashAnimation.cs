@@ -15,9 +15,13 @@ public class SplashAnimation : MonoBehaviour
     [SerializeField, Tooltip("Speed to move the camera at")]
     private float cameraMoveSpeed = 1f;
 
+    [SerializeField, Tooltip("Seconds before camera move")]
+    private float holdSeconds = 2f;
+
     [SerializeField, Tooltip("Speed to move the camera at")]
     private float textFadeSeconds = 1f;
 
+    private bool holdFinished = false;
     private Camera cam;
     private float maxCameraYPos;
     private float maxRocketYPos;
@@ -47,11 +51,19 @@ public class SplashAnimation : MonoBehaviour
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start() { }
+    void Start()
+    {
+        StartCoroutine(Hold());
+    }
 
     // Update is called once per frame
     void Update()
     {
+        if (!holdFinished)
+        {
+            return;
+        }
+
         TranslateToMaxY(cam.transform, maxCameraYPos);
         TranslateToMaxY(rocket.transform, maxRocketYPos);
 
@@ -64,6 +76,12 @@ public class SplashAnimation : MonoBehaviour
         {
             StartCoroutine(FadeInCanvas());
         }
+    }
+
+    private IEnumerator Hold()
+    {
+        yield return new WaitForSeconds(holdSeconds);
+        holdFinished = true;
     }
 
     private IEnumerator FadeInCanvas()

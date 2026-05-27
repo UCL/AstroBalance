@@ -402,7 +402,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   background: {fileID: 1662310917}
   rocket: {fileID: 1674623641}
-  cameraMoveSpeed: 10
+  cameraMoveSpeed: 12
+  holdSeconds: 1
   textFadeSeconds: 1
 --- !u!1 &1070356990
 GameObject:
