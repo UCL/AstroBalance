@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Tobii.GameIntegration.Net;
+using UnityEditor.ShaderGraph.Internal;
 
 /// <summary>
 /// Head pose rotation and position axes
@@ -47,6 +49,8 @@ class HeadPoseBuffer : TobiiBuffer<HeadPoseItem>
 
         int timeInMicroseconds = (int)(speedTime * 1e6);
         List<HeadPoseItem> headPoses = GetItems(timeInMicroseconds);
+
+        UnityEngine.Debug.Log("speed based on " + headPoses.Count() + " readings");
 
         return calculateAverageSpeed(headPoses, axis);
     }
@@ -260,6 +264,13 @@ class TobiiBuffer<T>
             || item.TimeStampMicroSeconds() != buffer[lastAddedIndex].TimeStampMicroSeconds()
         )
         {
+            if (lastAddedIndex != -1)
+            {
+                double interval =
+                    item.TimeStampMicroSeconds() - buffer[lastAddedIndex].TimeStampMicroSeconds();
+                interval /= 1e6;
+                UnityEngine.Debug.Log("seconds between items " + interval);
+            }
             hasData = true;
             int newIndex = lastAddedIndex + 1;
             if (newIndex + 1 >= minDataRequired) // index starts at 0, so items added = newIndex + 1
