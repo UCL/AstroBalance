@@ -53,12 +53,6 @@ public class StarCollectorManager : MonoBehaviour
 
     [
         SerializeField,
-        Tooltip("Maximum number of head yaw readings to keep in the buffer at one time")
-    ]
-    private int maxNItemsInBuffer = 100;
-
-    [
-        SerializeField,
         Tooltip("The minimum number of head yaw readings needed to calculate a head speed")
     ]
     private int minNItemsForSpeed = 5;
@@ -101,7 +95,7 @@ public class StarCollectorManager : MonoBehaviour
         score = 0;
         scoreText.text = score.ToString();
 
-        headPoseBuffer = new HeadPoseBuffer(maxNItemsInBuffer, minNItemsForSpeed);
+        headPoseBuffer = new HeadPoseBuffer(samplingIntervalSeconds, minNItemsForSpeed);
         timer.StartCountdown(timeLimit);
 
         speedWindowStart = Time.time;

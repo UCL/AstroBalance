@@ -375,7 +375,6 @@ MonoBehaviour:
   difficultyWindowSeconds: 10
   speedUpgradePercent: 60
   timeLimitUpgradePercent: 60
-  maxNItemsInBuffer: 100
   minNItemsForSpeed: 5
   samplingIntervalSeconds: 0.5
   writeSampledSpeeds: 0
