@@ -107,6 +107,9 @@ class GazeBuffer : TobiiBuffer<GazeItem>
             return false;
         int timeInMicroseconds = (int)(time * 1e6);
         List<GazeItem> gazePoints = GetItems(timeInMicroseconds);
+
+        //UnityEngine.Debug.Log("steady based on " + gazePoints.Count() + " readings");
+
         GetXYArrays(gazePoints, out float[] array_x, out float[] array_y);
         return dataSteadyImpl(array_x, array_y, targetPoint_x, targetPoint_y, tolerance);
     }
@@ -283,8 +286,10 @@ class TobiiBuffer<T>
             }
             buffer[newIndex] = item;
             lastAddedIndex = newIndex;
+            //UnityEngine.Debug.Log("added new with timestamp " + item.TimeStampMicroSeconds());
             return true;
         }
+        //UnityEngine.Debug.Log("rejected as already present " + item.TimeStampMicroSeconds());
         return false;
     }
 
