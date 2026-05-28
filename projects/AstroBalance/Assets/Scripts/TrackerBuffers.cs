@@ -108,7 +108,7 @@ class GazeBuffer : TobiiBuffer<GazeItem>
         int timeInMicroseconds = (int)(time * 1e6);
         List<GazeItem> gazePoints = GetItems(timeInMicroseconds);
 
-        //UnityEngine.Debug.Log("steady based on " + gazePoints.Count() + " readings");
+        UnityEngine.Debug.Log("steady based on " + gazePoints.Count() + " readings");
 
         GetXYArrays(gazePoints, out float[] array_x, out float[] array_y);
         return dataSteadyImpl(array_x, array_y, targetPoint_x, targetPoint_y, tolerance);
