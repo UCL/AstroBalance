@@ -9,13 +9,13 @@ then a timer decrements until launch time is achieved.
 - **LaunchController**: Attached to the rocket object. Controls the overall launch process.
   - Launch time: The starting launch time in seconds. May be increased by adaptive difficulty features below.
   - **Head Movement Variables**: Determine the amount of head movement required to decrement the timer.
-    - Head Pose Buffer Capacity (n) and speed time (s): head speed is measured as the average change in pitch or yaw over the time period speed time. The buffer will need to be sufficiently large to support the time based on game frame rate.
+    - Head speed time (s): head speed is measured as the average change in pitch or yaw over the time period speed time.
     - Minimum head speed (pitch or yaw) required to reduce the launch timer. The yaw speed is set higher than pitch, because it is possible (for me at least) to shake my head quicker than I can nod.
     - Minimum n items: the minimum number of head pose readings used to calculate a head speed
   
   - **Steady Gaze Variables**: Determine how steady the gave must be to decrement the timer.
     - Timer Duration: How long (in seconds) the player must maintain a steady gaze to increment the count down code display.
-    - Gaze Pose Buffer Capacity (n) and gaze time (s), gaze steadiness is measured as the standard deviation of gaze over gaze time seconds. The buffer will need to be sufficiently large to support the time based on game frame rate.
+    - Gaze time (s), gaze steadiness is measured as the standard deviation of gaze over gaze time seconds.
     - Gaze Tolerance - the allowable gaze standard deviation to be steady. Smaller number will require steadier gaze. This may be reduced by the adaptive difficulty settings below.
     - Minimum n items: the minimum number of gaze points used to calculate steadiness.
     - Target Object - if this is set you are required to look at that object, if not gaze can be anywhere on screen but must be steady. The size of the target object will be matched to the gaze tolerance.
