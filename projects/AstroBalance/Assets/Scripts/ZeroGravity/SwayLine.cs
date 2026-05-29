@@ -26,7 +26,7 @@ public class SwayLine : MonoBehaviour
             "Number of seconds before nTimesOutOfRange can be increased again (this helps to prevent teetering on the edge of the in range zone being counted many times)"
         )
     ]
-    private float nTimesOutOfRangeCooldown = 0f;
+    private float nTimesOutOfRangeCooldown = 0.5f;
 
     private Tracker tracker;
     private SpriteRenderer spriteRenderer;
