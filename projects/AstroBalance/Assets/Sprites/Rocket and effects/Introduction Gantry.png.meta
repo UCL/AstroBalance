@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: a782e1949f139f74e869e233a5e69e7f
+guid: 5994436dab9ecde4e8626a1cd4687941
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1912833894579051911
-    second: Introduction BAckground_0
+      213: -1530820500897442694
+    second: Introduction Gantry_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Introduction BAckground_0
+      name: Introduction Gantry_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 2742
-        height: 9121
+        width: 490
+        height: 396
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 78d16b0ea40cb8a10800000000000000
-      internalID: 1912833894579051911
+      spriteID: a745f157dde61cae0800000000000000
+      internalID: -1530820500897442694
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Introduction BAckground_0: 1912833894579051911
+      Introduction Gantry_0: -1530820500897442694
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
