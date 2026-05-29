@@ -20,6 +20,14 @@ public class SwayLine : MonoBehaviour
     [SerializeField, Tooltip("Outside x range colour")]
     private Color outRangeColor = Color.black;
 
+    [
+        SerializeField,
+        Tooltip(
+            "Number of seconds before nTimesOutOfRange can be increased again (this helps to prevent teetering on the edge of the in range zone being counted many times)"
+        )
+    ]
+    private float nTimesOutOfRangeCooldown = 0f;
+
     private Tracker tracker;
     private SpriteRenderer spriteRenderer;
     private ZeroGravityManager gameManager;
@@ -28,6 +36,7 @@ public class SwayLine : MonoBehaviour
     private float timeOfNextScoreIncrease; // time remaining on pose hold timer at next score increase
     private bool headOutOfRange = false;
     private int nTimesOutOfRange = 0; // number of times the player's head has gone out of range while scoring is active
+    private float secondsSinceLastOutOfRangeIncrement = -1;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -45,6 +54,7 @@ public class SwayLine : MonoBehaviour
     public void ActivateScoring(int timeLimit, float timeIncrement)
     {
         nTimesOutOfRange = 0;
+        secondsSinceLastOutOfRangeIncrement = -1;
         this.timeIncrement = timeIncrement;
 
         // We base scoring on the pose hold timer so that everything stays in sync,
@@ -77,9 +87,33 @@ public class SwayLine : MonoBehaviour
         return nTimesOutOfRange;
     }
 
+    /// <summary>
+    /// Record that the player's head went out of range
+    /// </summary>
+    private void RecordOutOfRange()
+    {
+        // Update when this is our first time going out of range, or if the cooldown time has elpased
+        bool updateValid =
+            nTimesOutOfRange == 0
+            || secondsSinceLastOutOfRangeIncrement >= nTimesOutOfRangeCooldown;
+
+        if (!headOutOfRange && scoringActive && updateValid)
+        {
+            nTimesOutOfRange++;
+            secondsSinceLastOutOfRangeIncrement = 0;
+        }
+
+        headOutOfRange = true;
+    }
+
     // Update is called once per frame
     void Update()
     {
+        if (secondsSinceLastOutOfRangeIncrement != -1)
+        {
+            secondsSinceLastOutOfRangeIncrement += Time.deltaTime;
+        }
+
         if (tracker.isPlayerDetected())
         {
             spriteRenderer.enabled = true;
@@ -88,12 +122,7 @@ public class SwayLine : MonoBehaviour
         else
         {
             spriteRenderer.enabled = false;
-
-            if (!headOutOfRange && scoringActive)
-            {
-                nTimesOutOfRange++;
-            }
-            headOutOfRange = true;
+            RecordOutOfRange();
         }
     }
 
@@ -108,12 +137,7 @@ public class SwayLine : MonoBehaviour
         if (outOfRange)
         {
             spriteRenderer.color = outRangeColor;
-
-            if (!headOutOfRange && scoringActive)
-            {
-                nTimesOutOfRange++;
-            }
-            headOutOfRange = true;
+            RecordOutOfRange();
         }
         else
         {
