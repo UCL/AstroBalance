@@ -51,7 +51,7 @@ class HeadPoseBuffer : TobiiBuffer<HeadPoseItem>
         int timeInMicroseconds = (int)(speedTime * 1e6);
         List<HeadPoseItem> headPoses = GetItems(timeInMicroseconds);
 
-        //UnityEngine.Debug.Log("speed based on " + headPoses.Count() + " readings");
+        UnityEngine.Debug.Log("speed based on " + headPoses.Count() + " readings");
 
         return calculateAverageSpeed(headPoses, axis, absolute);
     }
@@ -291,7 +291,7 @@ class TobiiBuffer<T>
                 double interval =
                     item.TimeStampMicroSeconds() - buffer[lastAddedIndex].TimeStampMicroSeconds();
                 interval /= 1e6;
-                //UnityEngine.Debug.Log("seconds between items " + interval);
+                UnityEngine.Debug.Log("seconds between items " + interval);
             }
             hasData = true;
             int newIndex = lastAddedIndex + 1;
