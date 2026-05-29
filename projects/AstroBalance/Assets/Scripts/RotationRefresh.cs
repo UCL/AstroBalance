@@ -32,7 +32,7 @@ public class RotationRefresh : MonoBehaviour
         }
         else
         {
-            speeds.Add(headPoseBuffer.getSpeed(samplingInterval, HeadPoseAxis.Yaw));
+            speeds.Add(headPoseBuffer.getSpeed(samplingInterval, HeadPoseAxis.Yaw, true));
             timeToNextSample = samplingInterval;
         }
     }

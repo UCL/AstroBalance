@@ -37,11 +37,12 @@ class HeadPoseBuffer : TobiiBuffer<HeadPoseItem>
     /// divided by the total change in time based on TimeStampMicroSeconds
     /// </summary>
     /// <param name="speedTime">The time period in seconds over which to calculate the average speed.</param>
+    /// <param name="absolute">If true, use absolute difference between pairs of values.</param>
     /// <returns>
     /// The average speed of the buffer over the given time period. For Roll / Pitch / Yaw: in degrees per second.
     /// For X / Y / Z: in mm per second.
     /// </returns>
-    public float getSpeed(float speedTime, HeadPoseAxis axis)
+    public float getSpeed(float speedTime, HeadPoseAxis axis, bool absolute)
     {
         float averageSpeed = 0f;
         if (!hasEnoughData)
@@ -52,21 +53,36 @@ class HeadPoseBuffer : TobiiBuffer<HeadPoseItem>
 
         //UnityEngine.Debug.Log("speed based on " + headPoses.Count() + " readings");
 
-        return calculateAverageSpeed(headPoses, axis);
+        return calculateAverageSpeed(headPoses, axis, absolute);
     }
 
-    private float calculateAverageSpeed(List<HeadPoseItem> headPoses, HeadPoseAxis axis)
+    private float calculateAverageSpeed(
+        List<HeadPoseItem> headPoses,
+        HeadPoseAxis axis,
+        bool absolute
+    )
     {
         if (headPoses.Count() < minDataRequired)
         {
             return 0f;
         }
+
         float totalDistance = 0f;
-        for (int i = 0; i < headPoses.Count() - 1; i++)
+        if (absolute)
         {
-            totalDistance += Math.Abs(
-                headPoses[i + 1].GetValue(axis) - headPoses[i].GetValue(axis)
-            );
+            // Use absolute difference between each successive pair of measurments
+            for (int i = 0; i < headPoses.Count() - 1; i++)
+            {
+                totalDistance += Math.Abs(
+                    headPoses[i + 1].GetValue(axis) - headPoses[i].GetValue(axis)
+                );
+            }
+        }
+        else
+        {
+            // use difference between start and end position only
+            totalDistance =
+                headPoses[0].GetValue(axis) - headPoses[headPoses.Count() - 1].GetValue(axis);
         }
 
         double totalTime =
@@ -75,6 +91,9 @@ class HeadPoseBuffer : TobiiBuffer<HeadPoseItem>
                 - headPoses[headPoses.Count() - 1].TimeStampMicroSeconds()
             ) / 1e6;
         float averageSpeed = (float)(totalDistance / totalTime);
+
+        // always return as positive value
+        averageSpeed = Math.Abs(averageSpeed);
 
         return averageSpeed;
     }

@@ -85,7 +85,8 @@ public class StarCollectorManager : MonoBehaviour
     private Dictionary<float, float> bufferWindowStarts = new();
 
     // head speeds
-    private Dictionary<float, List<float>> headYawSpeeds = new();
+    private Dictionary<float, List<float>> totalHeadYawSpeeds = new();
+    private Dictionary<float, List<float>> absoluteHeadYawSpeeds = new();
 
     private bool outOfRangeInWindow = false; // whether the player went out of range of the tracker during this window
     private HeadPoseBuffer headPoseBuffer;
@@ -110,7 +111,8 @@ public class StarCollectorManager : MonoBehaviour
         foreach (float samplingInterval in samplingIntervalSeconds)
         {
             bufferWindowStarts.Add(samplingInterval, now);
-            headYawSpeeds.Add(samplingInterval, new List<float>());
+            absoluteHeadYawSpeeds.Add(samplingInterval, new List<float>());
+            totalHeadYawSpeeds.Add(samplingInterval, new List<float>());
         }
     }
 
@@ -220,13 +222,27 @@ public class StarCollectorManager : MonoBehaviour
         // (otherwise, if they've been out of range for a while, we may be calculating the speed of quite old data in the buffer)
         if (!outOfRangeInWindow)
         {
-            float headSpeed = headPoseBuffer.getSpeed(samplingInterval, HeadPoseAxis.Yaw);
+            float absoluteHeadSpeed = headPoseBuffer.getSpeed(
+                samplingInterval,
+                HeadPoseAxis.Yaw,
+                true
+            );
+            float totalHeadSpeed = headPoseBuffer.getSpeed(
+                samplingInterval,
+                HeadPoseAxis.Yaw,
+                false
+            );
 
             // If there aren't enough recorded head yaw angles yet, the returned speed is zero.
             // We don't want to include these readings in the overall averages.
-            if (headSpeed > 0)
+            if (absoluteHeadSpeed > 0)
             {
-                headYawSpeeds[samplingInterval].Add(headSpeed);
+                absoluteHeadYawSpeeds[samplingInterval].Add(absoluteHeadSpeed);
+            }
+
+            if (totalHeadSpeed > 0)
+            {
+                totalHeadYawSpeeds[samplingInterval].Add(totalHeadSpeed);
             }
         }
 
@@ -341,23 +357,23 @@ public class StarCollectorManager : MonoBehaviour
             1 + Mathf.CeilToInt((timeLimit - minTimeLimit) / timeLimitIncrement);
         gameData.finalStarFallSpeed = starGenerator.GetStarSpeed();
 
-        if (headYawSpeeds.Count() == 0)
-        {
-            gameData.headSpeedDegPerSecPeak = 0;
-            gameData.headSpeedDegPerSecMean = 0;
-            gameData.headSpeedDegPerSecSD = 0;
-        }
-        else
-        {
-            //gameData.headSpeedDegPerSecPeak = MathsUtilities.RoundTo2DecimalPlaces(
-            //    headYawSpeeds.Max()
-            //);
-            //gameData.headSpeedDegPerSecMean = MathsUtilities.RoundTo2DecimalPlaces(
-            //    headYawSpeeds.Average()
-            //);
-            //float standardDeviation = MathsUtilities.StandardDeviation(headYawSpeeds);
-            //gameData.headSpeedDegPerSecSD = MathsUtilities.RoundTo2DecimalPlaces(standardDeviation);
-        }
+        //if (absoluteHeadYawSpeeds.Count() == 0)
+        //{
+        //    gameData.headSpeedDegPerSecPeak = 0;
+        //    gameData.headSpeedDegPerSecMean = 0;
+        //    gameData.headSpeedDegPerSecSD = 0;
+        //}
+        //else
+        //{
+        //    //gameData.headSpeedDegPerSecPeak = MathsUtilities.RoundTo2DecimalPlaces(
+        //    //    headYawSpeeds.Max()
+        //    //);
+        //    //gameData.headSpeedDegPerSecMean = MathsUtilities.RoundTo2DecimalPlaces(
+        //    //    headYawSpeeds.Average()
+        //    //);
+        //    //float standardDeviation = MathsUtilities.StandardDeviation(headYawSpeeds);
+        //    //gameData.headSpeedDegPerSecSD = MathsUtilities.RoundTo2DecimalPlaces(standardDeviation);
+        //}
 
         SaveGameData<StarCollectorData> saveData = new(saveFilename);
         gameData.sessionNumber = CaptureSessionData.CurrentSessionNumber();
@@ -368,13 +384,22 @@ public class StarCollectorManager : MonoBehaviour
         {
             foreach (float samplingInterval in samplingIntervalSeconds)
             {
-                string filePath = Path.Combine(
+                string absoluteFilePath = Path.Combine(
                     Application.persistentDataPath,
-                    "star-collector-speeds-" + samplingInterval.ToString() + ".txt"
+                    "star-collector-speeds-absolute-" + samplingInterval.ToString() + ".txt"
                 );
-                IEnumerable<string> lines = headYawSpeeds[samplingInterval]
+                string totalFilePath = Path.Combine(
+                    Application.persistentDataPath,
+                    "star-collector-speeds-total-" + samplingInterval.ToString() + ".txt"
+                );
+
+                IEnumerable<string> absoluteLines = absoluteHeadYawSpeeds[samplingInterval]
                     .Select(v => v.ToString());
-                File.WriteAllLines(filePath, lines);
+                File.WriteAllLines(absoluteFilePath, absoluteLines);
+
+                IEnumerable<string> totalLines = totalHeadYawSpeeds[samplingInterval]
+                    .Select(v => v.ToString());
+                File.WriteAllLines(totalFilePath, totalLines);
             }
         }
 

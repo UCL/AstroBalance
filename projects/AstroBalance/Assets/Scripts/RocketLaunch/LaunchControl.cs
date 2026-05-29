@@ -356,10 +356,10 @@ public class LaunchControl : MonoBehaviour
             perpendicularAxis = HeadPoseAxis.Pitch;
         }
 
-        float currentSpeed = headPoseBuffer.getSpeed(timeSeconds, axis);
+        float currentSpeed = headPoseBuffer.getSpeed(timeSeconds, axis, true);
         if (compensateOtherAxis)
         {
-            currentSpeed -= headPoseBuffer.getSpeed(timeSeconds, perpendicularAxis);
+            currentSpeed -= headPoseBuffer.getSpeed(timeSeconds, perpendicularAxis, true);
         }
 
         return Mathf.Max(0, currentSpeed); // Clamp to zero to avoid negative speeds
