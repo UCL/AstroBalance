@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Tobii.GameIntegration.Net;
+using UnityEngine;
 
 /// <summary>
 /// Head pose rotation and position axes
@@ -28,6 +29,14 @@ class HeadPoseBuffer : TobiiBuffer<HeadPoseItem>
     /// <param name="minDataRequired">The minimum number of data points required to calculate a speed.</param>
     public HeadPoseBuffer(int capacity, int minDataRequired)
         : base(capacity, minDataRequired) { }
+
+    /// <summary>
+    /// Initializes a new instance of the HeadPoseBuffer class.
+    /// </summary>
+    /// <param name="secondsOfData">The number of seconds of tracker data this buffer must store.</param>
+    /// <param name="minDataRequired">The minimum number of data points required to calculate a speed.</param>
+    public HeadPoseBuffer(float secondsOfData, int minDataRequired)
+        : base(secondsOfData, minDataRequired) { }
 
     /// <summary>
     /// Calculates the average speed of the buffer over a given time period.
@@ -88,6 +97,14 @@ class GazeBuffer : TobiiBuffer<GazeItem>
     /// <param name="minDataRequired">The minimum number of data points required to calculate steadiness.</param>
     public GazeBuffer(int capacity, int minDataRequired)
         : base(capacity, minDataRequired) { }
+
+    /// <summary>
+    /// Initializes a new instance of the GazeBuffer class.
+    /// </summary>
+    /// <param name="secondsOfData">The number of seconds of tracker data this buffer must store.</param>
+    /// <param name="minDataRequired">The minimum number of data points required to calculate steadiness.</param>
+    public GazeBuffer(float secondsOfData, int minDataRequired)
+        : base(secondsOfData, minDataRequired) { }
 
     /// <summary>
     /// returns true if the data more recent than the time have a summed
@@ -178,7 +195,12 @@ interface ITimeStampMicroSeconds
 /// </summary>
 class GazeItem : ITimeStampMicroSeconds
 {
-    public GazePoint gazePoint;
+    protected GazePoint gazePoint;
+
+    public GazeItem(GazePoint gazePoint)
+    {
+        this.gazePoint = gazePoint;
+    }
 
     public long TimeStampMicroSeconds() => gazePoint.TimeStampMicroSeconds;
 
@@ -232,6 +254,17 @@ class TobiiBuffer<T>
     /// <summary>
     /// Initializes a new instance of the <see cref="TobiiBuffer{T}"/> class.
     /// </summary>
+    /// <param name="secondsOfData">
+    /// The number of seconds of tracker data this buffer must store. The max capacity will be estimated
+    /// based on the measured tobii refresh rate.
+    /// </param>
+    /// <param name="minDataRequired">The minimum number of data points required for calculations to be meaningful.</param>
+    public TobiiBuffer(float secondsOfData, int minDataRequired)
+        : this(EstimateCapacity(secondsOfData), minDataRequired) { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TobiiBuffer{T}"/> class.
+    /// </summary>
     /// <param name="capacity">The capacity of the buffer.</param>
     /// <param name="minDataRequired">The minimum number of data points required for calculations to be meaningful.</param>
     public TobiiBuffer(int capacity, int minDataRequired)
@@ -247,6 +280,18 @@ class TobiiBuffer<T>
         hasData = false;
         hasEnoughData = false;
         this.minDataRequired = minDataRequired;
+    }
+
+    /// <summary>
+    /// Estimate required capacity of the buffer based on the number of seconds
+    /// of tracker data it must store.
+    /// </summary>
+    private static int EstimateCapacity(float secondsOfData)
+    {
+        // New tracker readings are taken ~every 0.03 seconds (measured directly from tracker during gameplay)
+        // We set the capacity to 1.5x the required amount based on this, to ensure we definitely
+        // have enough space.
+        return (int)Mathf.Ceil(1.5f * (secondsOfData / 0.03f));
     }
 
     /// <summary>

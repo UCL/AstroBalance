@@ -2094,6 +2094,10 @@ PrefabInstance:
       propertyPath: poseHoldTimer
       value: 
       objectReference: {fileID: 1701992181}
+    - target: {fileID: 8594660642365272174, guid: 0cb2dfec0947b7748a27c676454475c0, type: 3}
+      propertyPath: nTimesOutOfRangeCooldown
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

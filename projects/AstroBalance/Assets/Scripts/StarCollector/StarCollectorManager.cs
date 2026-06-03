@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using TMPro;
 using Tobii.GameIntegration.Net;
@@ -52,18 +53,18 @@ public class StarCollectorManager : MonoBehaviour
 
     [
         SerializeField,
-        Tooltip("Maximum number of head yaw readings to keep in the buffer at one time")
-    ]
-    private int maxNItemsInBuffer = 100;
-
-    [
-        SerializeField,
         Tooltip("The minimum number of head yaw readings needed to calculate a head speed")
     ]
     private int minNItemsForSpeed = 5;
 
-    [SerializeField, Tooltip("The number of seconds to calculate head yaw speed over")]
+    [SerializeField, Tooltip("The interval between head yaw speed samples for the save data")]
     private float samplingIntervalSeconds = 0.5f;
+
+    [
+        SerializeField,
+        Tooltip("Whether to write sampled speeds to a file called star-collector-speeds.txt")
+    ]
+    private bool writeSampledSpeeds = false;
 
     private TextMeshProUGUI winText;
     private Tracker tracker;
@@ -94,7 +95,7 @@ public class StarCollectorManager : MonoBehaviour
         score = 0;
         scoreText.text = score.ToString();
 
-        headPoseBuffer = new HeadPoseBuffer(maxNItemsInBuffer, minNItemsForSpeed);
+        headPoseBuffer = new HeadPoseBuffer(samplingIntervalSeconds, minNItemsForSpeed);
         timer.StartCountdown(timeLimit);
 
         speedWindowStart = Time.time;
@@ -347,6 +348,16 @@ public class StarCollectorManager : MonoBehaviour
         gameData.sessionNumber = CaptureSessionData.CurrentSessionNumber();
         gameData.gameNumber = saveData.GetNextGameNumber();
         saveData.Save(gameData);
+
+        if (writeSampledSpeeds)
+        {
+            string filePath = Path.Combine(
+                Application.persistentDataPath,
+                "star-collector-speeds.txt"
+            );
+            IEnumerable<string> lines = headYawSpeeds.Select(v => v.ToString());
+            File.WriteAllLines(filePath, lines);
+        }
 
         // Update save data for this session
         if (gameComplete)

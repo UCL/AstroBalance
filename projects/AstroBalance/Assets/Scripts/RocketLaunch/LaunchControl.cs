@@ -16,9 +16,6 @@ public class LaunchControl : MonoBehaviour
     private float launchTime = 30;
 
     [Header("Head Movement Variables")]
-    [SerializeField, Tooltip("The capacity of the head pose buffer to use.")]
-    private int headPoseBufferCapacity = 100;
-
     [SerializeField, Tooltip("The time in seconds to measure head speed over.")]
     private float speedTime = 2.0f;
 
@@ -42,9 +39,6 @@ public class LaunchControl : MonoBehaviour
     [Header("Steady Gaze Variables")]
     [SerializeField, Tooltip("Time between new random numbers in seconds.")]
     private float timerDuration = 1.0F;
-
-    [SerializeField, Tooltip("The capacity of the gaze buffer to use.")]
-    private int gazeBufferCapacity = 100;
 
     [SerializeField, Tooltip("The time in seconds that the gaze should be steady for.")]
     private float gazeTime = 3.0f;
@@ -177,13 +171,17 @@ public class LaunchControl : MonoBehaviour
 
         InitialiseTarget();
 
-        headPoseBuffer = new HeadPoseBuffer(headPoseBufferCapacity, minNItemsForSpeed);
+        // Make sure buffers have a large enough capacity to cover sampling for save data + the speed/gaze steady time for gameplay
+        float maxSecondsOfPoseInfo = Mathf.Max(new float[] { samplingIntervalSeconds, speedTime });
+        float maxSecondsOfGazeInfo = Mathf.Max(new float[] { samplingIntervalSeconds, gazeTime });
+        headPoseBuffer = new HeadPoseBuffer(maxSecondsOfPoseInfo, minNItemsForSpeed);
+        gazeBuffer = new GazeBuffer(maxSecondsOfGazeInfo, minNItemsForGaze);
+
         instructionsText.text = usePitch
             ? "Nod your head and repeat the code to launch the rocket!"
             : "Shake your head and repeat the code to launch the rocket!";
         timeToLaunch = launchTime;
         timeToNextSample = samplingIntervalSeconds;
-        gazeBuffer = new GazeBuffer(gazeBufferCapacity, minNItemsForGaze);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -416,7 +414,7 @@ public class LaunchControl : MonoBehaviour
     private GazeItem AddToBuffers()
     {
         HeadPose headPose = new HeadPose();
-        GazeItem gazeItem = new GazeItem();
+        GazePoint gazePoint = new GazePoint();
         if (useMouseForTracker)
         {
             var mousePos = Input.mousePosition;
@@ -429,21 +427,22 @@ public class LaunchControl : MonoBehaviour
             headPose.TimeStampMicroSeconds = (long)(Time.timeSinceLevelLoad * 1000000);
 
             Vector3 mousePoseWorld = Camera.main.ScreenToWorldPoint(mousePos);
-            gazeItem.gazePoint.X = mousePoseWorld.x;
-            gazeItem.gazePoint.Y = mousePoseWorld.y;
-            gazeItem.gazePoint.TimeStampMicroSeconds = (long)(Time.timeSinceLevelLoad * 1000000);
+            gazePoint.X = mousePoseWorld.x;
+            gazePoint.Y = mousePoseWorld.y;
+            gazePoint.TimeStampMicroSeconds = (long)(Time.timeSinceLevelLoad * 1000000);
         }
         else
         {
             headPose = tracker.getHeadPose();
+            gazePoint = tracker.getGazePoint();
 
-            gazeItem.gazePoint = tracker.getGazePoint();
-            Vector2 worldGaze = tracker.ConvertGazePointToWorldCoordinates(gazeItem.gazePoint);
-            gazeItem.gazePoint.X = worldGaze.x;
-            gazeItem.gazePoint.Y = worldGaze.y;
+            Vector2 worldGaze = tracker.ConvertGazePointToWorldCoordinates(gazePoint);
+            gazePoint.X = worldGaze.x;
+            gazePoint.Y = worldGaze.y;
         }
 
         headPoseBuffer.addIfNew(new HeadPoseItem(headPose));
+        GazeItem gazeItem = new(gazePoint);
         gazeBuffer.addIfNew(gazeItem);
 
         return gazeItem;
@@ -468,9 +467,9 @@ public class LaunchControl : MonoBehaviour
                 + targetCentre.y
                 + "\n"
                 + "Looking here -> "
-                + gazeItem.gazePoint.X
+                + gazeItem.getX()
                 + ", "
-                + gazeItem.gazePoint.Y
+                + gazeItem.getY()
                 + "\n"
                 + steadyText;
         }

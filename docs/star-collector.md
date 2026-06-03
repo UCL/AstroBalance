@@ -11,9 +11,9 @@ top of the screen.
   - Number of games in a row that must meet the upgrade % to increase the time limit
   - The length of the time window used to evaluate player performance
   - The % of stars that must be collected to increase speed or time limit
-  - The maximum number of head yaw readings to keep in the buffer at one time (these are used for the head speed save data)
   - The minimum number of head yaw readings needed to calculate a head speed
-  - The number of seconds to calculate head yaw speed over
+  - The number of seconds between head yaw speed samples for the save data
+  - Whether to write sampled speeds to a text file (star-collector-speeds.txt)
  
 - **StarGenerator**: values related to generation of the wave of stars
   - Min, max and base star speed
