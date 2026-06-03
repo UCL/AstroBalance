@@ -109,7 +109,7 @@ public class SwayLine : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (secondsSinceLastOutOfRangeIncrement != -1)
+        if (secondsSinceLastOutOfRangeIncrement >= 0f)
         {
             secondsSinceLastOutOfRangeIncrement += Time.deltaTime;
         }
