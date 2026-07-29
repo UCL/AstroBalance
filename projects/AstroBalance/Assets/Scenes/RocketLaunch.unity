@@ -10480,8 +10480,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3852089253895733016, guid: c21ce9e309b6b634098fd8e1e3065097, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 4373556337955268278, guid: 9154445e7d82d03488efa927a9d933ee, type: 3}
+    - target: {fileID: 3852089253895733016, guid: c21ce9e309b6b634098fd8e1e3065097, type: 3}
+      propertyPath: m_Color.a
+      value: 0.5686275
+      objectReference: {fileID: 0}
+    - target: {fileID: 3852089253895733016, guid: c21ce9e309b6b634098fd8e1e3065097, type: 3}
       propertyPath: m_SortingLayer
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3852089253895733016, guid: c21ce9e309b6b634098fd8e1e3065097, type: 3}
       propertyPath: m_SortingLayerID
@@ -21511,6 +21519,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 914896177736189597, guid: 00c1b36d25d21214eb8e6df02c079dea, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 914896177736189597, guid: 00c1b36d25d21214eb8e6df02c079dea, type: 3}
       propertyPath: m_SortingLayer
       value: 3
       objectReference: {fileID: 0}
@@ -21566,6 +21578,10 @@ PrefabInstance:
       propertyPath: instructionsText
       value: 
       objectReference: {fileID: 1103606206}
+    - target: {fileID: 8902890511493098178, guid: 00c1b36d25d21214eb8e6df02c079dea, type: 3}
+      propertyPath: minimumSpeedPitch
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 8902890511493098178, guid: 00c1b36d25d21214eb8e6df02c079dea, type: 3}
       propertyPath: adaptiveDifficulty
       value: 1.7
