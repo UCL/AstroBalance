@@ -13,6 +13,18 @@ PrefabInstance:
       value: ConfiguarbleConstellation
       objectReference: {fileID: 0}
     - target: {fileID: 5944325245102352780, guid: 9625cb065f60ca645bf5c238fcb93d8b, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5944325245102352780, guid: 9625cb065f60ca645bf5c238fcb93d8b, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5944325245102352780, guid: 9625cb065f60ca645bf5c238fcb93d8b, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5944325245102352780, guid: 9625cb065f60ca645bf5c238fcb93d8b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -52,6 +64,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9203798164173761817, guid: 9625cb065f60ca645bf5c238fcb93d8b, type: 3}
+      propertyPath: Dot
+      value: 
+      objectReference: {fileID: 7317651488728543084, guid: 3efb447d322015a4393e919903a94da1, type: 3}
+    - target: {fileID: 9203798164173761817, guid: 9625cb065f60ca645bf5c238fcb93d8b, type: 3}
+      propertyPath: DotObj
+      value: 
+      objectReference: {fileID: 7317651488728543084, guid: 3efb447d322015a4393e919903a94da1, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 381799543180381395, guid: 9625cb065f60ca645bf5c238fcb93d8b, type: 3}

@@ -48,6 +48,7 @@ public class CorsiBlock : MonoBehaviour
             StarScriptObjs.Add(star.GetComponent<StarMapStar>());
         }
         myConstellation.GetComponent<Constellation>().InitStars(StarScriptObjs);
+
         return myConstellation.GetComponent<Constellation>();
     }
 

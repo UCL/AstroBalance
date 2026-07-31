@@ -599,6 +599,7 @@ MonoBehaviour:
   largeConstellation: {fileID: 8704810960959391910, guid: 7185bc0d9558ff44b82425a007034412, type: 3}
   winScreen: {fileID: 274217756}
   ConstellationLayout: {fileID: 344821675}
+  UseCorsiBlockLayout: 1
 --- !u!4 &859376006
 Transform:
   m_ObjectHideFlags: 0

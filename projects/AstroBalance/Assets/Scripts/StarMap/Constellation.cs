@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +43,9 @@ public class Constellation : MonoBehaviour
     [SerializeField, Tooltip("Prefab of icon to show for an incorrect guess")]
     private GameObject incorrectGuessPrefab;
 
+    [SerializeField, Tooltip("Sprite for dotted lines between stars")]
+    private GameObject DotObj;
+
     private List<StarMapStar> stars;
     private StarMapManager gameManager;
     private List<StarMapStar> currentSequence; // stars left to guess
@@ -72,6 +76,60 @@ public class Constellation : MonoBehaviour
         {
             star.SetConstellation(this);
         }
+        ConnectStars();
+    }
+
+    //In place shuffle algorithm
+    private void Shuffle<T>(List<T> L)
+    {
+        int n = L.Count;
+        System.Random rng = new System.Random();
+        for (int i = 0; i < n - 2; i++)
+        {
+            int j = rng.Next(i, n);
+            T x = L[i];
+            T y = L[j];
+            L[i] = y;
+            L[j] = x;
+        }
+    }
+
+    private void ConnectStars()
+    {
+        // Connect pairs of stars randomly until you have a connected graph
+        var n_stars = stars.Count;
+        Shuffle(stars);
+        List<ValueTuple<Vector2, Vector2>> StarPairs = new();
+        System.Random rng = new System.Random();
+
+        for (int i = 1; i < stars.Count; i++)
+        {
+            // connect to a random star within the graph
+            int j = rng.Next(i);
+            StarPairs.Add((stars[i].transform.position, stars[j].transform.position));
+        }
+
+        foreach (var pair in StarPairs)
+        {
+            DrawDottedLine(pair.Item1, pair.Item2);
+        }
+    }
+
+    public List<GameObject> DrawDottedLine(Vector2 p1, Vector2 p2)
+    {
+        List<GameObject> Dots = new();
+        float DotSeparation = 0.5f;
+        Vector2 r = p2 - p1;
+        float d = r.magnitude;
+        float s = 0f;
+        while (s <= d)
+        {
+            var dot = Instantiate<GameObject>(DotObj);
+            dot.transform.position = p1 + (r * s / d);
+            s += DotSeparation;
+        }
+
+        return Dots;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -274,7 +332,9 @@ public class Constellation : MonoBehaviour
         {
             // choose a random star, then remove it so there are no
             // repeats in the sequence
-            StarMapStar randomStar = availableStars[Random.Range(0, availableStars.Count())];
+            StarMapStar randomStar = availableStars[
+                UnityEngine.Random.Range(0, availableStars.Count())
+            ];
             starSequence.Add(randomStar);
             availableStars.Remove(randomStar);
         }
