@@ -80,9 +80,9 @@ public class LaunchControl : MonoBehaviour
     [SerializeField, Tooltip("Whether to write sampled speeds to a file called rocket-speeds.txt")]
     private bool writeSampledSpeeds = false;
 
-    [Header("User Interface Items")]
-    [SerializeField, Tooltip("Sprites to display on the countdown.")]
-    private List<Sprite> countDownSprites;
+    [SerializeField, Tooltip("Launch Code Display Text")]
+    private TextMeshProUGUI launchText;
+    private int currentCode;
 
     [SerializeField, Tooltip("A text box for the instructions.")]
     private TextMeshProUGUI instructionsText;
@@ -121,7 +121,6 @@ public class LaunchControl : MonoBehaviour
 
     // gaze steadiness parameters
     private float timeToSpriteChange;
-    private Sprite countDownSprite = null;
     private GazeBuffer gazeBuffer;
 
     // Sampling for save data parameters
@@ -197,17 +196,6 @@ public class LaunchControl : MonoBehaviour
     {
         targetObject.SetActive(false);
         incrementCountDownCode();
-
-        // Match width and height of target to gaze tolerance
-        Renderer targetRenderer = targetObject.transform.GetComponent<Renderer>();
-        float targetObjectWidth = targetRenderer.bounds.extents.x;
-        float targetObjectHeight = targetRenderer.bounds.extents.y;
-        Vector3 targetScale = targetRenderer.transform.localScale;
-        targetScale.Scale(
-            new Vector3(gazeTolerance / targetObjectWidth, gazeTolerance / targetObjectWidth, 1)
-        );
-        targetRenderer.transform.localScale = targetScale;
-
         targetObject.SetActive(true);
     }
 
@@ -217,7 +205,7 @@ public class LaunchControl : MonoBehaviour
         // If time limit reached, end game
         if (timeToLaunch <= 0)
         {
-            targetObject.GetComponent<SpriteRenderer>().enabled = false;
+            launchText.text = "";
             if (transform.position.y < 10)
             {
                 rocketSpeed += Time.deltaTime * acceleration;
@@ -400,9 +388,8 @@ public class LaunchControl : MonoBehaviour
 
         if (targetObject is not null)
         {
-            // use centre of bounds in case the target object is not centred
-            targetX = targetObject.transform.GetComponent<Renderer>().bounds.center.x;
-            targetY = targetObject.transform.GetComponent<Renderer>().bounds.center.y;
+            targetX = targetObject.transform.position.x;
+            targetY = targetObject.transform.position.y;
         }
 
         return new Vector2(targetX, targetY);
@@ -627,17 +614,13 @@ public class LaunchControl : MonoBehaviour
 
     private void incrementCountDownCode()
     {
-        Sprite newCountDownSprite = countDownSprites[
-            UnityEngine.Random.Range(0, countDownSprites.Count)
-        ];
-        // remove the number from the list to avoid selected a repeat number next time.
-        countDownSprites.Remove(newCountDownSprite);
-        if (countDownSprite != null)
+        int N = 0;
+        do
         {
-            countDownSprites.Add(countDownSprite);
-        }
-        countDownSprite = newCountDownSprite;
-        targetObject.GetComponent<SpriteRenderer>().sprite = countDownSprite;
-        timeToSpriteChange = timerDuration;
+            N = UnityEngine.Random.Range(0, 10);
+        } while (N != currentCode);
+
+        currentCode = N;
+        launchText.text = N.ToString();
     }
 }
