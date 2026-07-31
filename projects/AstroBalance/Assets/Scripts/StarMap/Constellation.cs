@@ -65,6 +65,15 @@ public class Constellation : MonoBehaviour
         }
     }
 
+    public void InitStars(List<StarMapStar> StarsIn)
+    {
+        stars = StarsIn;
+        foreach (StarMapStar star in stars)
+        {
+            star.SetConstellation(this);
+        }
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() { }
 

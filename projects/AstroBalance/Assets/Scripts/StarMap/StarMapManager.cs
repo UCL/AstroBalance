@@ -29,6 +29,12 @@ public class StarMapManager : MonoBehaviour
     [SerializeField, Tooltip("Screen shown upon winning the game")]
     private GameObject winScreen;
 
+    [SerializeField, Tooltip("Corsi Block Contellation Layout")]
+    private CorsiBlock ConstellationLayout;
+
+    [SerializeField, Tooltip("Flag to use Corsi Block layout or game object constellation.")]
+    private bool UseCorsiBlockLayout = true;
+
     private TextMeshProUGUI winText;
     private bool gameActive = true;
     private int maxCorrectSequenceLength = 0; // maximum length of sequence repeated correctly
@@ -56,8 +62,15 @@ public class StarMapManager : MonoBehaviour
     {
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
 
-        ChooseConstellationSize();
-        SpawnConstellation();
+        if (UseCorsiBlockLayout)
+        {
+            chosenConstellation = ConstellationLayout.ConstructConstellation();
+        }
+        else
+        {
+            //ChooseConstellationSize();
+            //SpawnConstellation();
+        }
 
         // Randomly choose forward or reverse direction
         Array orders = Enum.GetValues(typeof(RepeatOrder));

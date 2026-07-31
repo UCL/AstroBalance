@@ -261,6 +261,63 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6756487744800615951, guid: 44011a8d7ccb3fd45b2bea995bb5d0b4, type: 3}
   m_PrefabInstance: {fileID: 1283016092}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &344821674
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 344821676}
+  - component: {fileID: 344821675}
+  m_Layer: 0
+  m_Name: Corsi Block Constellation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &344821675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 344821674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e00641afd8193b428b84a67cadd27b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StarObject: {fileID: 7594402928058972626, guid: e83195dd2f79a1842a3c76deecadf485, type: 3}
+  StarPositions:
+  - {x: 155, y: 190}
+  - {x: 35, y: 200}
+  - {x: 245, y: 170}
+  - {x: 65, y: 140}
+  - {x: 185, y: 120}
+  - {x: 255, y: 85}
+  - {x: 15, y: 90}
+  - {x: 95, y: 40}
+  - {x: 165, y: 50}
+  ConstellationObj: {fileID: 7572632836159145634, guid: 5cf40db44a63d1b4a97d47dde10efa11, type: 3}
+  FractionalHeight: 0.9
+--- !u!4 &344821676
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 344821674}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 542.1788, y: 308.16428, z: 0.2811789}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &445504951
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -541,6 +598,7 @@ MonoBehaviour:
   smallConstellation: {fileID: 9203798164173761817, guid: 9625cb065f60ca645bf5c238fcb93d8b, type: 3}
   largeConstellation: {fileID: 8704810960959391910, guid: 7185bc0d9558ff44b82425a007034412, type: 3}
   winScreen: {fileID: 274217756}
+  ConstellationLayout: {fileID: 344821675}
 --- !u!4 &859376006
 Transform:
   m_ObjectHideFlags: 0
@@ -1023,3 +1081,4 @@ SceneRoots:
   - {fileID: 1699323646}
   - {fileID: 859376006}
   - {fileID: 866772051}
+  - {fileID: 344821676}
