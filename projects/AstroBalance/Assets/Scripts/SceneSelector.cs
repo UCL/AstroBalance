@@ -18,22 +18,32 @@ public class SceneSelector : MonoBehaviour
 
     public void LoadStarCollector()
     {
-        SceneManager.LoadScene("Scenes/StarCollector");
+        SceneManager.LoadScene("Scenes/StarCollectorStarCollector");
     }
 
     public void LoadStarCollectorInstructions()
     {
-        SceneManager.LoadScene("Scenes/InstructionsStarCollector");
+        SceneManager.LoadScene("Scenes/StarCollector/InstructionsStarCollector");
+    }
+
+    public void LoadStarCollectorDemo()
+    {
+        SceneManager.LoadScene("Scenes/StarCollector/DemoStarCollector");
     }
 
     public void LoadRocketLaunch()
     {
-        SceneManager.LoadScene("Scenes/RocketLaunch");
+        SceneManager.LoadScene("Scenes/RocketLaunch/RocketLaunch");
     }
 
     public void LoadRocketLaunchInstructions()
     {
-        SceneManager.LoadScene("Scenes/InstructionsRocketLaunch");
+        SceneManager.LoadScene("Scenes/RocketLaunch/InstructionsRocketLaunch");
+    }
+
+    public void LoadRocketLaunchDemo()
+    {
+        SceneManager.LoadScene("Scenes/RocketLaunch/DemoRocketLaunch");
     }
 
     public void LoadStarSeek()

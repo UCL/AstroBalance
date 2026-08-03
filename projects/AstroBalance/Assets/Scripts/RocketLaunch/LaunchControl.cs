@@ -6,6 +6,12 @@ using TMPro;
 using Tobii.GameIntegration.Net;
 using UnityEngine;
 
+class DifficultyLevel
+{
+    public float time;
+    public float targetSize;
+}
+
 /// <summary>
 /// Manages the size of a rocket flame based on head speed, and controls
 /// overall game time.
@@ -51,11 +57,23 @@ public class LaunchControl : MonoBehaviour
     ]
     private float gazeTolerance = 3.0f;
 
+    [
+        SerializeField,
+        Tooltip(
+            "The necessary scale factor to convert the target screen scale to the intended physical scale."
+        )
+    ]
+    float physicalScaleFactor = 0.04f;
+
     [SerializeField, Tooltip("The minimum number of gaze points used to calculate steadiness")]
     private int minNItemsForGaze = 5;
 
     [SerializeField, Tooltip("The game object the user is supposed to look at.")]
     private GameObject targetObject;
+
+    [SerializeField, Tooltip("Rocket object to be launched.")]
+    private GameObject Rocket;
+    private float rocketSpeed;
 
     [Header("Adaptive Difficulty Variables")]
     [
@@ -65,6 +83,7 @@ public class LaunchControl : MonoBehaviour
         )
     ]
     private int maxPreviousGames = 100;
+    private int difficultyLevel = 0;
 
     [
         SerializeField,
@@ -107,6 +126,14 @@ public class LaunchControl : MonoBehaviour
     [SerializeField, Tooltip("An optional status text window for debugging.")]
     private TextMeshProUGUI speedStatusText;
 
+    [SerializeField, Tooltip("Task durations for different levels (ordered)")]
+    private float[] taskTimes = { 20f, 30f, 45f, 60f, 75f, 90f, 105f, 120f };
+
+    [SerializeField, Tooltip("Target sizes for different levels (ordered)")]
+    private float[] targetSizes = { 25f, 22f, 20f, 18f, 16f, 14f, 12f };
+
+    private List<DifficultyLevel> levels;
+
     private Tracker tracker;
     private float timeToLaunch;
 
@@ -116,11 +143,10 @@ public class LaunchControl : MonoBehaviour
     private float minimumSpeed; // minimum head speed required for this game
     private float headSpeed; // current head speed
     private RocketLaunchData gameData;
-    private float rocketSpeed;
     private float mouseToGazeScale = 10f; // if we're debugging using the mouse the reported speeds are much higher than with gaze.
 
     // gaze steadiness parameters
-    private float timeToSpriteChange;
+    private float timeToCodeChange;
     private GazeBuffer gazeBuffer;
 
     // Sampling for save data parameters
@@ -138,6 +164,9 @@ public class LaunchControl : MonoBehaviour
 
     private TextMeshProUGUI winText;
 
+    [SerializeField, Tooltip("Flag for turning off features in Demo mode")]
+    private bool isDemo = false;
+
     // Awake is called once when the script instance is loaded
     void Awake()
     {
@@ -146,29 +175,23 @@ public class LaunchControl : MonoBehaviour
         winScreen.SetActive(false);
         tracker = FindFirstObjectByType<Tracker>();
 
-        SaveGameData<RocketLaunchData> saveData = new(saveFilename);
+        IEnumerable<RocketLaunchData> lastGameData;
+        if (!isDemo)
+        {
+            SaveGameData<RocketLaunchData> saveData = new(saveFilename);
 
-        IEnumerable<RocketLaunchData> lastGameData = saveData.GetLastNComplete(maxPreviousGames);
+            lastGameData = saveData.GetLastNComplete(maxPreviousGames);
+        }
+        else
+        {
+            lastGameData = new List<RocketLaunchData>();
+        }
 
         // Adjust the adaptive difficulty (size of gaze target and time to launch) based on
         // how many previous games are in the save games data
 
-        adaptiveDifficulty *=
-            ((float)maxPreviousGames + (float)lastGameData.Count()) / (float)maxPreviousGames;
-        gazeTolerance /= adaptiveDifficulty;
-        launchTime *= adaptiveDifficulty;
-
-        if (lastGameData.Count() == 0 || lastGameData.Last().headMovementPlane == "yaw")
-        {
-            usePitch = true;
-        }
-        else
-        {
-            usePitch = false;
-        }
-        minimumSpeed = usePitch ? minimumSpeedPitch : minimumSpeedYaw;
-
-        InitialiseTarget();
+        ConstructDifficultyLevels();
+        SetDifficultyLevel(lastGameData);
 
         // Make sure buffers have a large enough capacity to cover sampling for save data + the speed/gaze steady time for gameplay
         float maxSecondsOfPoseInfo = Mathf.Max(new float[] { samplingIntervalSeconds, speedTime });
@@ -177,16 +200,116 @@ public class LaunchControl : MonoBehaviour
         gazeBuffer = new GazeBuffer(maxSecondsOfGazeInfo, minNItemsForGaze);
 
         instructionsText.text = usePitch
-            ? "Nod your head and repeat the code to launch the rocket!"
-            : "Shake your head and repeat the code to launch the rocket!";
+            ? "Move your head up and down and repeat the code to launch the rocket!"
+            : "Move your head side to side and repeat the code to launch the rocket!";
         timeToLaunch = launchTime;
         timeToNextSample = samplingIntervalSeconds;
+
+        timeToCodeChange = timerDuration;
+    }
+
+    private void AdjustTargetForDifficulty()
+    {
+        var difficulty = levels[difficultyLevel];
+        Debug.Log(
+            "Difficulty level set at "
+                + difficultyLevel
+                + ", with timer "
+                + difficulty.time
+                + " and size "
+                + difficulty.targetSize
+        );
+        timeToLaunch = difficulty.time;
+        targetObject.transform.localScale =
+            difficulty.targetSize * physicalScaleFactor * new Vector3(1, 1, 1);
+    }
+
+    private void SetDifficultyLevel(IEnumerable<RocketLaunchData> lastGameData)
+    {
+        if (lastGameData.Count() == 0 || isDemo)
+        {
+            usePitch = true;
+            difficultyLevel = 0;
+        }
+        else
+        {
+            // Difficulty level progresses when it has been completed twice successfuly for both yaw and pitch
+            difficultyLevel = lastGameData.Last().difficultyLevel;
+            if (checkForDifficultyIncrease(lastGameData))
+            {
+                difficultyLevel = Math.Min(difficultyLevel + 1, levels.Count);
+            }
+            if (lastGameData.Last().headMovementPlane == "yaw")
+            {
+                usePitch = true;
+            }
+            else
+            {
+                usePitch = false;
+            }
+        }
+        minimumSpeed = usePitch ? minimumSpeedPitch : minimumSpeedYaw;
+    }
+
+    private bool checkForDifficultyIncrease(IEnumerable<RocketLaunchData> lastGameData)
+    {
+        int[] successful_games = { 0, 0 };
+        for (int i = lastGameData.Count() - 1; i >= 0; i--)
+        {
+            var data = lastGameData.ElementAt(i);
+            if (data.difficultyLevel != difficultyLevel)
+            {
+                break;
+            }
+
+            if (data.gameCompleted)
+            {
+                if (data.headMovementPlane == "yaw")
+                {
+                    successful_games[1]++;
+                }
+                else
+                {
+                    successful_games[0]++;
+                }
+            }
+        }
+        return ((successful_games[0] >= 2) & (successful_games[1] >= 2));
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
         gameData = new RocketLaunchData();
+        AdjustTargetForDifficulty();
+        InitialiseTarget();
+    }
+
+    private void ConstructDifficultyLevels()
+    {
+        Debug.Log("Construct difficulty levels");
+        levels = new();
+        int i = 0,
+            j = 0;
+        bool inc_time = true;
+        while (i < taskTimes.Length & j < targetSizes.Length)
+        {
+            var l = new DifficultyLevel();
+            l.time = taskTimes[i];
+            l.targetSize = targetSizes[j];
+            if (inc_time)
+            {
+                i += 1;
+                inc_time = false;
+            }
+            else
+            {
+                j += 1;
+                inc_time = true;
+            }
+            levels.Add(l);
+        }
+        Debug.Log("Levels size = " + levels.Count);
     }
 
     /// <summary>
@@ -206,10 +329,12 @@ public class LaunchControl : MonoBehaviour
         if (timeToLaunch <= 0)
         {
             launchText.text = "";
-            if (transform.position.y < 10)
+            if (Rocket.transform.position.y < 60)
             {
                 rocketSpeed += Time.deltaTime * acceleration;
-                transform.Translate(Vector3.up * rocketSpeed);
+                Rocket.transform.Translate(Vector3.up * rocketSpeed);
+                // Camera trails behind slightly so that the rocket escapes view
+                Camera.main.transform.Translate(Vector3.up * (rocketSpeed * 0.5f));
             }
             else
             {
@@ -227,16 +352,17 @@ public class LaunchControl : MonoBehaviour
 
             writeDebugInformation(headSpeed, gazeItem, gazeIsSteady);
 
-            if (timeToSpriteChange > 0)
+            if (timeToCodeChange > 0)
             {
                 if (gazeIsSteady)
                 {
-                    timeToSpriteChange -= Time.deltaTime;
+                    timeToCodeChange -= Time.deltaTime;
                 }
             }
             else
             {
                 incrementCountDownCode();
+                timeToCodeChange = timerDuration;
             }
             if (gazeIsSteady && headSpeed > minimumSpeed)
             {
@@ -467,6 +593,7 @@ public class LaunchControl : MonoBehaviour
         if (gameActive)
         {
             gameActive = false;
+            Destroy(Rocket);
             winText.text = "Blast Off!\nWell Done.";
             winScreen.SetActive(true);
             SaveGameData(true);
@@ -486,6 +613,11 @@ public class LaunchControl : MonoBehaviour
 
     private void SaveGameData(bool gameComplete)
     {
+        if (isDemo)
+        {
+            return;
+        }
+
         // Update save data for this game
         gameData.gameCompleted = gameComplete;
         if (usePitch)
@@ -614,12 +746,11 @@ public class LaunchControl : MonoBehaviour
 
     private void incrementCountDownCode()
     {
-        int N = 0;
+        int N = currentCode;
         do
         {
             N = UnityEngine.Random.Range(0, 10);
-        } while (N != currentCode);
-
+        } while (N == currentCode);
         currentCode = N;
         launchText.text = N.ToString();
     }
