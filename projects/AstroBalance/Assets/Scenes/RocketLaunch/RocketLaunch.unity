@@ -524,7 +524,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d389fa4698ae03edb86de8a1e4891073, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  launchTime: 5
   speedTime: 2
   minimumSpeedPitch: 10
   minimumSpeedYaw: 40
@@ -557,7 +556,7 @@ MonoBehaviour:
   - 105
   - 120
   targetSizes:
-  - 25
+  - 12
   - 22
   - 20
   - 18
@@ -2099,6 +2098,22 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6120725725753744660, guid: 1032596d0c2435947b3571356bc026a7, type: 3}
+      propertyPath: m_fontSize
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 6120725725753744660, guid: 1032596d0c2435947b3571356bc026a7, type: 3}
+      propertyPath: m_margin.w
+      value: -14.795523
+      objectReference: {fileID: 0}
+    - target: {fileID: 6120725725753744660, guid: 1032596d0c2435947b3571356bc026a7, type: 3}
+      propertyPath: m_margin.y
+      value: -46.74521
+      objectReference: {fileID: 0}
+    - target: {fileID: 6120725725753744660, guid: 1032596d0c2435947b3571356bc026a7, type: 3}
+      propertyPath: m_margin.z
+      value: -0.7451887
+      objectReference: {fileID: 0}
+    - target: {fileID: 6120725725753744660, guid: 1032596d0c2435947b3571356bc026a7, type: 3}
       propertyPath: m_fontColor.b
       value: 0
       objectReference: {fileID: 0}
@@ -2111,8 +2126,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6120725725753744660, guid: 1032596d0c2435947b3571356bc026a7, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 6120725725753744660, guid: 1032596d0c2435947b3571356bc026a7, type: 3}
       propertyPath: m_fontColor32.rgba
       value: 4278190335
+      objectReference: {fileID: 0}
+    - target: {fileID: 8898578191946406775, guid: 1032596d0c2435947b3571356bc026a7, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8898578191946406775, guid: 1032596d0c2435947b3571356bc026a7, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -9
       objectReference: {fileID: 0}
     - target: {fileID: 9202108317461804188, guid: 1032596d0c2435947b3571356bc026a7, type: 3}
       propertyPath: fillColor.b
