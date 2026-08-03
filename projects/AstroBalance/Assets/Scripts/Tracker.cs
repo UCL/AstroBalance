@@ -11,6 +11,11 @@ public class Tracker : MonoBehaviour
     private int screenWidthMm;
     private int screenHeightMm;
 
+    public (int, int) getScreenDimensions()
+    {
+        return (screenWidthMm, screenHeightMm);
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {

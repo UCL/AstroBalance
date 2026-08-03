@@ -18,7 +18,6 @@ class DifficultyLevel
 /// </summary>
 public class LaunchControl : MonoBehaviour
 {
-    [SerializeField, Tooltip("The time (in seconds) required to launch.")]
     private float launchTime = 30;
 
     [Header("Head Movement Variables")]
@@ -47,7 +46,7 @@ public class LaunchControl : MonoBehaviour
     private float timerDuration = 1.0F;
 
     [SerializeField, Tooltip("The time in seconds that the gaze should be steady for.")]
-    private float gazeTime = 3.0f;
+    private float gazeTime = 1.0f;
 
     [
         SerializeField,
@@ -219,9 +218,15 @@ public class LaunchControl : MonoBehaviour
                 + " and size "
                 + difficulty.targetSize
         );
-        timeToLaunch = difficulty.time;
+        launchTime = difficulty.time;
+        int screenW;
+        int screenH;
+        (screenW, screenH) = FindAnyObjectByType<Tracker>().getScreenDimensions();
+        physicalScaleFactor = Camera.main.orthographicSize * 2 / screenH; // conversion factor from mm to Unity units
+        float spriteSize = targetObject.GetComponentInChildren<SpriteRenderer>().bounds.size.y;
+        Debug.Log("Sprite size = " + spriteSize);
         targetObject.transform.localScale =
-            difficulty.targetSize * physicalScaleFactor * new Vector3(1, 1, 1);
+            difficulty.targetSize * physicalScaleFactor * new Vector3(1, 1, 1) / spriteSize;
     }
 
     private void SetDifficultyLevel(IEnumerable<RocketLaunchData> lastGameData)
