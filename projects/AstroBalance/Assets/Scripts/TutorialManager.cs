@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
@@ -8,6 +9,9 @@ public class TutorialManager : MonoBehaviour
 {
     [SerializeField, Tooltip("Ordered list of components to turn on during tutorial")]
     private List<GameObject> ComponentSequence;
+
+    [SerializeField, Tooltip("Ordered list of events to trigger during the tutorial.")]
+    private List<UnityEvent> EventSequence;
 
     [SerializeField, Tooltip("Ordered sequence of instructions.")]
     private List<string> Instructions;
@@ -29,6 +33,24 @@ public class TutorialManager : MonoBehaviour
         Final,
     }
 
+    private void ResizeList<T>(List<T> L, int N, T pad)
+    {
+        if (L.Count < N)
+        {
+            var d = N - L.Count;
+            for (int i = 0; i < d; i++)
+            {
+                L.Add(pad);
+            }
+        }
+        else if (L.Count > N)
+        {
+            var d = L.Count - N;
+            L.RemoveRange(N, d);
+        }
+        return;
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -43,6 +65,9 @@ public class TutorialManager : MonoBehaviour
         }
         CurrentState = 0;
         InstructionText.text = Instructions[CurrentState];
+
+        ResizeList(ComponentSequence, Instructions.Count, null);
+        ResizeList(EventSequence, Instructions.Count, null);
     }
 
     // Update is called once per frame
@@ -61,6 +86,10 @@ public class TutorialManager : MonoBehaviour
             if (ComponentSequence[CurrentState] != null)
             {
                 ComponentSequence[CurrentState].SetActive(true);
+            }
+            if (EventSequence[CurrentState] != null)
+            {
+                EventSequence[CurrentState].Invoke();
             }
         }
     }

@@ -78,21 +78,6 @@ public class Constellation : MonoBehaviour
         }
     }
 
-    //In place shuffle algorithm
-    private void Shuffle<T>(List<T> L)
-    {
-        int n = L.Count;
-        System.Random rng = new System.Random();
-        for (int i = 0; i < n - 2; i++)
-        {
-            int j = rng.Next(i, n);
-            T x = L[i];
-            T y = L[j];
-            L[i] = y;
-            L[j] = x;
-        }
-    }
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() { }
 

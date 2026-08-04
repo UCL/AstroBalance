@@ -50,6 +50,9 @@ public class ZeroGravityManager : MonoBehaviour
     private string saveFilename = "ZeroGravityScores";
     private bool displayingPose = false; // true during initial display of a pose (before player starts being scored)
 
+    [SerializeField]
+    private bool isDemo = false;
+
     /// <summary>
     /// Keep track of which timers are currently active, and
     /// should be responded to in Update()
@@ -72,7 +75,15 @@ public class ZeroGravityManager : MonoBehaviour
         data.LogEndTime();
         gameStartTime = data.startTime;
 
-        StartCoroutine(DisplayNextPose());
+        if (!isDemo)
+        {
+            StartCoroutine(DisplayNextPose());
+        }
+    }
+
+    public void TriggerPoses()
+    {
+        StartCoroutine(DisplayNextPose(true));
     }
 
     // Update is called once per frame
@@ -91,7 +102,7 @@ public class ZeroGravityManager : MonoBehaviour
     /// <summary>
     /// Display the next pose in the sequence, and start countdown to pose hold.
     /// </summary>
-    private IEnumerator DisplayNextPose()
+    private IEnumerator DisplayNextPose(bool maintain_pose = false)
     {
         swayLine.DeactivateScoring();
         activeTimer = ActiveTimer.None;
@@ -106,10 +117,13 @@ public class ZeroGravityManager : MonoBehaviour
         }
         currentPoseScore = 0;
 
-        bool poseAvailable = poseAvatar.ShowNextSprite();
-        if (!poseAvailable)
+        if (!maintain_pose)
         {
-            EndGame();
+            bool poseAvailable = poseAvatar.ShowNextSprite();
+            if (!poseAvailable)
+            {
+                EndGame();
+            }
         }
 
         displayingPose = true;
@@ -211,6 +225,10 @@ public class ZeroGravityManager : MonoBehaviour
 
     private void SaveGameData(bool gameComplete)
     {
+        if (isDemo)
+        {
+            return;
+        }
         if (gameData.Count() == 0)
         {
             return;

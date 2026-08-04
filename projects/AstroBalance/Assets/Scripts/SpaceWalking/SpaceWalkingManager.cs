@@ -69,6 +69,9 @@ public class SpaceWalkingManager : MonoBehaviour
     private string saveFilename = "SpaceWalkingScores";
     private bool headTurnsActive = false;
 
+    [SerializeField]
+    private bool isDemo = false;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -77,6 +80,14 @@ public class SpaceWalkingManager : MonoBehaviour
 
         gameData = new SpaceWalkingData();
         timer.StartCountdown(timeLimit);
+        if (!isDemo)
+        {
+            StartCoroutine(StartTileActivation());
+        }
+    }
+
+    public void TriggerTileActivation()
+    {
         StartCoroutine(StartTileActivation());
     }
 
@@ -86,8 +97,16 @@ public class SpaceWalkingManager : MonoBehaviour
     /// </summary>
     private void ChooseGameDifficulty()
     {
-        SaveGameData<SpaceWalkingData> saveData = new(saveFilename);
-        IEnumerable<SpaceWalkingData> lastNGamesData = saveData.GetLastNComplete(nGamesToUpgrade);
+        IEnumerable<SpaceWalkingData> lastNGamesData;
+        if (isDemo)
+        {
+            lastNGamesData = new List<SpaceWalkingData>();
+        }
+        else
+        {
+            SaveGameData<SpaceWalkingData> saveData = new(saveFilename);
+            lastNGamesData = saveData.GetLastNComplete(nGamesToUpgrade);
+        }
 
         if (debugHeadTurns)
         {
@@ -249,6 +268,10 @@ public class SpaceWalkingManager : MonoBehaviour
 
     private void SaveGameData(bool gameComplete)
     {
+        if (isDemo)
+        {
+            return;
+        }
         // Update save data for this game
         gameData.gameCompleted = gameComplete;
         gameData.timeLimitSeconds = timeLimit;

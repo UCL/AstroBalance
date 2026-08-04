@@ -35,6 +35,9 @@ public class StarMapManager : MonoBehaviour
     [SerializeField, Tooltip("Flag to use Corsi Block layout or game object constellation.")]
     private bool UseCorsiBlockLayout = true;
 
+    [SerializeField, Tooltip("Flag to allow reverse order sequences or not.")]
+    private bool AllowReverseOrder = false;
+
     private TextMeshProUGUI winText;
     private bool gameActive = true;
     private int maxCorrectSequenceLength = 0; // maximum length of sequence repeated correctly
@@ -76,9 +79,15 @@ public class StarMapManager : MonoBehaviour
         }
 
         // Randomly choose forward or reverse direction
-        Array orders = Enum.GetValues(typeof(RepeatOrder));
-        chosenOrder = (RepeatOrder)orders.GetValue(UnityEngine.Random.Range(0, orders.Length));
-
+        if (AllowReverseOrder)
+        {
+            Array orders = Enum.GetValues(typeof(RepeatOrder));
+            chosenOrder = (RepeatOrder)orders.GetValue(UnityEngine.Random.Range(0, orders.Length));
+        }
+        else
+        {
+            chosenOrder = RepeatOrder.Same;
+        }
         orderText.text = "Repeat in " + chosenOrder.ToString().ToLower() + " order";
 
         // Record game start time, so it can be used in all trial save data
@@ -86,6 +95,15 @@ public class StarMapManager : MonoBehaviour
         data.LogEndTime();
         gameStartTime = data.startTime;
 
+        if (!isDemo)
+        {
+            chosenConstellation.ShowNewSequence(chosenOrder);
+        }
+    }
+
+    public void startSequencing()
+    {
+        chosenOrder = RepeatOrder.Same;
         chosenConstellation.ShowNewSequence(chosenOrder);
     }
 

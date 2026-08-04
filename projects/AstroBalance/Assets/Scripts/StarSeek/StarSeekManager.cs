@@ -46,6 +46,9 @@ public class StarSeekManager : MonoBehaviour
     private StarSeekData gameData;
     private string saveFilename = "StarSeekScores";
 
+    [SerializeField]
+    private bool isDemo;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -64,8 +67,16 @@ public class StarSeekManager : MonoBehaviour
     /// </summary>
     private void ChooseGameTimeLimit()
     {
-        SaveGameData<StarSeekData> saveData = new(saveFilename);
-        IEnumerable<StarSeekData> lastNGamesData = saveData.GetLastNComplete(nGamesToUpgrade);
+        IEnumerable<StarSeekData> lastNGamesData;
+        if (!isDemo)
+        {
+            SaveGameData<StarSeekData> saveData = new(saveFilename);
+            lastNGamesData = saveData.GetLastNComplete(nGamesToUpgrade);
+        }
+        else
+        {
+            lastNGamesData = new List<StarSeekData>();
+        }
 
         if (lastNGamesData.Count() < nGamesToUpgrade)
         {
@@ -154,6 +165,10 @@ public class StarSeekManager : MonoBehaviour
 
     private void SaveGameData(bool gameComplete)
     {
+        if (isDemo)
+        {
+            return;
+        }
         // Update save data for this game
         gameData.gameCompleted = gameComplete;
         gameData.timeLimitSeconds = timeLimit;

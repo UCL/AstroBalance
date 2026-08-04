@@ -343,62 +343,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 034d34253de97b048980bb1e34677996, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &277788978
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 277788980}
-  - component: {fileID: 277788979}
-  m_Layer: 0
-  m_Name: SpaceWalkingManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &277788979
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 277788978}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed6263f483bbf2148a49f85dac49bd03, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  scoreText: {fileID: 1993473295}
-  tileManager: {fileID: 803069668}
-  winScreen: {fileID: 956792729}
-  headTurnScreen: {fileID: 1626087096}
-  timer: {fileID: 257946082}
-  minTimeLimit: 60
-  maxTimeLimit: 180
-  timeLimitIncrement: 60
-  upgradeRate: 0.23
-  nGamesToUpgrade: 3
-  activationDelay: 1
-  debugHeadTurns: 0
---- !u!4 &277788980
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 277788978}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.9042074, y: -0.09752827, z: -9.912957}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &606690526
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1249,6 +1193,83 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1dcc0888bed1cd14f9293981c4b3094d, type: 3}
+--- !u!1001 &4746436759830948105
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 743739827428505709, guid: 2c83454fa2e895345aed0d541633a586, type: 3}
+      propertyPath: m_Name
+      value: SpaceWalkingManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 1089231258325112517, guid: 2c83454fa2e895345aed0d541633a586, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.9042074
+      objectReference: {fileID: 0}
+    - target: {fileID: 1089231258325112517, guid: 2c83454fa2e895345aed0d541633a586, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.09752827
+      objectReference: {fileID: 0}
+    - target: {fileID: 1089231258325112517, guid: 2c83454fa2e895345aed0d541633a586, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -9.912957
+      objectReference: {fileID: 0}
+    - target: {fileID: 1089231258325112517, guid: 2c83454fa2e895345aed0d541633a586, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1089231258325112517, guid: 2c83454fa2e895345aed0d541633a586, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1089231258325112517, guid: 2c83454fa2e895345aed0d541633a586, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1089231258325112517, guid: 2c83454fa2e895345aed0d541633a586, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1089231258325112517, guid: 2c83454fa2e895345aed0d541633a586, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1089231258325112517, guid: 2c83454fa2e895345aed0d541633a586, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1089231258325112517, guid: 2c83454fa2e895345aed0d541633a586, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7938010266397264703, guid: 2c83454fa2e895345aed0d541633a586, type: 3}
+      propertyPath: timer
+      value: 
+      objectReference: {fileID: 257946082}
+    - target: {fileID: 7938010266397264703, guid: 2c83454fa2e895345aed0d541633a586, type: 3}
+      propertyPath: scoreText
+      value: 
+      objectReference: {fileID: 1993473295}
+    - target: {fileID: 7938010266397264703, guid: 2c83454fa2e895345aed0d541633a586, type: 3}
+      propertyPath: winScreen
+      value: 
+      objectReference: {fileID: 956792729}
+    - target: {fileID: 7938010266397264703, guid: 2c83454fa2e895345aed0d541633a586, type: 3}
+      propertyPath: tileManager
+      value: 
+      objectReference: {fileID: 803069668}
+    - target: {fileID: 7938010266397264703, guid: 2c83454fa2e895345aed0d541633a586, type: 3}
+      propertyPath: headTurnScreen
+      value: 
+      objectReference: {fileID: 1626087096}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2c83454fa2e895345aed0d541633a586, type: 3}
 --- !u!1001 &5800740383295936358
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1417,5 +1438,5 @@ SceneRoots:
   - {fileID: 1375991393}
   - {fileID: 1712257677}
   - {fileID: 3191120839470160934}
-  - {fileID: 277788980}
+  - {fileID: 4746436759830948105}
   - {fileID: 1633132562}

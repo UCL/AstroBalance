@@ -605,7 +605,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5326913857065381199, guid: 4403a77535720274c9541f2562b03a0b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: LoadStarSeek
+      value: LoadSpaceWalking
+      objectReference: {fileID: 0}
+    - target: {fileID: 7474881184961167555, guid: 4403a77535720274c9541f2562b03a0b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: LoadSpaceWalkingDemo
       objectReference: {fileID: 0}
     - target: {fileID: 8962013367889332976, guid: 4403a77535720274c9541f2562b03a0b, type: 3}
       propertyPath: m_Pivot.x
@@ -717,7 +721,7 @@ PrefabInstance:
     - target: {fileID: 2816865996050103245, guid: f09257bbfa3a2184880cc313204890d4, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -1308979789366192661, guid: b8899893341ec2c4aaef517fc48999cd, type: 3}
+      objectReference: {fileID: -6507463025604279841, guid: c69865f6c9c6f4c41aaa322a8f777872, type: 3}
     - target: {fileID: 4824648960401600581, guid: f09257bbfa3a2184880cc313204890d4, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

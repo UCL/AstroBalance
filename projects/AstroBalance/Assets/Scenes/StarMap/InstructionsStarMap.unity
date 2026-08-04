@@ -607,6 +607,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: LoadStarMap
       objectReference: {fileID: 0}
+    - target: {fileID: 7474881184961167555, guid: 4403a77535720274c9541f2562b03a0b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: LoadStarMapDemo
+      objectReference: {fileID: 0}
     - target: {fileID: 8962013367889332976, guid: 4403a77535720274c9541f2562b03a0b, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
