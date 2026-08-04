@@ -24,7 +24,7 @@ EditorBuildSettings:
     path: Assets/Scenes/StarSeek.unity
     guid: cbf3d9c26ba093c44890c5bd86b39752
   - enabled: 1
-    path: Assets/Scenes/StarMap.unity
+    path: Assets/Scenes/StarMap/StarMap.unity
     guid: ad549d230ed12f44394ec13fc8b88148
   - enabled: 1
     path: Assets/Scenes/SpaceWalking.unity
@@ -48,7 +48,7 @@ EditorBuildSettings:
     path: Assets/Scenes/InstructionsStarSeek.unity
     guid: b1e43c814c0a98f4ca699cf69d738056
   - enabled: 1
-    path: Assets/Scenes/InstructionsStarMap.unity
+    path: Assets/Scenes/StarMap/InstructionsStarMap.unity
     guid: 910b3a4280090ca4a94648555d0fcf1c
   - enabled: 1
     path: Assets/Scenes/InstructionsZeroGravity.unity

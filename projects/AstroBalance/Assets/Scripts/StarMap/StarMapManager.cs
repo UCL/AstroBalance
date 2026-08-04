@@ -45,6 +45,9 @@ public class StarMapManager : MonoBehaviour
     private List<StarMapData> gameData = new List<StarMapData>(); // Each item is data on a single 'trial' i.e. a single sequence and guess
     private string gameStartTime; // the overall game start time, in the format needed for the save data
 
+    [SerializeField]
+    private bool isDemo;
+
     public enum RepeatOrder
     {
         Same,
@@ -93,7 +96,11 @@ public class StarMapManager : MonoBehaviour
     private void ChooseConstellationSize()
     {
         SaveGameData<StarMapData> saveData = new(saveFilename);
-        IEnumerable<StarMapData> lastNGamesData = saveData.GetLastNComplete(maxScoreGames);
+        IEnumerable<StarMapData> lastNGamesData = new List<StarMapData>();
+        if (!isDemo)
+        {
+            lastNGamesData = saveData.GetLastNComplete(maxScoreGames);
+        }
         int smallConstellationMaxLength = smallConstellation.GetNumberOfStars();
 
         // First time playing the game - start with the small constellation
@@ -238,6 +245,10 @@ public class StarMapManager : MonoBehaviour
 
     private void SaveGameData(bool gameComplete)
     {
+        if (isDemo)
+        {
+            return;
+        }
         if (gameData.Count() == 0)
         {
             return;

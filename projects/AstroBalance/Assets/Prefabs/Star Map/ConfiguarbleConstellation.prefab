@@ -72,6 +72,10 @@ PrefabInstance:
       propertyPath: DotObj
       value: 
       objectReference: {fileID: 7317651488728543084, guid: 3efb447d322015a4393e919903a94da1, type: 3}
+    - target: {fileID: 9203798164173761817, guid: 9625cb065f60ca645bf5c238fcb93d8b, type: 3}
+      propertyPath: maxIncorrectSequences
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 381799543180381395, guid: 9625cb065f60ca645bf5c238fcb93d8b, type: 3}

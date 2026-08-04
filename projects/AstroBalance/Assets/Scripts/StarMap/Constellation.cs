@@ -11,7 +11,7 @@ public class Constellation : MonoBehaviour
     private int minSequenceLength = 2;
 
     [SerializeField, Tooltip("Number of incorrect sequences before reducing length")]
-    private int maxIncorrectSequences = 2;
+    private int maxIncorrectSequences = 1;
 
     [
         SerializeField,
@@ -76,7 +76,6 @@ public class Constellation : MonoBehaviour
         {
             star.SetConstellation(this);
         }
-        ConnectStars();
     }
 
     //In place shuffle algorithm
@@ -92,44 +91,6 @@ public class Constellation : MonoBehaviour
             L[i] = y;
             L[j] = x;
         }
-    }
-
-    private void ConnectStars()
-    {
-        // Connect pairs of stars randomly until you have a connected graph
-        var n_stars = stars.Count;
-        Shuffle(stars);
-        List<ValueTuple<Vector2, Vector2>> StarPairs = new();
-        System.Random rng = new System.Random();
-
-        for (int i = 1; i < stars.Count; i++)
-        {
-            // connect to a random star within the graph
-            int j = rng.Next(i);
-            StarPairs.Add((stars[i].transform.position, stars[j].transform.position));
-        }
-
-        foreach (var pair in StarPairs)
-        {
-            DrawDottedLine(pair.Item1, pair.Item2);
-        }
-    }
-
-    public List<GameObject> DrawDottedLine(Vector2 p1, Vector2 p2)
-    {
-        List<GameObject> Dots = new();
-        float DotSeparation = 0.5f;
-        Vector2 r = p2 - p1;
-        float d = r.magnitude;
-        float s = 0f;
-        while (s <= d)
-        {
-            var dot = Instantiate<GameObject>(DotObj);
-            dot.transform.position = p1 + (r * s / d);
-            s += DotSeparation;
-        }
-
-        return Dots;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

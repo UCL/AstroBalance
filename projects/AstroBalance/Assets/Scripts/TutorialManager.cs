@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class TutorialManager : MonoBehaviour
 {
@@ -18,6 +19,9 @@ public class TutorialManager : MonoBehaviour
     private int CurrentState;
 
     private SceneSelector sceneSelector;
+
+    [SerializeField, Tooltip("Which scene to load when the tutorial is done.")]
+    private UnityEvent endTutorial;
 
     enum State
     {
@@ -49,8 +53,7 @@ public class TutorialManager : MonoBehaviour
         CurrentState += 1;
         if (CurrentState >= NumStates)
         {
-            sceneSelector = this.AddComponent<SceneSelector>();
-            sceneSelector.LoadRocketLaunchInstructions();
+            endTutorial.Invoke();
         }
         else
         {

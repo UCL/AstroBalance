@@ -18,7 +18,7 @@ public class SceneSelector : MonoBehaviour
 
     public void LoadStarCollector()
     {
-        SceneManager.LoadScene("Scenes/StarCollectorStarCollector");
+        SceneManager.LoadScene("Scenes/StarCollector/StarCollector");
     }
 
     public void LoadStarCollectorInstructions()
@@ -58,12 +58,17 @@ public class SceneSelector : MonoBehaviour
 
     public void LoadStarMap()
     {
-        SceneManager.LoadScene("Scenes/StarMap");
+        SceneManager.LoadScene("Scenes/StarMap/StarMap");
     }
 
     public void LoadStarMapInstructions()
     {
-        SceneManager.LoadScene("Scenes/InstructionsStarMap");
+        SceneManager.LoadScene("Scenes/StarMap/InstructionsStarMap");
+    }
+
+    public void LoadStarMapDemo()
+    {
+        SceneManager.LoadScene("Scenes/StarMap/DemoStarMap");
     }
 
     public void LoadSpaceWalking()
