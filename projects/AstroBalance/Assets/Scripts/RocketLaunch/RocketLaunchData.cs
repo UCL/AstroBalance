@@ -4,6 +4,7 @@
 [System.Serializable]
 public class RocketLaunchData : GameData
 {
+    public int difficultyLevel;
     public string headMovementPlane;
     public int gameDurationSeconds;
     public float launchTimeSeconds;

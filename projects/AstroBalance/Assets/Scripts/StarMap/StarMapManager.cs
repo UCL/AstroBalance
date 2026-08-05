@@ -29,6 +29,15 @@ public class StarMapManager : MonoBehaviour
     [SerializeField, Tooltip("Screen shown upon winning the game")]
     private GameObject winScreen;
 
+    [SerializeField, Tooltip("Corsi Block Contellation Layout")]
+    private CorsiBlock ConstellationLayout;
+
+    [SerializeField, Tooltip("Flag to use Corsi Block layout or game object constellation.")]
+    private bool UseCorsiBlockLayout = true;
+
+    [SerializeField, Tooltip("Flag to allow reverse order sequences or not.")]
+    private bool AllowReverseOrder = false;
+
     private TextMeshProUGUI winText;
     private bool gameActive = true;
     private int maxCorrectSequenceLength = 0; // maximum length of sequence repeated correctly
@@ -38,6 +47,9 @@ public class StarMapManager : MonoBehaviour
     private ConstellationSize constellationSize;
     private List<StarMapData> gameData = new List<StarMapData>(); // Each item is data on a single 'trial' i.e. a single sequence and guess
     private string gameStartTime; // the overall game start time, in the format needed for the save data
+
+    [SerializeField]
+    private bool isDemo;
 
     public enum RepeatOrder
     {
@@ -56,13 +68,26 @@ public class StarMapManager : MonoBehaviour
     {
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
 
-        ChooseConstellationSize();
-        SpawnConstellation();
+        if (UseCorsiBlockLayout)
+        {
+            chosenConstellation = ConstellationLayout.ConstructConstellation();
+        }
+        else
+        {
+            //ChooseConstellationSize();
+            //SpawnConstellation();
+        }
 
         // Randomly choose forward or reverse direction
-        Array orders = Enum.GetValues(typeof(RepeatOrder));
-        chosenOrder = (RepeatOrder)orders.GetValue(UnityEngine.Random.Range(0, orders.Length));
-
+        if (AllowReverseOrder)
+        {
+            Array orders = Enum.GetValues(typeof(RepeatOrder));
+            chosenOrder = (RepeatOrder)orders.GetValue(UnityEngine.Random.Range(0, orders.Length));
+        }
+        else
+        {
+            chosenOrder = RepeatOrder.Same;
+        }
         orderText.text = "Repeat in " + chosenOrder.ToString().ToLower() + " order";
 
         // Record game start time, so it can be used in all trial save data
@@ -70,6 +95,15 @@ public class StarMapManager : MonoBehaviour
         data.LogEndTime();
         gameStartTime = data.startTime;
 
+        if (!isDemo)
+        {
+            chosenConstellation.ShowNewSequence(chosenOrder);
+        }
+    }
+
+    public void startSequencing()
+    {
+        chosenOrder = RepeatOrder.Same;
         chosenConstellation.ShowNewSequence(chosenOrder);
     }
 
@@ -80,7 +114,11 @@ public class StarMapManager : MonoBehaviour
     private void ChooseConstellationSize()
     {
         SaveGameData<StarMapData> saveData = new(saveFilename);
-        IEnumerable<StarMapData> lastNGamesData = saveData.GetLastNComplete(maxScoreGames);
+        IEnumerable<StarMapData> lastNGamesData = new List<StarMapData>();
+        if (!isDemo)
+        {
+            lastNGamesData = saveData.GetLastNComplete(maxScoreGames);
+        }
         int smallConstellationMaxLength = smallConstellation.GetNumberOfStars();
 
         // First time playing the game - start with the small constellation
@@ -225,6 +263,10 @@ public class StarMapManager : MonoBehaviour
 
     private void SaveGameData(bool gameComplete)
     {
+        if (isDemo)
+        {
+            return;
+        }
         if (gameData.Count() == 0)
         {
             return;

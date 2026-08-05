@@ -66,6 +66,9 @@ public class StarCollectorManager : MonoBehaviour
     ]
     private bool writeSampledSpeeds = false;
 
+    [SerializeField]
+    private bool isDemo;
+
     private TextMeshProUGUI winText;
     private Tracker tracker;
     private int timeLimit;
@@ -109,7 +112,11 @@ public class StarCollectorManager : MonoBehaviour
     private void ChooseGameTimeLimit()
     {
         SaveGameData<StarCollectorData> saveData = new(saveFilename);
-        IEnumerable<StarCollectorData> lastNGamesData = saveData.GetLastNComplete(nGamesToUpgrade);
+        IEnumerable<StarCollectorData> lastNGamesData = new List<StarCollectorData>();
+        if (!isDemo)
+        {
+            lastNGamesData = saveData.GetLastNComplete(nGamesToUpgrade);
+        }
 
         if (lastNGamesData.Count() < nGamesToUpgrade)
         {
@@ -312,6 +319,10 @@ public class StarCollectorManager : MonoBehaviour
 
     private void SaveGameData(bool gameComplete)
     {
+        if (isDemo)
+        {
+            return;
+        }
         // Update save data for this game
         gameData.gameCompleted = gameComplete;
         gameData.timeLimitSeconds = timeLimit;

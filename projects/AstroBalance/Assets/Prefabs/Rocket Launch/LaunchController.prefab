@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6151252576905959958
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3303443295677738976}
+  - component: {fileID: 8573891838102822608}
+  m_Layer: 0
+  m_Name: LaunchController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3303443295677738976
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6151252576905959958}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.38185358, y: 0.41862074, z: 0.013605014}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8573891838102822608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6151252576905959958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d389fa4698ae03edb86de8a1e4891073, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speedTime: 2
+  minimumSpeedPitch: 10
+  minimumSpeedYaw: 40
+  minNItemsForSpeed: 5
+  timerDuration: 1
+  gazeTime: 3
+  gazeTolerance: 2
+  physicalScaleFactor: 0.04
+  minNItemsForGaze: 5
+  targetObject: {fileID: 0}
+  Rocket: {fileID: 0}
+  maxPreviousGames: 100
+  adaptiveDifficulty: 1.7
+  samplingIntervalSeconds: 0.5
+  writeSampledSpeeds: 0
+  launchText: {fileID: 0}
+  instructionsText: {fileID: 0}
+  winScreen: {fileID: 0}
+  acceleration: 0.08
+  useMouseForTracker: 0
+  gazeStatusText: {fileID: 0}
+  speedStatusText: {fileID: 0}
+  taskTimes:
+  - 20
+  - 30
+  - 45
+  - 60
+  - 75
+  - 90
+  - 105
+  - 120
+  targetSizes:
+  - 25
+  - 22
+  - 20
+  - 18
+  - 16
+  - 14
+  - 12
+  isDemo: 0

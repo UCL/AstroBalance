@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ public class Constellation : MonoBehaviour
     private int minSequenceLength = 2;
 
     [SerializeField, Tooltip("Number of incorrect sequences before reducing length")]
-    private int maxIncorrectSequences = 2;
+    private int maxIncorrectSequences = 1;
 
     [
         SerializeField,
@@ -42,6 +43,9 @@ public class Constellation : MonoBehaviour
     [SerializeField, Tooltip("Prefab of icon to show for an incorrect guess")]
     private GameObject incorrectGuessPrefab;
 
+    [SerializeField, Tooltip("Sprite for dotted lines between stars")]
+    private GameObject DotObj;
+
     private List<StarMapStar> stars;
     private StarMapManager gameManager;
     private List<StarMapStar> currentSequence; // stars left to guess
@@ -59,6 +63,15 @@ public class Constellation : MonoBehaviour
         gameManager = FindFirstObjectByType<StarMapManager>();
         currentSequenceLength = minSequenceLength;
 
+        foreach (StarMapStar star in stars)
+        {
+            star.SetConstellation(this);
+        }
+    }
+
+    public void InitStars(List<StarMapStar> StarsIn)
+    {
+        stars = StarsIn;
         foreach (StarMapStar star in stars)
         {
             star.SetConstellation(this);
@@ -265,7 +278,9 @@ public class Constellation : MonoBehaviour
         {
             // choose a random star, then remove it so there are no
             // repeats in the sequence
-            StarMapStar randomStar = availableStars[Random.Range(0, availableStars.Count())];
+            StarMapStar randomStar = availableStars[
+                UnityEngine.Random.Range(0, availableStars.Count())
+            ];
             starSequence.Add(randomStar);
             availableStars.Remove(randomStar);
         }

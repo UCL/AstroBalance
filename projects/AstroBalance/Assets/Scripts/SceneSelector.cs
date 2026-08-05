@@ -18,62 +18,92 @@ public class SceneSelector : MonoBehaviour
 
     public void LoadStarCollector()
     {
-        SceneManager.LoadScene("Scenes/StarCollector");
+        SceneManager.LoadScene("Scenes/StarCollector/StarCollector");
     }
 
     public void LoadStarCollectorInstructions()
     {
-        SceneManager.LoadScene("Scenes/InstructionsStarCollector");
+        SceneManager.LoadScene("Scenes/StarCollector/InstructionsStarCollector");
+    }
+
+    public void LoadStarCollectorDemo()
+    {
+        SceneManager.LoadScene("Scenes/StarCollector/DemoStarCollector");
     }
 
     public void LoadRocketLaunch()
     {
-        SceneManager.LoadScene("Scenes/RocketLaunch");
+        SceneManager.LoadScene("Scenes/RocketLaunch/RocketLaunch");
     }
 
     public void LoadRocketLaunchInstructions()
     {
-        SceneManager.LoadScene("Scenes/InstructionsRocketLaunch");
+        SceneManager.LoadScene("Scenes/RocketLaunch/InstructionsRocketLaunch");
+    }
+
+    public void LoadRocketLaunchDemo()
+    {
+        SceneManager.LoadScene("Scenes/RocketLaunch/DemoRocketLaunch");
     }
 
     public void LoadStarSeek()
     {
-        SceneManager.LoadScene("Scenes/StarSeek");
+        SceneManager.LoadScene("Scenes/StarSeek/StarSeek");
     }
 
     public void LoadStarSeekInstructions()
     {
-        SceneManager.LoadScene("Scenes/InstructionsStarSeek");
+        SceneManager.LoadScene("Scenes/StarSeek/InstructionsStarSeek");
+    }
+
+    public void LoadStarSeekDemo()
+    {
+        SceneManager.LoadScene("Scenes/StarSeek/DemoStarSeek");
     }
 
     public void LoadStarMap()
     {
-        SceneManager.LoadScene("Scenes/StarMap");
+        SceneManager.LoadScene("Scenes/StarMap/StarMap");
     }
 
     public void LoadStarMapInstructions()
     {
-        SceneManager.LoadScene("Scenes/InstructionsStarMap");
+        SceneManager.LoadScene("Scenes/StarMap/InstructionsStarMap");
+    }
+
+    public void LoadStarMapDemo()
+    {
+        SceneManager.LoadScene("Scenes/StarMap/DemoStarMap");
     }
 
     public void LoadSpaceWalking()
     {
-        SceneManager.LoadScene("Scenes/SpaceWalking");
+        SceneManager.LoadScene("Scenes/SpaceWalk/SpaceWalking");
     }
 
     public void LoadSpaceWalkingInstructions()
     {
-        SceneManager.LoadScene("Scenes/InstructionsSpaceWalk");
+        SceneManager.LoadScene("Scenes/SpaceWalk/InstructionsSpaceWalk");
+    }
+
+    public void LoadSpaceWalkingDemo()
+    {
+        SceneManager.LoadScene("Scenes/SpaceWalk/DemoSpaceWalk");
     }
 
     public void LoadZeroGravity()
     {
-        SceneManager.LoadScene("Scenes/ZeroGravity");
+        SceneManager.LoadScene("Scenes/ZeroGravity/ZeroGravity");
     }
 
     public void LoadZeroGravityInstructions()
     {
-        SceneManager.LoadScene("Scenes/InstructionsZeroGravity");
+        SceneManager.LoadScene("Scenes/ZeroGravity/InstructionsZeroGravity");
+    }
+
+    public void LoadZeroGravityDemo()
+    {
+        SceneManager.LoadScene("Scenes/ZeroGravity/DemoZeroGravity");
     }
 
     public void LoadCurrentScene()

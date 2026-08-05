@@ -16,9 +16,15 @@ public class FlameController : MonoBehaviour
     [SerializeField, Tooltip("Flame move factor based on speed."), Range(0.002f, 0.20f)]
     private float flameSpeedMove = 0.02f;
 
+    [SerializeField, Tooltip("Smoke emission scale"), Range(0f, 0.5f)]
+    float smokeEmissionScale = 0.05f;
+    private ParticleSystem[] smokeEmitters;
+
     private SpriteRenderer Renderer;
     private Vector3 original_scale;
     private Vector3 original_position;
+
+    private AudioSource EngineAudio;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -26,7 +32,9 @@ public class FlameController : MonoBehaviour
         launchController = FindFirstObjectByType<LaunchControl>();
         Renderer = GetComponent<SpriteRenderer>();
         original_scale = Renderer.transform.localScale;
-        original_position = Renderer.transform.position;
+        original_position = Renderer.transform.localPosition;
+        InitialiseSmokeEmitters();
+        EngineAudio = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -34,6 +42,15 @@ public class FlameController : MonoBehaviour
     {
         float headSpeed = launchController.HeadSpeed;
         bool launchComplete = launchController.GetProgress() >= 100f ? true : false;
+        float flameStrength = 0f;
+        if (!launchComplete)
+        {
+            flameStrength = headSpeed;
+        }
+        else
+        {
+            flameStrength = 100.0f;
+        }
 
         Vector3 new_scale = new Vector3(
             original_scale.x + headSpeed * flameSpeedScale / 10,
@@ -44,14 +61,40 @@ public class FlameController : MonoBehaviour
         );
         Renderer.transform.localScale = new_scale;
 
-        if (!launchComplete)
+        Vector3 new_position = new Vector3(
+            original_position.x,
+            original_position.y - headSpeed * flameSpeedMove / 100,
+            original_position.z
+        );
+        Renderer.transform.localPosition = new_position;
+
+        UpdateSmokeEmitters(flameStrength);
+        UpdateSound(flameStrength);
+    }
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void InitialiseSmokeEmitters()
+    {
+        smokeEmitters = GetComponentsInChildren<ParticleSystem>();
+        for (int i = 0; i < smokeEmitters.Length; i++)
         {
-            Vector3 new_position = new Vector3(
-                original_position.x,
-                original_position.y - headSpeed * flameSpeedMove / 100,
-                original_position.z
-            );
-            Renderer.transform.position = new_position;
+            var emitter = smokeEmitters[i].emission;
+            emitter.rateOverTime = 0f;
         }
+    }
+
+    // Update is called once per frame
+    void UpdateSmokeEmitters(float flameStrength)
+    {
+        for (int i = 0; i < smokeEmitters.Length; i++)
+        {
+            var emitter = smokeEmitters[i].emission;
+            emitter.rateOverTime = flameStrength * smokeEmissionScale;
+        }
+    }
+
+    void UpdateSound(float flameStrength)
+    {
+        EngineAudio.volume = Mathf.Min(flameStrength, 50f) / 50f;
     }
 }
