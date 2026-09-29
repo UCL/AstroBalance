@@ -233,6 +233,11 @@ public class StarMapManager : MonoBehaviour
 
     private void EndGame()
     {
+        if (isDemo)
+        {
+            var sceneSelector = FindAnyObjectByType<SceneSelector>();
+            sceneSelector.LoadStarMapInstructions();
+        }
         if (gameActive)
         {
             gameActive = false;

@@ -9,7 +9,7 @@ using UnityEngine;
 class DifficultyLevel
 {
     public float time;
-    public float targetSize;
+    public float textSize;
 }
 
 /// <summary>
@@ -56,14 +56,6 @@ public class LaunchControl : MonoBehaviour
     ]
     private float gazeTolerance = 3.0f;
 
-    [
-        SerializeField,
-        Tooltip(
-            "The necessary scale factor to convert the target screen scale to the intended physical scale."
-        )
-    ]
-    float physicalScaleFactor = 0.04f;
-
     [SerializeField, Tooltip("The minimum number of gaze points used to calculate steadiness")]
     private int minNItemsForGaze = 5;
 
@@ -99,7 +91,7 @@ public class LaunchControl : MonoBehaviour
     private bool writeSampledSpeeds = false;
 
     [SerializeField, Tooltip("Launch Code Display Text")]
-    private TextMeshProUGUI launchText;
+    private TextMeshPro launchText;
     private int currentCode;
 
     [SerializeField, Tooltip("A text box for the instructions.")]
@@ -129,7 +121,10 @@ public class LaunchControl : MonoBehaviour
     private float[] taskTimes = { 20f, 30f, 45f, 60f, 75f, 90f, 105f, 120f };
 
     [SerializeField, Tooltip("Target sizes for different levels (ordered)")]
-    private float[] targetSizes = { 25f, 22f, 20f, 18f, 16f, 14f, 12f };
+    private float[] textSizes = { 25f, 22f, 20f, 18f, 16f, 14f, 12f };
+
+    [SerializeField, Tooltip("Scale factor to ensure the text is the correct size.")]
+    private float fontScaleFactor = 1.0f;
 
     private List<DifficultyLevel> levels;
 
@@ -216,17 +211,11 @@ public class LaunchControl : MonoBehaviour
                 + ", with timer "
                 + difficulty.time
                 + " and size "
-                + difficulty.targetSize
+                + difficulty.textSize
         );
         launchTime = difficulty.time;
-        int screenW;
-        int screenH;
-        (screenW, screenH) = FindAnyObjectByType<Tracker>().getScreenDimensions();
-        physicalScaleFactor = Camera.main.orthographicSize * 2 / screenH; // conversion factor from mm to Unity units
-        float spriteSize = targetObject.GetComponentInChildren<SpriteRenderer>().bounds.size.y;
-        Debug.Log("Sprite size = " + spriteSize);
-        targetObject.transform.localScale =
-            difficulty.targetSize * physicalScaleFactor * new Vector3(1, 1, 1) / spriteSize;
+        var textObj = targetObject.GetComponentInChildren<TextMeshPro>();
+        textObj.fontSize = difficulty.textSize * fontScaleFactor;
     }
 
     private void SetDifficultyLevel(IEnumerable<RocketLaunchData> lastGameData)
@@ -297,11 +286,11 @@ public class LaunchControl : MonoBehaviour
         int i = 0,
             j = 0;
         bool inc_time = true;
-        while (i < taskTimes.Length & j < targetSizes.Length)
+        while (i < taskTimes.Length & j < textSizes.Length)
         {
             var l = new DifficultyLevel();
             l.time = taskTimes[i];
-            l.targetSize = targetSizes[j];
+            l.textSize = textSizes[j];
             if (inc_time)
             {
                 i += 1;
@@ -595,6 +584,11 @@ public class LaunchControl : MonoBehaviour
 
     private void EndGame()
     {
+        if (isDemo)
+        {
+            var sceneSelector = FindAnyObjectByType<SceneSelector>();
+            sceneSelector.LoadRocketLaunchInstructions();
+        }
         if (gameActive)
         {
             gameActive = false;

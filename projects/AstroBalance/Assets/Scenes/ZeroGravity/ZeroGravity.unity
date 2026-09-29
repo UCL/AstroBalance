@@ -433,6 +433,63 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1577485714830642458, guid: 740d34dc4a552fe43a9e665ab37f407f, type: 3}
   m_PrefabInstance: {fileID: 2136427870}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &966884543
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2265954456012267475, guid: f9e94e5db6615d14e8bebca2c897c07a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 511.42267
+      objectReference: {fileID: 0}
+    - target: {fileID: 2265954456012267475, guid: f9e94e5db6615d14e8bebca2c897c07a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 265.40424
+      objectReference: {fileID: 0}
+    - target: {fileID: 2265954456012267475, guid: f9e94e5db6615d14e8bebca2c897c07a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2.7664888
+      objectReference: {fileID: 0}
+    - target: {fileID: 2265954456012267475, guid: f9e94e5db6615d14e8bebca2c897c07a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2265954456012267475, guid: f9e94e5db6615d14e8bebca2c897c07a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2265954456012267475, guid: f9e94e5db6615d14e8bebca2c897c07a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2265954456012267475, guid: f9e94e5db6615d14e8bebca2c897c07a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2265954456012267475, guid: f9e94e5db6615d14e8bebca2c897c07a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2265954456012267475, guid: f9e94e5db6615d14e8bebca2c897c07a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2265954456012267475, guid: f9e94e5db6615d14e8bebca2c897c07a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3269386337384195194, guid: f9e94e5db6615d14e8bebca2c897c07a, type: 3}
+      propertyPath: m_Name
+      value: SFXManager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f9e94e5db6615d14e8bebca2c897c07a, type: 3}
 --- !u!1 &1199222267
 GameObject:
   m_ObjectHideFlags: 0
@@ -1186,7 +1243,7 @@ PrefabInstance:
       objectReference: {fileID: 897678168}
     - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
       propertyPath: sprites.Array.size
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
       propertyPath: 'sprites.Array.data[0]'
@@ -1203,29 +1260,45 @@ PrefabInstance:
     - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
       propertyPath: 'sprites.Array.data[3]'
       value: 
-      objectReference: {fileID: 21300000, guid: f0ccb4fe4b32bd04f8805e877a4644b1, type: 3}
+      objectReference: {fileID: -3967016112679287566, guid: cbd12128ed012d54886db983e656af54, type: 3}
     - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
       propertyPath: 'sprites.Array.data[4]'
       value: 
-      objectReference: {fileID: 21300000, guid: 40873e95939c58b4797f7177767514b6, type: 3}
+      objectReference: {fileID: 9171686026747535128, guid: dccc29472084de74286a3194415c3d6f, type: 3}
     - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
       propertyPath: 'sprites.Array.data[5]'
+      value: 
+      objectReference: {fileID: 21300000, guid: f0ccb4fe4b32bd04f8805e877a4644b1, type: 3}
+    - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
+      propertyPath: 'sprites.Array.data[6]'
+      value: 
+      objectReference: {fileID: 21300000, guid: 40873e95939c58b4797f7177767514b6, type: 3}
+    - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
+      propertyPath: 'sprites.Array.data[7]'
       value: 
       objectReference: {fileID: -6804575650906184243, guid: 839cd4c7e6c506a4981988c84cb09e4a, type: 3}
     - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
       propertyPath: poseExplanations.Array.size
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
       propertyPath: 'poseExplanations.Array.data[3]'
-      value: Stand with your left foot in front of your right (heel to toe)
+      value: Stand with your left foot in front of your right, one pace apart
       objectReference: {fileID: 0}
     - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
       propertyPath: 'poseExplanations.Array.data[4]'
-      value: Stand with your right foot in front of your left (heel to toe)
+      value: Stand with your right foot in front of your left, one pace apart
       objectReference: {fileID: 0}
     - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
       propertyPath: 'poseExplanations.Array.data[5]'
+      value: Stand with your left foot in front of your right (heel to toe)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
+      propertyPath: 'poseExplanations.Array.data[6]'
+      value: Stand with your right foot in front of your left (heel to toe)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6331237815288606592, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
+      propertyPath: 'poseExplanations.Array.data[7]'
       value: Stand on a cushion with both feet
       objectReference: {fileID: 0}
     - target: {fileID: 7658384438030379020, guid: 7c70ad636715e2845972f6d3f9836ca9, type: 3}
@@ -1586,3 +1659,4 @@ SceneRoots:
   - {fileID: 8869706203925085772}
   - {fileID: 5380774593643819029}
   - {fileID: 1700106266}
+  - {fileID: 966884543}

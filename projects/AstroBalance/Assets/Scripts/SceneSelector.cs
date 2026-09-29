@@ -6,8 +6,19 @@ public class SceneSelector : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() { }
 
+    private void SetMusic(MusicCue cue)
+    {
+        MusicManager.getInstance().updateMusic(cue);
+    }
+
+    private void StopMusic()
+    {
+        MusicManager.getInstance().stopMusic();
+    }
+
     public void LoadMenuScreen()
     {
+        SetMusic(MusicCue.menu);
         SceneManager.LoadScene("Scenes/MenuScreen");
     }
 
@@ -18,6 +29,7 @@ public class SceneSelector : MonoBehaviour
 
     public void LoadStarCollector()
     {
+        SetMusic(MusicCue.starCollector);
         SceneManager.LoadScene("Scenes/StarCollector/StarCollector");
     }
 
@@ -48,6 +60,7 @@ public class SceneSelector : MonoBehaviour
 
     public void LoadStarSeek()
     {
+        StopMusic();
         SceneManager.LoadScene("Scenes/StarSeek/StarSeek");
     }
 
@@ -63,6 +76,7 @@ public class SceneSelector : MonoBehaviour
 
     public void LoadStarMap()
     {
+        StopMusic();
         SceneManager.LoadScene("Scenes/StarMap/StarMap");
     }
 
@@ -78,6 +92,7 @@ public class SceneSelector : MonoBehaviour
 
     public void LoadSpaceWalking()
     {
+        StopMusic();
         SceneManager.LoadScene("Scenes/SpaceWalk/SpaceWalking");
     }
 
@@ -93,6 +108,7 @@ public class SceneSelector : MonoBehaviour
 
     public void LoadZeroGravity()
     {
+        StopMusic();
         SceneManager.LoadScene("Scenes/ZeroGravity/ZeroGravity");
     }
 

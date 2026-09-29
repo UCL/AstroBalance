@@ -53,6 +53,8 @@ public class ZeroGravityManager : MonoBehaviour
     [SerializeField]
     private bool isDemo = false;
 
+    private SFXManager sfxManager;
+
     /// <summary>
     /// Keep track of which timers are currently active, and
     /// should be responded to in Update()
@@ -67,6 +69,7 @@ public class ZeroGravityManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        sfxManager = FindAnyObjectByType<SFXManager>();
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
         scoreText = scoreDisplay.GetComponentInChildren<TextMeshProUGUI>();
 
@@ -95,6 +98,8 @@ public class ZeroGravityManager : MonoBehaviour
         }
         else if (activeTimer == ActiveTimer.PoseHold && poseHoldTimer.GetTimeRemaining() <= 0)
         {
+            sfxManager.stopSound();
+            sfxManager.playSound(SoundFX.countdownComplete);
             StartCoroutine(DisplayNextPose());
         }
     }
@@ -130,6 +135,7 @@ public class ZeroGravityManager : MonoBehaviour
         yield return new WaitForSeconds(poseDisplaySeconds);
         poseCountdownTimer.gameObject.SetActive(true);
         poseCountdownTimer.StartCountdown(poseCountdownSeconds);
+        sfxManager.playSound(SoundFX.threeTwoOne);
         activeTimer = ActiveTimer.PoseCountdown;
     }
 
@@ -143,6 +149,7 @@ public class ZeroGravityManager : MonoBehaviour
 
         poseCountdownTimer.gameObject.SetActive(false);
         poseHoldTimer.gameObject.SetActive(true);
+        sfxManager.loopSound(SoundFX.countdownTimer);
         scoreDisplay.gameObject.SetActive(true);
         poseAvatar.HideExplanationText();
 
@@ -167,6 +174,11 @@ public class ZeroGravityManager : MonoBehaviour
 
     private void EndGame()
     {
+        if (isDemo)
+        {
+            var sceneSelector = FindAnyObjectByType<SceneSelector>();
+            sceneSelector.LoadZeroGravityInstructions();
+        }
         if (gameActive)
         {
             gameActive = false;

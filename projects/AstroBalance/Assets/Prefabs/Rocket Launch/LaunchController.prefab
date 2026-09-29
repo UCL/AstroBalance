@@ -75,7 +75,7 @@ MonoBehaviour:
   - 90
   - 105
   - 120
-  targetSizes:
+  textSizes:
   - 25
   - 22
   - 20
@@ -83,4 +83,5 @@ MonoBehaviour:
   - 16
   - 14
   - 12
+  fontScaleFactor: 1
   isDemo: 0

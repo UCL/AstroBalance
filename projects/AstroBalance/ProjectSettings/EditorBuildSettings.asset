@@ -57,7 +57,7 @@ EditorBuildSettings:
     path: Assets/Scenes/RocketLaunch/DemoRocketLaunch.unity
     guid: e31c9e93a031e0b45b734dba394f78fd
   - enabled: 1
-    path: Assets/Scenes/StarCollector/DemoStarCollector 1.unity
+    path: Assets/Scenes/StarCollector/DemoStarCollector.unity
     guid: 304195c76637c6448b0e2753244c5b10
   - enabled: 1
     path: Assets/Scenes/StarMap/DemoStarMap.unity

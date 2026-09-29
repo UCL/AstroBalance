@@ -89,6 +89,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4109803886445126192, guid: fb7aede62347caf40ad6f6beca96d147, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4109803886445126192, guid: fb7aede62347caf40ad6f6beca96d147, type: 3}
       propertyPath: m_Colors.m_NormalColor.b
       value: 0.23113209
       objectReference: {fileID: 0}
@@ -142,7 +146,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7712527595929660991, guid: fb7aede62347caf40ad6f6beca96d147, type: 3}
       propertyPath: m_Name
-      value: BasicButton Variant
+      value: NextButton
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

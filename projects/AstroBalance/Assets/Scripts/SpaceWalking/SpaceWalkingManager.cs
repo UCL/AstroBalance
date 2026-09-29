@@ -245,6 +245,11 @@ public class SpaceWalkingManager : MonoBehaviour
 
     private void EndGame()
     {
+        if (isDemo)
+        {
+            var sceneSelector = FindAnyObjectByType<SceneSelector>();
+            sceneSelector.LoadSpaceWalkingInstructions();
+        }
         if (gameActive)
         {
             gameActive = false;

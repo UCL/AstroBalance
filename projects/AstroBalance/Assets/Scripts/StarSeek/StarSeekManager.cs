@@ -143,6 +143,11 @@ public class StarSeekManager : MonoBehaviour
 
     private void EndGame()
     {
+        if (isDemo)
+        {
+            var sceneSelector = FindAnyObjectByType<SceneSelector>();
+            sceneSelector.LoadStarSeekInstructions();
+        }
         if (gameActive)
         {
             gameActive = false;

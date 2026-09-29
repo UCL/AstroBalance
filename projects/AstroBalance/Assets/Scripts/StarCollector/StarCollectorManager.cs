@@ -294,6 +294,11 @@ public class StarCollectorManager : MonoBehaviour
 
     private void EndGame()
     {
+        if (isDemo)
+        {
+            var sceneSelector = FindAnyObjectByType<SceneSelector>();
+            sceneSelector.LoadStarCollectorInstructions();
+        }
         if (gameActive)
         {
             gameActive = false;
