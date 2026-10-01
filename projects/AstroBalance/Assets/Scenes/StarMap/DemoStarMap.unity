@@ -383,7 +383,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 141305960}
         m_TargetAssemblyTypeName: SceneSelector, Assembly-CSharp
-        m_MethodName: LoadStarCollectorInstructions
+        m_MethodName: LoadStarMap
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
