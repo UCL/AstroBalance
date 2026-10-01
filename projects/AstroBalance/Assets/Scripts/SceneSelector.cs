@@ -16,110 +16,118 @@ public class SceneSelector : MonoBehaviour
         MusicManager.getInstance().stopMusic();
     }
 
+    private void ChangeScene(string scene, MusicCue? cue)
+    {
+        if (cue.HasValue)
+        {
+            SetMusic(cue.Value);
+        }
+        else
+        {
+            StopMusic();
+        }
+        SFXManager.getInstance().stopSound(); // stop any looping sounds
+        SceneManager.LoadScene(scene);
+    }
+
     public void LoadMenuScreen()
     {
-        SetMusic(MusicCue.menu);
-        SceneManager.LoadScene("Scenes/MenuScreen");
+        ChangeScene("Scenes/MenuScreen", MusicCue.menu);
     }
 
     public void LoadBadgesScreen()
     {
-        SceneManager.LoadScene("Scenes/BadgesScreen");
+        ChangeScene("Scenes/BadgesScreen", null);
     }
 
     public void LoadStarCollector()
     {
-        SetMusic(MusicCue.starCollector);
-        SceneManager.LoadScene("Scenes/StarCollector/StarCollector");
+        ChangeScene("Scenes/StarCollector/StarCollector", MusicCue.starCollector);
     }
 
     public void LoadStarCollectorInstructions()
     {
-        SceneManager.LoadScene("Scenes/StarCollector/InstructionsStarCollector");
+        ChangeScene("Scenes/StarCollector/InstructionsStarCollector", MusicCue.menu);
     }
 
     public void LoadStarCollectorDemo()
     {
-        SceneManager.LoadScene("Scenes/StarCollector/DemoStarCollector");
+        ChangeScene("Scenes/StarCollector/DemoStarCollector", null);
     }
 
     public void LoadRocketLaunch()
     {
-        SceneManager.LoadScene("Scenes/RocketLaunch/RocketLaunch");
+        ChangeScene("Scenes/RocketLaunch/RocketLaunch", null);
     }
 
     public void LoadRocketLaunchInstructions()
     {
-        SceneManager.LoadScene("Scenes/RocketLaunch/InstructionsRocketLaunch");
+        ChangeScene("Scenes/RocketLaunch/InstructionsRocketLaunch", MusicCue.menu);
     }
 
     public void LoadRocketLaunchDemo()
     {
-        SceneManager.LoadScene("Scenes/RocketLaunch/DemoRocketLaunch");
+        ChangeScene("Scenes/RocketLaunch/DemoRocketLaunch", null);
     }
 
     public void LoadStarSeek()
     {
-        StopMusic();
-        SceneManager.LoadScene("Scenes/StarSeek/StarSeek");
+        ChangeScene("Scenes/StarSeek/StarSeek", null);
     }
 
     public void LoadStarSeekInstructions()
     {
-        SceneManager.LoadScene("Scenes/StarSeek/InstructionsStarSeek");
+        ChangeScene("Scenes/StarSeek/InstructionsStarSeek", MusicCue.menu);
     }
 
     public void LoadStarSeekDemo()
     {
-        SceneManager.LoadScene("Scenes/StarSeek/DemoStarSeek");
+        ChangeScene("Scenes/StarSeek/DemoStarSeek", null);
     }
 
     public void LoadStarMap()
     {
-        StopMusic();
-        SceneManager.LoadScene("Scenes/StarMap/StarMap");
+        ChangeScene("Scenes/StarMap/StarMap", null);
     }
 
     public void LoadStarMapInstructions()
     {
-        SceneManager.LoadScene("Scenes/StarMap/InstructionsStarMap");
+        ChangeScene("Scenes/StarMap/InstructionsStarMap", MusicCue.menu);
     }
 
     public void LoadStarMapDemo()
     {
-        SceneManager.LoadScene("Scenes/StarMap/DemoStarMap");
+        ChangeScene("Scenes/StarMap/DemoStarMap", null);
     }
 
     public void LoadSpaceWalking()
     {
-        StopMusic();
-        SceneManager.LoadScene("Scenes/SpaceWalk/SpaceWalking");
+        ChangeScene("Scenes/SpaceWalk/SpaceWalking", null);
     }
 
     public void LoadSpaceWalkingInstructions()
     {
-        SceneManager.LoadScene("Scenes/SpaceWalk/InstructionsSpaceWalk");
+        ChangeScene("Scenes/SpaceWalk/InstructionsSpaceWalk", MusicCue.menu);
     }
 
     public void LoadSpaceWalkingDemo()
     {
-        SceneManager.LoadScene("Scenes/SpaceWalk/DemoSpaceWalk");
+        ChangeScene("Scenes/SpaceWalk/DemoSpaceWalk", null);
     }
 
     public void LoadZeroGravity()
     {
-        StopMusic();
-        SceneManager.LoadScene("Scenes/ZeroGravity/ZeroGravity");
+        ChangeScene("Scenes/ZeroGravity/ZeroGravity", null);
     }
 
     public void LoadZeroGravityInstructions()
     {
-        SceneManager.LoadScene("Scenes/ZeroGravity/InstructionsZeroGravity");
+        ChangeScene("Scenes/ZeroGravity/InstructionsZeroGravity", MusicCue.menu);
     }
 
     public void LoadZeroGravityDemo()
     {
-        SceneManager.LoadScene("Scenes/ZeroGravity/DemoZeroGravity");
+        ChangeScene("Scenes/ZeroGravity/DemoZeroGravity", null);
     }
 
     public void LoadCurrentScene()
