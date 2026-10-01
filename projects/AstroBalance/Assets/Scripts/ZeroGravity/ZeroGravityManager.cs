@@ -69,7 +69,7 @@ public class ZeroGravityManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        sfxManager = FindAnyObjectByType<SFXManager>();
+        sfxManager = SFXManager.getInstance();
         winText = winScreen.GetComponentInChildren<TextMeshProUGUI>();
         scoreText = scoreDisplay.GetComponentInChildren<TextMeshProUGUI>();
 
@@ -128,6 +128,7 @@ public class ZeroGravityManager : MonoBehaviour
             if (!poseAvailable)
             {
                 EndGame();
+                yield break;
             }
         }
 
@@ -184,6 +185,7 @@ public class ZeroGravityManager : MonoBehaviour
             gameActive = false;
 
             winText.text = "Congratulations!\n\nYou scored " + overallScore + " points";
+            sfxManager.stopSound();
             winScreen.SetActive(true);
             SaveGameData(true);
         }

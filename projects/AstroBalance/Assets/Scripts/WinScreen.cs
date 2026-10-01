@@ -8,8 +8,8 @@ public class WinScreen : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        sfxManager = FindAnyObjectByType<SFXManager>();
-        musicManager = FindAnyObjectByType<MusicManager>();
+        sfxManager = SFXManager.getInstance();
+        musicManager = MusicManager.getInstance();
 
         sfxManager.playSound(SoundFX.congratulations);
         musicManager.stopMusic();
