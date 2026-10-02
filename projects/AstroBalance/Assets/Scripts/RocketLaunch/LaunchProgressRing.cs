@@ -35,8 +35,7 @@ public class LaunchProgressRing : MonoBehaviour
     /// <summary>
     /// Fit the progress ring position and size to the countdown target
     /// </summary>
-    private void FitToCountdown()
-    {
+    private void FitToCountdown() { /*
         GameObject targetObject = countdownController.TargetObject;
         fillImage.transform.position = Camera.main.WorldToScreenPoint(
             targetObject.transform.position
@@ -55,6 +54,7 @@ public class LaunchProgressRing : MonoBehaviour
         float requiredHeight = (targetObjectHeight * scalingFactor) / fillImage.canvas.scaleFactor;
 
         fillImage.rectTransform.sizeDelta = new Vector2(requiredWidth, requiredHeight);
+        */
     }
 
     // Update is called once per frame

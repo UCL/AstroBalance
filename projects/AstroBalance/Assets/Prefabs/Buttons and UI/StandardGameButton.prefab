@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8992422188428409795}
   - component: {fileID: 5110548290506452421}
   - component: {fileID: 5184778142140199134}
+  - component: {fileID: 7017470941630099435}
   m_Layer: 5
   m_Name: StandardGameButton
   m_TagString: Untagged
@@ -132,3 +133,27 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 7017470941630099435}
+        m_TargetAssemblyTypeName: GameButton, Assembly-CSharp
+        m_MethodName: playSound
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &7017470941630099435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2558152999136441649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b590b37f3ee77f4ca2ab46a02c437d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

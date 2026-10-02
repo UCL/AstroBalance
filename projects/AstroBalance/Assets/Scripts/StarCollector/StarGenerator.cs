@@ -52,7 +52,7 @@ public class StarGenerator : MonoBehaviour
 
     void InitStars()
     {
-        float d = 0;
+        float d = 6f;
         while (d <= pathDistance)
         {
             CreateStar(d);

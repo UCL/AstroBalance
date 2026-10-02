@@ -6,74 +6,128 @@ public class SceneSelector : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() { }
 
+    private void SetMusic(MusicCue cue)
+    {
+        MusicManager.getInstance().updateMusic(cue);
+    }
+
+    private void StopMusic()
+    {
+        MusicManager.getInstance().stopMusic();
+    }
+
+    private void ChangeScene(string scene, MusicCue? cue)
+    {
+        if (cue.HasValue)
+        {
+            SetMusic(cue.Value);
+        }
+        else
+        {
+            StopMusic();
+        }
+        SFXManager.getInstance().stopSound(); // stop any looping sounds
+        SceneManager.LoadScene(scene);
+    }
+
     public void LoadMenuScreen()
     {
-        SceneManager.LoadScene("Scenes/MenuScreen");
+        ChangeScene("Scenes/MenuScreen", MusicCue.menu);
     }
 
     public void LoadBadgesScreen()
     {
-        SceneManager.LoadScene("Scenes/BadgesScreen");
+        ChangeScene("Scenes/BadgesScreen", null);
     }
 
     public void LoadStarCollector()
     {
-        SceneManager.LoadScene("Scenes/StarCollector");
+        ChangeScene("Scenes/StarCollector/StarCollector", MusicCue.starCollector);
     }
 
     public void LoadStarCollectorInstructions()
     {
-        SceneManager.LoadScene("Scenes/InstructionsStarCollector");
+        ChangeScene("Scenes/StarCollector/InstructionsStarCollector", MusicCue.menu);
+    }
+
+    public void LoadStarCollectorDemo()
+    {
+        ChangeScene("Scenes/StarCollector/DemoStarCollector", null);
     }
 
     public void LoadRocketLaunch()
     {
-        SceneManager.LoadScene("Scenes/RocketLaunch");
+        ChangeScene("Scenes/RocketLaunch/RocketLaunch", null);
     }
 
     public void LoadRocketLaunchInstructions()
     {
-        SceneManager.LoadScene("Scenes/InstructionsRocketLaunch");
+        ChangeScene("Scenes/RocketLaunch/InstructionsRocketLaunch", MusicCue.menu);
+    }
+
+    public void LoadRocketLaunchDemo()
+    {
+        ChangeScene("Scenes/RocketLaunch/DemoRocketLaunch", null);
     }
 
     public void LoadStarSeek()
     {
-        SceneManager.LoadScene("Scenes/StarSeek");
+        ChangeScene("Scenes/StarSeek/StarSeek", null);
     }
 
     public void LoadStarSeekInstructions()
     {
-        SceneManager.LoadScene("Scenes/InstructionsStarSeek");
+        ChangeScene("Scenes/StarSeek/InstructionsStarSeek", MusicCue.menu);
+    }
+
+    public void LoadStarSeekDemo()
+    {
+        ChangeScene("Scenes/StarSeek/DemoStarSeek", null);
     }
 
     public void LoadStarMap()
     {
-        SceneManager.LoadScene("Scenes/StarMap");
+        ChangeScene("Scenes/StarMap/StarMap", null);
     }
 
     public void LoadStarMapInstructions()
     {
-        SceneManager.LoadScene("Scenes/InstructionsStarMap");
+        ChangeScene("Scenes/StarMap/InstructionsStarMap", MusicCue.menu);
+    }
+
+    public void LoadStarMapDemo()
+    {
+        ChangeScene("Scenes/StarMap/DemoStarMap", null);
     }
 
     public void LoadSpaceWalking()
     {
-        SceneManager.LoadScene("Scenes/SpaceWalking");
+        ChangeScene("Scenes/SpaceWalk/SpaceWalking", null);
     }
 
     public void LoadSpaceWalkingInstructions()
     {
-        SceneManager.LoadScene("Scenes/InstructionsSpaceWalk");
+        ChangeScene("Scenes/SpaceWalk/InstructionsSpaceWalk", MusicCue.menu);
+    }
+
+    public void LoadSpaceWalkingDemo()
+    {
+        ChangeScene("Scenes/SpaceWalk/DemoSpaceWalk", null);
     }
 
     public void LoadZeroGravity()
     {
-        SceneManager.LoadScene("Scenes/ZeroGravity");
+        ChangeScene("Scenes/ZeroGravity/ZeroGravity", null);
     }
 
     public void LoadZeroGravityInstructions()
     {
-        SceneManager.LoadScene("Scenes/InstructionsZeroGravity");
+        ChangeScene("Scenes/ZeroGravity/InstructionsZeroGravity", MusicCue.menu);
+    }
+
+    public void LoadZeroGravityDemo()
+    {
+        ChangeScene("Scenes/ZeroGravity/DemoZeroGravity", null);
     }
 
     public void LoadCurrentScene()

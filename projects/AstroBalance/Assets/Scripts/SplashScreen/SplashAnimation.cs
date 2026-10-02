@@ -18,6 +18,8 @@ public class SplashAnimation : MonoBehaviour
     [SerializeField, Tooltip("Seconds to fade text in")]
     private float textFadeSeconds = 1f;
 
+    private AudioSource EngineSound;
+
     private bool holdFinished = false;
     private Camera cam;
     private float maxCameraYPos;
@@ -45,6 +47,8 @@ public class SplashAnimation : MonoBehaviour
 
         // Find max rocket position (just beyond background)
         maxRocketYPos = background.bounds.max.y + rocket.bounds.size.y;
+
+        EngineSound = GetComponent<AudioSource>();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -61,6 +65,11 @@ public class SplashAnimation : MonoBehaviour
             return;
         }
 
+        if (!EngineSound.isPlaying)
+        {
+            EngineSound.Play();
+        }
+
         TranslateToMaxY(cam.transform, maxCameraYPos);
         TranslateToMaxY(rocket.transform, maxRocketYPos);
 
@@ -72,6 +81,7 @@ public class SplashAnimation : MonoBehaviour
         if (canvas.alpha == 0 && moveFinished)
         {
             StartCoroutine(FadeInCanvas());
+            StartCoroutine(FadeOutSound(EngineSound));
         }
     }
 
@@ -93,6 +103,19 @@ public class SplashAnimation : MonoBehaviour
 
         canvas.alpha = 1;
         canvas.interactable = true;
+    }
+
+    private IEnumerator FadeOutSound(AudioSource sound)
+    {
+        float initialVolume = sound.volume;
+        float elapsedTime = 0f;
+        while (elapsedTime < textFadeSeconds)
+        {
+            elapsedTime += Time.deltaTime;
+            sound.volume = initialVolume * (textFadeSeconds - elapsedTime) / textFadeSeconds;
+            yield return null;
+        }
+        sound.Stop();
     }
 
     /// <summary>

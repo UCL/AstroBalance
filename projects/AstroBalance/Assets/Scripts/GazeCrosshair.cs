@@ -14,18 +14,15 @@ public class GazeCrosshair : MonoBehaviour
     void Update()
     {
         Vector3 worldPoint;
-        if (Application.isEditor)
-        {
-            // Game window needs to be full screen for eye tracking (gaze point) to work correctly.
-            // For easier debugging, when shown in small editor view, have the Crosshair follow the
-            // mouse instead.
-            Vector3 mousePosition = Input.mousePosition;
-            worldPoint = Camera.main.ScreenToWorldPoint(mousePosition);
-        }
-        else
-        {
-            worldPoint = tracker.getGazeWorldCoordinates();
-        }
+        //if (Application.isEditor)
+        //{
+        // Game window needs to be full screen for eye tracking (gaze point) to work correctly.
+        // For easier debugging, when shown in small editor view, have the Crosshair follow the
+        // mouse instead.
+        //    Vector3 mousePosition = Input.mousePosition;
+        //    worldPoint = Camera.main.ScreenToWorldPoint(mousePosition);
+        //}
+        worldPoint = tracker.getGazeWorldCoordinates();
 
         transform.position = new Vector3(worldPoint.x, worldPoint.y, transform.position.z);
     }
