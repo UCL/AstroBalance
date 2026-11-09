@@ -996,6 +996,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7573545231656000033, guid: 4cb44c2ff2835cd42b9d2f3525501dc0, type: 3}
+      propertyPath: m_text
+      value: "1. Look at the star. The cross should show where your gaze is pointing.\n2.
+        The box shows where your head is pointing.\n3. Move your head to point at
+        the star as well to catch it!\n4. Keep looking until it locks on. \n5. Each
+        locked star gives you a point!"
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
