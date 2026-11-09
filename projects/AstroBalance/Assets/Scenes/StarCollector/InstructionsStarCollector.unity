@@ -1216,7 +1216,7 @@ PrefabInstance:
       propertyPath: m_text
       value: "1. Look at the spaceship.\n2. Turn your head left to fly to the right.\n3.
         Turn your head right to fly to the left.  \n4. Fly into the stars as they
-        pass to collect them.\n5. Colelct as many stars as you can.\n6. The stars
+        pass to collect them.\n5. Collect as many stars as you can.\n6. The stars
         give your spaceship power: the more you collect the faster you go!"
       objectReference: {fileID: 0}
     m_RemovedComponents: []
