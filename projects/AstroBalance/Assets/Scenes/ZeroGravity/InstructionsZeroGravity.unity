@@ -999,10 +999,18 @@ PrefabInstance:
     - target: {fileID: 7573545231656000033, guid: 4cb44c2ff2835cd42b9d2f3525501dc0, type: 3}
       propertyPath: m_text
       value: 'Make sure you have a cushion that you can safety and comfortably stand
-        on ready before you begin!
+        on ready before you begin this game.
 
 
-'
+        1. Watch the astronaut.
+
+        2.
+        Copy the space pose.
+
+        3. Hold your body still until the timer ends.
+
+        4.
+        Stay steady to earn maximum points!'
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -996,6 +996,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7573545231656000033, guid: 4cb44c2ff2835cd42b9d2f3525501dc0, type: 3}
+      propertyPath: m_text
+      value: "1. Look at the directional pad on the screen.\n2. Stand straight and
+        in the centre. You may have to move  closer or further away from the eye
+        tracker to find the right position. \n3. When a direction lights up, take
+        a step in that direction.\n4. Move back to the centre after each step.\n5.
+        Be sure not to lean! Always stand straight and take a step."
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

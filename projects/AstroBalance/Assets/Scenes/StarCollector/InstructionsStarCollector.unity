@@ -1212,6 +1212,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7573545231656000033, guid: 4cb44c2ff2835cd42b9d2f3525501dc0, type: 3}
+      propertyPath: m_text
+      value: "1. Look at the spaceship.\n2. Turn your head left to fly to the right.\n3.
+        Turn your head right to fly to the left.  \n4. Fly into the stars as they
+        pass to collect them.\n5. Collect as many stars as you can.\n6. The stars
+        give your spaceship power: the more you collect the faster you go!"
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
